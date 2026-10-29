@@ -21,8 +21,6 @@
     ],
     "deny": [
       "Edit(/tests/acceptance/**)",
-      "Edit(/evals/datasets/**)",
-      "Edit(/evals/thresholds.json)",
       "Edit(/scripts/**)",
       "Edit(/Makefile)",
       "Edit(/package.json)",
@@ -43,7 +41,6 @@
       "Edit(/.claude/skills/**)",
       "Edit(/AGENTS.md)",
       "Edit(/CLAUDE.md)",
-      "Edit(/formal/**)",
       "Read(./.env)",
       "Read(./.env.*)",
       "Bash(make apply-proposals *)",

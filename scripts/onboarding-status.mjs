@@ -17,8 +17,9 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const at = (...p) => join(ROOT, ...p);
 const read = (...p) => (existsSync(at(...p)) ? readFileSync(at(...p), 'utf8') : '');
 const list = (...p) => (existsSync(at(...p)) ? readdirSync(at(...p)) : []);

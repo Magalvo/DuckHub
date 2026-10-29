@@ -11,10 +11,11 @@
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { basename, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { z } from 'zod';
 
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const TRACKS_DIR = join(ROOT, 'specs/tracks');
 const ITEMS_DIR = join(ROOT, 'specs/items');
 

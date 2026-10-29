@@ -12,13 +12,18 @@ onboarding e segue `.claude/skills/onboarding/SKILL.md` (no Claude Code:
 
 ## Propósito
 
-<!-- SUBSTITUIR: um parágrafo sobre porque é que este código existe. -->
+Duck Hub é a praça digital da comunidade 42: uma app web gamificada onde
+alunos e Alumni da 42 mantêm o convívio, encontram equipa e usam ferramentas
+úteis, com o perfil construído automaticamente a partir da API da 42 (zero
+fricção). Começa pela 42 Portugal.
 
-Boilerplate de referência para desenvolvimento AI-driven: SDD + TDD + defesa em
-profundidade. O módulo `src/order.ts` é um exemplo de domínio a substituir.
+Produto: `docs/canonical/produto.md` · Design: `docs/canonical/design.md`.
+O módulo `src/order.ts` é o exemplo do boilerplate, a remover.
 
 ## Stack
 
+- Next.js full-stack (App Router) · PostgreSQL · Tailwind com os tokens de
+  `docs/canonical/design.md` · OAuth da 42 (ADR 0003)
 - TypeScript 5.x em modo `strict` máximo (Node 22+, ESM)
 - Zod para validação de schema nas fronteiras
 - Vitest (unit, acceptance, property-based com fast-check)
@@ -34,7 +39,6 @@ Não adivinhes comandos. Usa o Makefile:
 - `make test-unit` — loop rápido de TDD
 - `make validate-specs` — lint do corpus de specs
 - `make new-item ID=WI-NNNN SLUG=... TRACK=WT-NNNN` — scaffolding (nunca cries specs à mão)
-- `make eval` — evals dos componentes probabilísticos (corre quando mudares prompts/subjects)
 - `make onboard-status` — o que falta configurar no projeto
 - `make help` — lista completa
 
@@ -49,18 +53,15 @@ Não adivinhes comandos. Usa o Makefile:
 | `src/`                                               | Código de produção                                                   | Sim                  |
 | `tests/unit/`, `tests/properties/`                   | Testes que escreves e iteras                                         | Sim                  |
 | `tests/acceptance/`                                  | **O CONTRATO** (determinístico)                                      | **NÃO. NUNCA.**      |
-| `evals/subjects/`                                    | Sistemas probabilísticos sob avaliação (prompts)                     | Sim                  |
-| `evals/datasets/`, `evals/thresholds.json`           | **O CONTRATO** (estatístico)                                         | **NÃO. NUNCA.**      |
-| `formal/`                                            | Specs TLA+ do núcleo crítico (camada opcional)                       | Só por proposta      |
 | Scripts, configs, workflows, `AGENTS.md`, `.claude/` | **GUARDRAILS**: como se verifica (lista em `.agent/protected-paths`) | **Só por proposta**  |
 | `.agent/proposals/`                                  | Onde propões alterações a ficheiros protegidos                       | Sim                  |
 
 ## Regras duras (violação = trabalho rejeitado)
 
 1. **NUNCA alteres o CONTRATO nem os GUARDRAILS** (`.agent/protected-paths`).
-   Contrato: testes de aceitação, datasets e thresholds de evals. Guardrails:
+   Contrato: os testes de aceitação. Guardrails:
    scripts de verificação, configs, workflows, hooks e estas regras. Se um
-   teste ou eval falha, o erro está no teu código: corrige o código, nunca o
+   teste falha, o erro está no teu código: corrige o código, nunca o
    que o verifica. Estes caminhos estão bloqueados para ti (sandbox, hooks e
    CI); tentar contorná-los é a falha mais grave possível. Se achas que um
    deles precisa mesmo de mudar, escreve a versão proposta em
@@ -78,6 +79,20 @@ Não adivinhes comandos. Usa o Makefile:
    (`wi/WI-NNNN-slug`), commits pequenos e frequentes.
 8. **Âmbito é sagrado.** Só tocas nos ficheiros necessários ao work-item.
    O orçamento de diff (15 ficheiros / 800 linhas) é verificado no CI.
+9. **Privacidade (RGPD).** Dados vindos da Intra nunca vão para logs nem para
+   fixtures: os testes usam só dados sintéticos. Presença no campus
+   (`/v2/locations`) e `blackholed_at` de outras pessoas nunca são mostrados
+   sem opt-in explícito dessa pessoa.
+10. **A API da 42 é a única fonte dos dados académicos.** Toda a resposta
+    passa por um schema Zod. Só leitura: nunca se escreve na Intra. Tokens
+    OAuth ficam no servidor, nunca chegam ao browser. O cliente respeita o
+    rate limit da API.
+11. **Conquistas verificáveis.** Badges, XP e cálculos são funções puras e
+    determinísticas sobre dados da API. Não existe badge sem fonte de dados
+    verificável.
+12. **Acessibilidade.** Contraste WCAG AA e navegação por teclado. Glow e
+    blur são decoração e nunca substituem contraste. Componentes de UI têm
+    testes de a11y.
 
 ## Workflow obrigatório
 
@@ -98,7 +113,7 @@ fizeste perguntas), podes parar mesmo com testes vermelhos. As regras:
 
 1. **Lê a falha toda** antes de mexer. O primeiro erro de tipos explica muitas
    vezes os testes que falham a seguir.
-2. **Corrige a causa no código** (`src/`, `evals/subjects/`, ou os testes
+2. **Corrige a causa no código** (`src/` ou os testes
    unitários que tu escreveste, se estavam errados). Nunca o contrato.
 3. **Proibido "ficar verde" por atalho**: casos especiais para os inputs dos
    testes, detetar se está a correr em teste, enfraquecer as asserções dos
@@ -118,6 +133,4 @@ fizeste perguntas), podes parar mesmo com testes vermelhos. As regras:
 - Schema das specs: `specs/_schema/README.md`
 - Decisões existentes: `docs/adr/` — **lê antes de propor mudanças de arquitetura**
 - Convenções: `docs/canonical/conventions.md`
-- Evals (componentes LLM): `evals/README.md`
-- Métodos formais (núcleo crítico, opcional): `formal/README.md`
 - Caminhos protegidos e como propor alterações: `.agent/protected-paths`, `.agent/proposals/README.md`

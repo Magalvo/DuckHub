@@ -17,8 +17,6 @@
 # Formato: <nível> <padrão relativo à raiz>. `*` = um segmento, `**` = qualquer profundidade.
 
 contract   tests/acceptance/**
-contract   evals/datasets/**
-contract   evals/thresholds.json
 
 guardrail  scripts/**
 guardrail  Makefile
@@ -40,4 +38,3 @@ guardrail  .claude/hooks/**
 guardrail  .claude/skills/**
 guardrail  AGENTS.md
 guardrail  CLAUDE.md
-guardrail  formal/**

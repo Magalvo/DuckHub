@@ -5,8 +5,6 @@
 # aos próprios scripts e workflows que fazem as verificações.
 
 /tests/acceptance/**      @OWNER
-/evals/datasets/**        @OWNER
-/evals/thresholds.json    @OWNER
 /scripts/**               @OWNER
 /Makefile                 @OWNER
 /package.json             @OWNER
@@ -27,4 +25,3 @@
 /.claude/skills/**        @OWNER
 /AGENTS.md                @OWNER
 /CLAUDE.md                @OWNER
-/formal/**                @OWNER
