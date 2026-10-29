@@ -25,7 +25,7 @@ expect() { # expect <descrição> <esperado: 0|1> <comando...>
 # Cópia do projeto (node_modules por symlink) num repo git limpo
 P="$WORK/proj"
 mkdir -p "$P"
-(cd "$SRC" && tar --exclude=node_modules --exclude=.git --exclude='formal/states' -cf - .) | (cd "$P" && tar -xf -)
+(cd "$SRC" && tar --exclude=node_modules --exclude=.git -cf - .) | (cd "$P" && tar -xf -)
 ln -s "$SRC/node_modules" "$P/node_modules"
 cd "$P"
 git init -q && git config user.email t@t && git config user.name t
@@ -41,8 +41,8 @@ guard() { # devolve 1 se o comando for NEGADO
 }
 expect "nega commit com --no-verify"                      1 guard 'git commit -m x --no-verify'
 expect "nega autoaprovação ACCEPT_CONTRACT_CHANGE=1"      1 guard 'ACCEPT_CONTRACT_CHANGE=1 git commit -m x'
-expect "nega baixar threshold com sed -i"                 1 guard "sed -i 's/0.9/0.5/' evals/thresholds.json"
-expect "nega reescrever runner de evals por redireção"    1 guard 'echo "process.exit(0)" > scripts/run-evals.mjs'
+expect "nega enfraquecer aceitação com sed -i"            1 guard "sed -i 's/toBe/not.toBe/' tests/acceptance/order.acceptance.test.ts"
+expect "nega reescrever validador por redireção"          1 guard 'echo "process.exit(0)" > scripts/validate-specs.mjs'
 expect "nega apagar teste de aceitação"                   1 guard 'rm tests/acceptance/order.acceptance.test.ts'
 expect "nega repor contrato via git checkout"             1 guard 'git checkout -- tests/acceptance/'
 expect "nega escrever Makefile via node -e"               1 guard "node -e \"require('fs').writeFileSync('Makefile','')\""
@@ -50,16 +50,19 @@ expect "nega desligar o loop (SELF_HEAL_*)"               1 guard 'export SELF_H
 expect "nega aplicar propostas (ação humana)"             1 guard 'make apply-proposals'
 expect "nega mexer nos hooks de git"                      1 guard 'echo "exit 0" > .git/hooks/pre-commit'
 expect "permite make check"                               0 guard 'make check'
-expect "permite ler o contrato"                           0 guard 'cat evals/thresholds.json && grep -n AC1 tests/acceptance/order.acceptance.test.ts'
+expect "permite ler o contrato"                           0 guard 'cat tests/acceptance/order.acceptance.test.ts && grep -n AC1 tests/acceptance/order.acceptance.test.ts'
 expect "permite correr scripts com 2>&1"                  0 guard 'node scripts/validate-specs.mjs 2>&1 | tail -5'
-expect "permite copiar para uma proposta"                 0 guard 'mkdir -p .agent/proposals/scripts && cp scripts/run-evals.mjs .agent/proposals/scripts/run-evals.mjs'
+expect "permite copiar para uma proposta"                 0 guard 'mkdir -p .agent/proposals/scripts && cp scripts/validate-specs.mjs .agent/proposals/scripts/validate-specs.mjs'
 expect "permite editar código de produção"                0 guard "sed -i 's/a/b/' src/order.ts"
 
 # ---------- 2. Lista de caminhos protegidos ----------
 echo "Lista de caminhos protegidos"
 printf 'src/order.ts\ntests/unit/order.test.ts\n' > "$WORK/legit.txt"
-printf 'src/order.ts\nscripts/run-evals.mjs\n' > "$WORK/guardrail.txt"
-printf 'evals/thresholds.json\n' > "$WORK/contract.txt"
+printf 'src/order.ts
+scripts/validate-specs.mjs
+' > "$WORK/guardrail.txt"
+printf 'tests/acceptance/order.acceptance.test.ts
+' > "$WORK/contract.txt"
 expect "aceita alterações só a código e testes unitários" 0 node scripts/protected-paths.mjs check --files "$WORK/legit.txt"
 expect "bloqueia alteração a script de verificação"       1 node scripts/protected-paths.mjs check --files "$WORK/guardrail.txt"
 expect "bloqueia alteração ao contrato"                   1 node scripts/protected-paths.mjs check --files "$WORK/contract.txt"
@@ -76,7 +79,7 @@ git branch -q -M main
 git checkout -q -b pr-ataque
 # O "agente" salta o hook local e, no mesmo PR, desliga o guarda e enfraquece o contrato
 sed -i 's/if (hits.length === 0) {/if (true) {/' scripts/protected-paths.mjs
-sed -i 's/"min": 0.9/"min": 0.5/' evals/thresholds.json
+echo "// enfraquecido" >> tests/acceptance/order.acceptance.test.ts
 git add -A && git commit -qm "ataque" --no-verify
 git diff --name-only --no-renames main...pr-ataque > "$WORK/pr.txt"
 expect "o guarda DA BRANCH DO PR deixaria passar"         0 node scripts/protected-paths.mjs check --files "$WORK/pr.txt"
@@ -88,11 +91,11 @@ git checkout -q main && git worktree remove --force "$WORK/base" && git branch -
 # ---------- 3. Hook de pre-commit ----------
 echo "Hook de pre-commit"
 commit_try() { git add -A && git commit -qm "$1"; }
-echo "// enfraquecido" >> scripts/run-evals.mjs
-expect "bloqueia commit que altera scripts/"              1 commit_try "mexer no runner"
+echo "// enfraquecido" >> scripts/validate-specs.mjs
+expect "bloqueia commit que altera scripts/"              1 commit_try "mexer no validador"
 git reset -q --hard
-sed -i 's/"min": 0.9/"min": 0.5/' evals/thresholds.json
-expect "bloqueia commit que baixa threshold"              1 commit_try "baixar threshold"
+echo "// enfraquecido" >> tests/acceptance/order.acceptance.test.ts
+expect "bloqueia commit que altera o contrato"            1 commit_try "enfraquecer aceitação"
 git reset -q --hard
 
 # ---------- 4. Loop de auto-correção (Stop hook) ----------

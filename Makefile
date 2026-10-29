@@ -6,8 +6,8 @@
 
 .PHONY: help setup check format format-check typecheck lint test test-unit \
         test-acceptance test-properties validate-specs verify-protected test-guards \
-        diff-budget onboard-status eval apply-proposals sync-protected formal-setup \
-        formal-check formal-demo-race new-item new-track new-adr
+        diff-budget onboard-status apply-proposals sync-protected \
+        new-item new-track new-adr
 
 help: ## Lista os comandos disponíveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -67,30 +67,6 @@ validate-specs: ## Valida o corpus de specs (schema, refs, órfãos, IDs)
 
 diff-budget: ## Verifica o orçamento de diff vs origin/main
 	node scripts/check-diff-budget.mjs
-
-# ---- Evals (componentes probabilísticos/LLM — ver evals/README.md) ---------
-
-eval: ## Corre os evals contra os thresholds (não incluído no check: custa $$/tempo)
-	node scripts/run-evals.mjs
-
-# ---- Métodos formais (OPCIONAL — ver formal/README.md) ---------------------
-
-TLA_JAR := formal/tla2tools.jar
-TLA_URL := https://github.com/tlaplus/tlaplus/releases/latest/download/tla2tools.jar
-
-formal-setup: ## Descarrega o model checker TLC (requer Java 11+)
-	@test -s $(TLA_JAR) || curl -fL -o $(TLA_JAR) $(TLA_URL)
-	@java -version 2>&1 | head -1
-	@echo "✓ TLC pronto em $(TLA_JAR)"
-
-formal-check: ## Verifica a spec TLA+ (variante correta — deve passar)
-	cd formal && java -XX:+UseParallelGC -cp tla2tools.jar tlc2.TLC \
-		-deadlock -workers auto -config OrderLifecycle.cfg OrderLifecycle.tla
-
-formal-demo-race: ## Demo: o TLC encontra a race condition da variante naive
-	cd formal && java -XX:+UseParallelGC -cp tla2tools.jar tlc2.TLC \
-		-deadlock -workers auto -config OrderLifecycleNaive.cfg OrderLifecycle.tla \
-		|| echo "↑ FALHOU COMO ESPERADO: o trace acima é uma race condition. O desenho naive viola AMBOS os invariantes (double-charge e pago→cancelado); o TLC mostra a primeira violação encontrada. Para ver a outra, remove um INVARIANT do .cfg."
 
 # ---- Scaffolding (previne drift estrutural) --------------------------------
 

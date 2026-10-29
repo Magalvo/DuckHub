@@ -5,8 +5,8 @@ Quando acha que um deles precisa mesmo de mudar, escreve aqui a versão proposta
 no mesmo caminho relativo, e uma nota com o porquê:
 
 ```
-.agent/proposals/scripts/run-evals.mjs      ← versão proposta
-.agent/proposals/scripts/run-evals.mjs.md   ← porquê, em 2-3 frases
+.agent/proposals/scripts/validate-specs.mjs ← versão proposta
+.agent/proposals/scripts/validate-specs.mjs.md ← porquê, em 2-3 frases
 ```
 
 Um humano revê e aplica, ficheiro a ficheiro, com `make apply-proposals`.

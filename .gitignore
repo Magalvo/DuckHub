@@ -4,8 +4,6 @@ coverage/
 *.log
 .env
 .env.*
-formal/tla2tools.jar
-formal/states/
 
 # Propostas do agente (transitórias; o README fica)
 .agent/proposals/*

@@ -169,7 +169,7 @@ block(
     `make check falhou (tentativa ${state.attempts} de ${MAX}). Corrige o CÓDIGO e volta a correr make check.`,
     '',
     'Regras deste loop:',
-    '- A falha está no teu código (src/, evals/subjects/, os testes unitários que escreveste), nunca no contrato.',
+    '- A falha está no teu código (src/, os testes unitários que escreveste), nunca no contrato.',
     '- Não tentes alterar testes de aceitação, datasets, thresholds, scripts ou configuração: estão protegidos.',
     '- Não faças casos especiais para os inputs dos testes nem enfraqueças asserções dos teus testes para ficar verde.',
     '- Se a falha for de formatação, corre make format.',

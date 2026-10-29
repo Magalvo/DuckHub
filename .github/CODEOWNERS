@@ -1,0 +1,27 @@
+# GERADO a partir de .agent/protected-paths — não editar à mão.
+# Regenerar: node scripts/protected-paths.mjs sync (humano).
+# Com "Require review from Code Owners" ativo na branch protection, qualquer PR
+# que toque nestes caminhos precisa da aprovação do dono — inclusive alterações
+# aos próprios scripts e workflows que fazem as verificações.
+
+/tests/acceptance/**      @Magalvo
+/scripts/**               @Magalvo
+/Makefile                 @Magalvo
+/package.json             @Magalvo
+/package-lock.json        @Magalvo
+/tsconfig.json            @Magalvo
+/eslint.config.js         @Magalvo
+/vitest.config.ts         @Magalvo
+/lefthook.yml             @Magalvo
+/.prettierrc.json         @Magalvo
+/.prettierignore          @Magalvo
+/.gitignore               @Magalvo
+/.github/**               @Magalvo
+/.agent/protected-paths   @Magalvo
+/.agent/permissions.json  @Magalvo
+/.agent/templates/**      @Magalvo
+/.claude/settings.json    @Magalvo
+/.claude/hooks/**         @Magalvo
+/.claude/skills/**        @Magalvo
+/AGENTS.md                @Magalvo
+/CLAUDE.md                @Magalvo
