@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline": "#859393", "on-tertiary-container": "#5a009c", "surface-variant": "#31353c", "error": "#ffb4ab", "tertiary-fixed-dim": "#ddb7ff", "on-primary": "#003737", "on-surface-variant": "#bbc9c9", "on-secondary": "#3e2e00", "on-secondary-container": "#6e5400", "on-error-container": "#ffdad6", "on-primary-container": "#004445", "on-background": "#dfe2eb", "primary-fixed": "#6bf7f8", "outline-variant": "#3c4949", "primary-fixed-dim": "#48dadc", "surface-bright": "#353940", "tertiary-container": "#c78eff", "surface-container-highest": "#31353c", "surface-container-lowest": "#0a0e14", "secondary": "#ffe9b9", "background": "#10141a", "inverse-on-surface": "#2d3137", "tertiary": "#ddb7ff", "error-container": "#93000a", "primary": "#48dadc", "surface-container-low": "#181c22", "on-secondary-fixed-variant": "#594400", "on-tertiary-fixed": "#2c0051", "surface-dim": "#10141a", "surface-tint": "#48dadc", "on-primary-fixed": "#002020", "tertiary-fixed": "#f0dbff", "on-secondary-fixed": "#251a00", "inverse-surface": "#dfe2eb", "primary-container": "#00babc", "surface-container-high": "#262a31", "on-tertiary": "#490080", "on-surface": "#dfe2eb", "on-tertiary-fixed-variant": "#6900b3", "surface": "#10141a", "on-error": "#690005", "inverse-primary": "#00696b", "secondary-fixed": "#ffdf94", "on-primary-fixed-variant": "#004f50", "secondary-container": "#ffc703", "surface-container": "#1c2026", "secondary-fixed-dim": "#f5bf00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xl": "2rem", "space-lg": "1.5rem", "margin": "1rem", "margin-lg": "2.5rem", "gutter-lg": "1.5rem", "space-2xl": "3rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "margin-md": "1.5rem" }, "fontFamily": { "title-sm": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Inter"], "headline-xl-mobile": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-sm": ["Inter"], "headline-lg": ["Inter"], "label-md": ["JetBrains Mono"], "code-lg": ["JetBrains Mono"], "headline-xl": ["Inter"] }, "fontSize": { "title-sm": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "code-md": ["13px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "code-lg": ["15px", { "lineHeight": "22px", "fontWeight": "500" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-lowest/60"><img alt="Duck Hub Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANw-v6T53wMIIQOfHOvyQO2142TzydSiI_ZkKahk48iIAUbNWpzvdcETCq2jFkC462oXPMVv8x4Aim-_0zvEqrTdSZmj7APXlzmLpF8yAdmaCq1i2LsG51lVcM9FzBIIiz4eil_s4eHf05784Xs4vWCb8HOOC5sgoPs3DA3P7LS-p2lgNKgd6TNFN1ZP93sfiNUpB5kV6cTKnVeqsGzEw8EqUwxTR32TsfKqxlcUmk"/><div class="flex flex-col"><span class="font-headline-sm text-title-sm tracking-tight text-on-surface font-bold">DUCK HUB</span><span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">CAMPUS TERMINAL</span></div></div><div class="px-space-md py-space-sm"><div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-xs px-space-xs">Core Navigation</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-bold shadow-[0_0_16px_rgba(0,186,188,0.25)]"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="home-feed" href="#"><span class="material-symbols-outlined text-title-md">terminal</span><span class="font-body-md text-body-md">Home / Feed</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-profile" href="#"><span class="material-symbols-outlined text-title-md">badge</span><span class="font-body-md text-body-md">My Profile</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="team-matchmaking" href="#"><span class="material-symbols-outlined text-title-md">hub</span><span class="font-body-md text-body-md">Team Matchmaking</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="42calculator" href="#"><span class="material-symbols-outlined text-title-md">calculate</span><span class="font-body-md text-body-md">42Calculator</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="mentorship" href="#"><span class="material-symbols-outlined text-title-md">psychology</span><span class="font-body-md text-body-md">Mentorship</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-title-md">tune</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest/80 flex flex-col gap-space-sm"><div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-code-md text-label-sm text-on-surface-variant">SYS_PING</span></div><span class="font-code-md text-label-sm text-primary font-bold">12ms</span></div><div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container rounded-lg"><span class="font-code-md text-label-sm text-on-surface-variant">TERMINAL HUD</span><kbd class="font-code-md text-label-sm bg-surface-container-highest px-space-xs py-0.5 rounded text-primary-fixed">Ctrl+K</kbd></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 px-space-lg flex items-center justify-between shadow-[0_1px_10px_rgba(0,0,0,0.5)]"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-title-md">search</span><input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-code-md text-body-sm pl-9 pr-space-md py-space-xs rounded-xl focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search alumni, repos, skills, or projects... [ / ]" type="text"/></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-sm py-1 bg-surface-container-low rounded-xl"><div class="flex flex-col items-end"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-secondary-container text-body-sm">token</span><span class="font-label-sm text-label-sm text-secondary font-bold tracking-wider">LVL 18 - KERNEL ARCHITECT</span></div><span class="font-code-md text-label-sm text-on-surface-variant">14,850 / 18,000 XP (82.5%)</span></div><div class="w-28 h-2 bg-surface-container-highest rounded-full overflow-hidden p-0.5"><div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary-container shadow-[0_0_8px_rgba(0,186,188,0.5)]" style="width: 82.5%"></div></div></div><div class="flex items-center gap-space-xs px-space-xs py-1 rounded-xl bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(72,218,220,0.8)]"></span><span class="font-code-md text-label-sm text-on-surface">ONLINE IN CLUSTER</span></div><button class="relative p-space-xs text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-title-md">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span></button><div class="flex items-center gap-space-xs pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaZyYGLyMKkIbcqPi7bHYmzMy9K9wj_2TholsolW1q31p4lrI3Kne9aiahIHtrLC4g4NXH51xlaRbDT5etf2StLTt7_2s6H7_ymrhjfFXjxN_2Iwncl9aVITm8Wl2lYpwevHAJKjF1UuUqfFGtHcu55PJHijLNQOPmDu1qVdm0dnWxDi6SAG4KgxYCwm92IC2yE_RPMlJifJhoyFzca1olu3ztD8Ol9qPL-xN2hZ6J"/></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Top Command HUD & Cohort Telemetry Strip -->
+<div class="px-space-lg py-space-md bg-surface-container-low flex flex-col gap-space-md">
+<!-- Title Area & Realtime Status Indicator -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider mb-1">
+<span class="text-primary font-bold">PT_INTRA // DIR_V4</span>
+<span>/</span>
+<span>42 LISBOA &amp; 42 PORTO CLUSTERS</span>
+<span>/</span>
+<span class="flex items-center gap-1 text-secondary">
+<span class="material-symbols-outlined text-body-sm">sell</span>
+            LANYARD PROTOCOL ACTIVE
+          </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface font-extrabold tracking-tight">
+          Campus Directory &amp; Peer Lanyard Matrix
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-3xl mt-0.5">
+          Student &amp; alumni dossiers filtered by kick-off piscine year colors. Traditional Portuguese campus seniority identifiers, active milestone telemetry, and coalition alignments.
+        </p>
+</div>
+<!-- Campus Location Switcher & Stats Capsule -->
+<div class="flex items-center gap-space-sm self-start lg:self-auto">
+<div class="bg-surface-container-lowest p-1 rounded-xl flex items-center shadow-inner">
+<button class="px-space-md py-1.5 rounded-lg text-on-primary bg-primary-container font-label-md text-label-md font-bold transition-all shadow-sm flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span>
+            ALL PORTUGAL (42)
+          </button>
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            LISBOA [SALDANHA] (28)
+          </button>
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-all flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+            PORTO (14)
+          </button>
+</div>
+<div class="hidden xl:flex items-center gap-2 bg-surface-container-high px-space-md py-2 rounded-xl">
+<span class="material-symbols-outlined text-secondary text-title-md">military_tech</span>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary font-bold uppercase tracking-wider">Lanyard System</span>
+<span class="font-code-md text-label-sm text-on-surface-variant">6 Active Cohorts</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Lanyard Color Legend Bar / Interactive Filter Matrix -->
+<div class="bg-surface-container-lowest p-space-sm rounded-xl flex flex-wrap items-center gap-2 shadow-inner">
+<div class="flex items-center gap-1 px-space-xs text-on-surface-variant font-label-sm text-label-sm uppercase tracking-wider">
+<span class="material-symbols-outlined text-title-sm text-primary">filter_alt</span>
+<span>YEAR STRAP FILTER:</span>
+</div>
+<!-- Filter: All -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-bright text-on-surface font-code-md text-label-sm font-bold shadow-sm transition-all hover:bg-surface-container-highest">
+        ALL STRAPS <span class="ml-1 opacity-70">(42)</span>
+</button>
+<!-- Filter: Black 2020 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-stone-900 shadow-sm"></span>
+<span class="font-bold text-on-surface">2020 PIONEER</span>
+<span class="text-on-surface-variant">[BLK · 4]</span>
+</button>
+<!-- Filter: Red 2021 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.7)]"></span>
+<span class="font-bold text-red-300">2021 VETERAN</span>
+<span class="text-on-surface-variant">[RED · 7]</span>
+</button>
+<!-- Filter: Blue 2022 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.7)]"></span>
+<span class="font-bold text-blue-300">2022 SENIOR</span>
+<span class="text-on-surface-variant">[BLU · 11]</span>
+</button>
+<!-- Filter: Green 2023 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]"></span>
+<span class="font-bold text-emerald-300">2023 CORE</span>
+<span class="text-on-surface-variant">[GRN · 12]</span>
+</button>
+<!-- Filter: Orange 2024 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.7)]"></span>
+<span class="font-bold text-amber-300">2024 ADVANCED</span>
+<span class="text-on-surface-variant">[ORG · 9]</span>
+</button>
+<!-- Filter: Yellow 2025 -->
+<button class="px-space-sm py-1 rounded-lg bg-surface-container text-on-surface font-code-md text-label-sm hover:bg-surface-container-high transition-all flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 rounded-sm bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.8)]"></span>
+<span class="font-bold text-yellow-300">2025 ROOKIE</span>
+<span class="text-on-surface-variant">[YEL · 8]</span>
+</button>
+<div class="ml-auto hidden md:flex items-center gap-2">
+<span class="font-code-md text-label-sm text-on-surface-variant">AUTO-SORT:</span>
+<span class="font-label-sm text-label-sm text-primary uppercase bg-surface-container px-2 py-0.5 rounded">SENIORITY (2020 ➔ 2025)</span>
+</div>
+</div>
+</div>
+<!-- Primary Main Grid: Directory Cards (Left/Center) + Telemetry & Lanyard Protocol Panel (Right) -->
+<div class="p-space-lg grid grid-cols-1 xl:grid-cols-12 gap-space-lg">
+<!-- 8 or 9 Column Space for User Lanyard Cards Grid -->
+<div class="xl:col-span-9 flex flex-col gap-space-lg">
+<!-- Dossier Counter & Active Cluster Metric Banner -->
+<div class="bg-surface-container rounded-xl p-space-md flex flex-wrap items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-title-md">badge</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-title-md text-title-md text-on-surface font-bold">6 Active Cohort Cohabitations Detected</span>
+<span class="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm font-bold">LIVE PEER SYNC</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant">
+              Showing verified 42 Portugal cadets, alumni fellows, and peer evaluators across Lisboa and Porto nodes.
+            </span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-2 bg-surface-container-lowest px-3 py-1.5 rounded-lg">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-code-md text-label-sm text-on-surface font-semibold">24 CADETS IN LAB TODAY</span>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-container-highest px-3 py-1.5 rounded-lg font-code-md text-label-sm text-on-surface transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-body-md">view_agenda</span>
+            VIEW MAP
+          </button>
+</div>
+</div>
+<!-- The 6 Signature Lanyard Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
+<!-- ================= CARD 1: BLACK LANYARD (2020 PIONEER) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<!-- Card Interior Header & Body -->
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<!-- Top Strip: Status, Campus, Coalition -->
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 LISBOA
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-purple-950/60 text-purple-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE FEDERATION
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Online in Cluster"></span>
+</div>
+</div>
+<!-- Profile Info: Avatar, Name, Handle -->
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Cyberpunk high tech avatar of a senior male software engineer with short hair, subtle neon glasses reflection, dark minimalist terminal hoodie, dramatic studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPxfaguPYhuczhXoHA_dNhUV15azK914yryjttd0dQYjHJyhMi0metBm0SstKnSeVDPUX-fd-QfaNQNWY3k9Cw7aA1C1tVDY9Ug8N3rMXxCQXCkr-IYbK83yZlc8FpFVv07pRntIok-sQZVlaWIoC13SaLhE2xP3bWPx6KHYtZ5oSSfUiY4fKy0qs4i2NQlnqRHvwr2FrL1KSMewvgM3QiSjq_-Iyg15SHfLd-nJw5"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-stone-900 text-stone-200 font-code-md text-label-sm rounded font-bold shadow">
+                  PIONEER
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">Tiago Silva</h3>
+<span class="material-symbols-outlined text-primary text-body-sm" title="Verified Alumni">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@tiago_kernel</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Staff Engineer &amp; Founding Alumni</span>
+</div>
+</div>
+<!-- Core Progress & Telemetry -->
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 21.40 // MASTER</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-stone-300 h-full rounded-full" style="width: 100%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">Linux Kernel Dev</span>
+</div>
+</div>
+<!-- Tech Badges -->
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ C / ASM ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Rust ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ eBPF ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ QEMU ]</span>
+</div>
+<!-- Duck Pool & Actions -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>84 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2020 BLACK (Founding Pioneer) -->
+<div class="w-full relative overflow-hidden bg-stone-950 p-2.5 flex items-center justify-between shadow-2xl">
+<!-- Visual Weave Background Overlay (Diagonal Carbon Weave Pattern) -->
+<div class="absolute inset-0 opacity-25 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #333 0, #333 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-stone-700"></div>
+<div class="relative z-10 flex items-center gap-2">
+<!-- Metallic Clasp / Key-ring Icon Indicator -->
+<div class="w-5 h-5 rounded-full bg-stone-800 flex items-center justify-center text-stone-300 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-stone-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-stone-400"></span>
+                  LANYARD // 2020 FOUNDING PIONEER
+                </div>
+<span class="font-code-md text-label-sm text-stone-400">BLACK STRAP PROTOCOL · COHORT #01</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-stone-300 font-bold px-1.5 py-0.5 bg-stone-900 rounded">
+              '20 BLK
+            </span>
+</div>
+</div>
+<!-- ================= CARD 2: RED LANYARD (2021 VETERAN) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 PORTO
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-red-950/60 text-red-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE ORDER
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active"></span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Portrait of a female senior backend software engineer with dark hair tied back, confident expression, subtle red neon campus cluster backlight, dark attire." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpABmHA0hYP94pDZhB5ZdCVaxuNvWyNSaFgEPjoY4JhFblQHgvs4kWS7ZfxcW_3gJ8OLKvidPmLemkqq7ofs4ObVG4g19dLZpNXsKk8rqRUcBp6AP6aOSrpluFtlDnCq6SinXCbBjiqJhxD53qSmq73D35qjuMJpz1uqatI8z42H62IaHvb3V9eT1iaCU-k0ZDua32I25YzdkAu9MoTdTyzfn771-Qe0pwA17xVuYs"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-red-900 text-red-200 font-code-md text-label-sm rounded font-bold shadow">
+                  VETERAN
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">Inês Ferreira</h3>
+<span class="material-symbols-outlined text-primary text-body-sm">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@ines_dev</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Distributed Systems Lead</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 19.12 // SENIOR</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-red-500 h-full rounded-full" style="width: 92%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">ft_transcendence</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Go ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Kubernetes ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ C++ / gRPC ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Kafka ]</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>61 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2021 RED (Veteran) -->
+<div class="w-full relative overflow-hidden bg-red-950 p-2.5 flex items-center justify-between shadow-2xl">
+<div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #ef4444 0, #ef4444 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-red-500/50"></div>
+<div class="relative z-10 flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-red-900 flex items-center justify-center text-red-200 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-red-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-red-400 animate-pulse"></span>
+                  LANYARD // 2021 VETERAN
+                </div>
+<span class="font-code-md text-label-sm text-red-300">RED RIBBON PROTOCOL · PORTO PIONEER</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-red-100 font-bold px-1.5 py-0.5 bg-red-900 rounded">
+              '21 RED
+            </span>
+</div>
+</div>
+<!-- ================= CARD 3: BLUE LANYARD (2022 SENIOR) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 LISBOA
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-blue-950/60 text-blue-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE ALLIANCE
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active"></span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Portrait of a young male software developer with headset resting on neck, electric cyan and blue ambient cluster illumination, glasses, focused expression." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaj6XEA0REAxqidpDsKPsCc8WZuTGzKAbZw1gJM_Ko3ofps4I9mftR_8D4kBwtbLSg4ISV0QXk3JoWkHljaHpvCMY79sv2W1BnoQvS7KQPB89OH224QpKwdM6g06c7tb6NUqLaLQjC3WxUQwR1SPi8qboz_EMIHcV-WZWgoWieV6tW65_iSBvl5ud6mLuSmXaRPYxJZUoaWqVumQPclyiJ5Fe921lFp8IN-LKC_139"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-blue-900 text-blue-200 font-code-md text-label-sm rounded font-bold shadow">
+                  SENIOR
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">Miguel Santos</h3>
+<span class="material-symbols-outlined text-primary text-body-sm">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@miguel_c</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Fullstack &amp; WebGL Architect</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 18.04 // CADET</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full rounded-full" style="width: 84%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">Inception / Containers</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ React ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ NestJS ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Three.js ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Docker ]</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>49 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2022 BLUE (Senior Cadet) -->
+<div class="w-full relative overflow-hidden bg-blue-950 p-2.5 flex items-center justify-between shadow-2xl">
+<div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #3b82f6 0, #3b82f6 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-blue-400/50"></div>
+<div class="relative z-10 flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-blue-900 flex items-center justify-center text-blue-200 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-blue-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                  LANYARD // 2022 SENIOR CADET
+                </div>
+<span class="font-code-md text-label-sm text-blue-300">BLUE RIBBON PROTOCOL · COHORT #03</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-blue-100 font-bold px-1.5 py-0.5 bg-blue-900 rounded">
+              '22 BLU
+            </span>
+</div>
+</div>
+<!-- ================= CARD 4: GREEN LANYARD (2023 CORE DEVS) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 PORTO
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE ORDER
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active"></span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Portrait of a female cyber security engineer with short dark hair, green matrix computer screens reflecting on dark clothes, clean tech workstation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuApK5J-fXQkiC5J4VNiGiy6L-iwPFR292O73qd7Fne5_B3bk8pes8Ngml3jw9CE_Jzbcjl0_p42onQoLJ1y5D608NpPqKtiCHrJ8BUgozw1b8KTzTSuLAvbqRB6VvU1TFwrJGjnDFm-yuu20HQYaduAqJa3exk6kgKzeqFWUi2sIisTOhuGSpy2DuOo5OUFdMrdi_8uZODza34dr9TZ9ciH0ykBB26N_mWXskSduUHe"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-emerald-900 text-emerald-200 font-code-md text-label-sm rounded font-bold shadow">
+                  CORE DEV
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">Beatriz Costa</h3>
+<span class="material-symbols-outlined text-primary text-body-sm">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@beatriz_sec</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">CyberSec &amp; DevOps Specialist</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 14.80 // CADET</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 71%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">NetPractice &amp; Webserv</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Pentesting ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ C++98 ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Docker ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Python ]</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>38 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2023 GREEN (Core Devs) -->
+<div class="w-full relative overflow-hidden bg-emerald-950 p-2.5 flex items-center justify-between shadow-2xl">
+<div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #10b981 0, #10b981 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-emerald-400/50"></div>
+<div class="relative z-10 flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-emerald-900 flex items-center justify-center text-emerald-200 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-emerald-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  LANYARD // 2023 CORE DEVS
+                </div>
+<span class="font-code-md text-label-sm text-emerald-300">GREEN RIBBON PROTOCOL · PORTO LAB</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-emerald-100 font-bold px-1.5 py-0.5 bg-emerald-900 rounded">
+              '23 GRN
+            </span>
+</div>
+</div>
+<!-- ================= CARD 5: ORANGE LANYARD (2024 ADVANCED) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 LISBOA
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE FEDERATION
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active"></span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Portrait of a young male game developer and graphics coder, warm amber safety light, focused demeanor, wearing a black casual tech shirt." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZG-gQw_5nkzYdiwP_X2amg8zuh3e0rbVmnAhwQbpq728uL4MVNbS_o0qsQG5nzQStbT8BDybUmcppjvNbSbxHu0Miv8_mVjfirUYek8URDLGENeWmQ6k-cxmvYhiqU48pwQqLMs2GtbtA9dZ_AUo6_3j0LVCBL5S9Kfl8T9JzTl6V5DE6VMCLS4TT-Rfmp-O1MzsHaWCBFvV5eSZhKdRCnioQd7CGq4vXzD4yTR8V"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-amber-900 text-amber-200 font-code-md text-label-sm rounded font-bold shadow">
+                  ADVANCED
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">João Ribeiro</h3>
+<span class="material-symbols-outlined text-primary text-body-sm">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@joao_graphics</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Raycasting &amp; Engine Cadet</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 11.20 // CADET</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-amber-500 h-full rounded-full" style="width: 54%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">cub3d &amp; miniRT</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Cub3D ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Norminette ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ MiniLibX ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ C (Strict) ]</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>27 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2024 ORANGE (Advanced Piscine / Cadet) -->
+<div class="w-full relative overflow-hidden bg-amber-950 p-2.5 flex items-center justify-between shadow-2xl">
+<div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #f97316 0, #f97316 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-amber-500/50"></div>
+<div class="relative z-10 flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-amber-900 flex items-center justify-center text-amber-200 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-amber-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  LANYARD // 2024 ADVANCED
+                </div>
+<span class="font-code-md text-label-sm text-amber-300">ORANGE RIBBON PROTOCOL · LISBOA LAB</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-amber-100 font-bold px-1.5 py-0.5 bg-amber-900 rounded">
+              '24 ORG
+            </span>
+</div>
+</div>
+<!-- ================= CARD 6: YELLOW LANYARD (2025 FRESH CADET) ================= -->
+<div class="group bg-surface-container-low rounded-xl overflow-hidden shadow-lg flex flex-col justify-between hover:shadow-2xl transition-all duration-300 relative">
+<div class="p-space-md flex flex-col gap-space-md flex-1">
+<div class="flex items-center justify-between">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest font-code-md text-label-sm text-on-surface font-bold flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                42 LISBOA
+              </span>
+<div class="flex items-center gap-1.5">
+<span class="px-2 py-0.5 rounded bg-yellow-950/60 text-yellow-300 font-label-sm text-label-sm font-bold uppercase">
+                  THE ALLIANCE
+                </span>
+<span class="w-2 h-2 rounded-full bg-emerald-400" title="Active"></span>
+</div>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="relative flex-shrink-0">
+<img class="w-14 h-14 rounded-xl object-cover shadow-md" data-alt="Portrait of an energetic young female programmer with yellow headphones around neck, bright eager expression, vibrant yellow neon reflections, tech student vibe." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYJD2uJD9i4Je2Yju3vWkPOE2ASBIWolE5luMNg5JDLBkJl2JEKfnanQBl1JBsF0NuqpbgqnTW1DfS2GM9g1BxbSpqw0EIczuycns2K_V-AbH_yrTUF3hFTe21gc-Kpeb_Y-XTsbe14QLyeWawD-oFmRnF444hIv6pTyyWYvllb8s_YW-QitTsESlbBz53XC5wF4jrt0-ZrZ6Z28HGFtMxn72125FAvxMKVD6WoAB4"/>
+<span class="absolute -bottom-1 -right-1 px-1 py-0.2 bg-yellow-500 text-stone-900 font-code-md text-label-sm rounded font-bold shadow">
+                  ROOKIE
+                </span>
+</div>
+<div class="flex flex-col min-w-0">
+<div class="flex items-center gap-1">
+<h3 class="font-title-md text-title-md text-on-surface font-bold truncate">Clara Neves</h3>
+<span class="material-symbols-outlined text-secondary text-body-sm" title="Piscine Graduate">verified</span>
+</div>
+<span class="font-code-md text-label-sm text-primary truncate">@clara_rookie</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant truncate">Common Core Rookie Cadet</span>
+</div>
+</div>
+<div class="bg-surface-container rounded-lg p-space-sm flex flex-col gap-2 shadow-inner">
+<div class="flex items-center justify-between font-code-md text-label-sm">
+<span class="text-on-surface-variant">42 CURRICULUM LEVEL</span>
+<span class="text-on-surface font-bold">LVL 06.30 // CADET</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-yellow-400 h-full rounded-full" style="width: 32%"></div>
+</div>
+<div class="flex items-center justify-between font-code-md text-label-sm pt-1">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm text-secondary-container">toll</span>
+                  MILESTONE:
+                </span>
+<span class="text-secondary font-semibold">minishell &amp; pipex</span>
+</div>
+</div>
+<div class="flex flex-wrap gap-1.5">
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Libft ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ ft_printf ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ get_next_line ]</span>
+<span class="px-2 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface">[ Pipex ]</span>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1 font-code-md text-label-sm text-secondary font-bold">
+<span>🦆</span>
+<span>16 DUCKS</span>
+<span class="text-on-surface-variant font-normal">(Peer Pts)</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-code-md text-label-sm transition-all">
+                  Profile
+                </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all hover:opacity-90">
+                  Connect
+                </button>
+</div>
+</div>
+</div>
+<!-- LANYARD BOTTOM DECORATION: 2025 YELLOW (Fresh Cadet / Rookie) -->
+<div class="w-full relative overflow-hidden bg-yellow-950 p-2.5 flex items-center justify-between shadow-2xl">
+<div class="absolute inset-0 opacity-30 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, #eab308 0, #eab308 2px, transparent 0, transparent 6px);"></div>
+<div class="absolute inset-x-0 top-0 h-px bg-yellow-400/60"></div>
+<div class="relative z-10 flex items-center gap-2">
+<div class="w-5 h-5 rounded-full bg-yellow-900 flex items-center justify-center text-yellow-200 shadow">
+<span class="material-symbols-outlined text-label-sm">link</span>
+</div>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center gap-1.5 font-label-sm text-label-sm text-yellow-200 font-extrabold tracking-wider">
+<span class="w-2 h-2 rounded-full bg-yellow-300 animate-pulse"></span>
+                  LANYARD // 2025 FRESH CADET
+                </div>
+<span class="font-code-md text-label-sm text-yellow-300">YELLOW DUCK RIBBON · INTAKE 2025</span>
+</div>
+</div>
+<span class="relative z-10 font-code-md text-label-sm text-stone-900 font-bold px-1.5 py-0.5 bg-yellow-400 rounded">
+              '25 YEL
+            </span>
+</div>
+</div>
+</div>
+<!-- Quick Peer Evaluation Callout with Duck Theme -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col md:flex-row items-center justify-between gap-space-md shadow-sm">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary-container/10 flex items-center justify-center text-secondary-container text-headline-sm shadow-inner">
+            🦆
+          </div>
+<div class="flex flex-col">
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Lanyard Cross-Cohort Peer Corrections</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              In 42 Portugal traditions, Yellow and Orange cadets can book priority code reviews from Black &amp; Red lanyard veterans for 2x Duck XP points.
+            </p>
+</div>
+</div>
+<button class="bg-secondary-container hover:bg-secondary-fixed text-on-secondary-container px-space-md py-2 rounded-xl font-code-md text-label-md font-bold transition-all shadow-md flex items-center gap-2 self-stretch md:self-auto justify-center">
+<span class="material-symbols-outlined text-title-sm">help_center</span>
+          REQUEST VETERAN CORRECTION
+        </button>
+</div>
+</div>
+<!-- 3 or 4 Column Side Telemetry & Lanyard Protocol Panel (Right) -->
+<div class="xl:col-span-3 flex flex-col gap-space-lg">
+<!-- LANYARD PROTOCOL GUIDE HUD -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-md shadow-lg">
+<div class="flex items-center justify-between pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-title-md">schema</span>
+<span class="font-title-sm text-title-sm text-on-surface font-bold uppercase tracking-wide">42 PT Lanyard Protocol</span>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-surface-container font-code-md text-label-sm text-on-surface-variant font-bold">DOC: #4201</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+          At <strong>42 Lisboa</strong> and <strong>42 Porto</strong>, physical lanyards issued at kickoff piscine determine campus seniority, peer mentoring responsibilities, and cluster access:
+        </p>
+<!-- Chronological Lanyard Spec List -->
+<div class="flex flex-col gap-2.5">
+<!-- Black 2020 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-stone-900 ring-1 ring-stone-700 shadow-sm flex items-center justify-center text-label-sm font-bold text-stone-200"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Black Lanyard ('20)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Founding Pioneers · Lisboa Launch</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-stone-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Alumni</span>
+</div>
+<!-- Red 2021 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-red-600 shadow-[0_0_6px_rgba(220,38,38,0.5)]"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Red Lanyard ('21)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Veterans · Porto First Intake</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-red-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Staff / Lvl 19+</span>
+</div>
+<!-- Blue 2022 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.5)]"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Blue Lanyard ('22)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Senior Cadets · Specialization Branch</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-blue-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Core Passed</span>
+</div>
+<!-- Green 2023 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Green Lanyard ('23)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Active Core Developers</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-emerald-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Webserv / L14</span>
+</div>
+<!-- Orange 2024 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,0.5)]"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Orange Lanyard ('24)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Advanced Cadets · Circle 3 &amp; 4</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-amber-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Cub3D / MiniRT</span>
+</div>
+<!-- Yellow 2025 -->
+<div class="bg-surface-container p-2.5 rounded-lg flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3.5 h-3.5 rounded-sm bg-yellow-400 shadow-[0_0_6px_rgba(250,204,21,0.6)]"></span>
+<div class="flex flex-col">
+<span class="font-code-md text-label-sm text-on-surface font-bold">Yellow Lanyard ('25)</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">Fresh Intakes · Rookie Cadets</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-yellow-300 font-bold bg-surface-container-high px-1.5 py-0.5 rounded">Libft / Minishell</span>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-sm rounded-lg flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-secondary text-title-md">info</span>
+<span class="font-body-sm text-label-sm text-on-surface-variant">
+            Lanyards are handed out during physical badge provisioning and maintained throughout lifelong campus alumni rights.
+          </span>
+</div>
+</div>
+<!-- ALUMNI CAREER RADAR BY COHORT -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-md shadow-lg">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-title-md">work</span>
+<span class="font-title-sm text-title-sm text-on-surface font-bold uppercase tracking-wide">Portugal Alumni Placement</span>
+</div>
+<span class="font-code-md text-label-sm text-primary font-bold">98.4% EMPLOYED</span>
+</div>
+<!-- SVG Mini Radar / Cohort Distribution Visualizer -->
+<div class="bg-surface-container rounded-lg p-space-md flex flex-col items-center">
+<svg class="w-full h-32" fill="none" viewbox="0 0 300 120">
+<!-- Grid lines -->
+<line stroke="rgba(255,255,255,0.06)" stroke-dasharray="2 2" x1="20" x2="280" y1="20" y2="20"></line>
+<line stroke="rgba(255,255,255,0.06)" stroke-dasharray="2 2" x1="20" x2="280" y1="60" y2="60"></line>
+<line stroke="rgba(255,255,255,0.06)" x1="20" x2="280" y1="100" y2="100"></line>
+<!-- Cohort Distribution Bars -->
+<!-- 2020 Black -->
+<rect fill="#2d3137" height="76" rx="2" width="18" x="35" y="24"></rect>
+<!-- 2021 Red -->
+<rect fill="#ef4444" height="68" rx="2" width="18" x="75" y="32"></rect>
+<!-- 2022 Blue -->
+<rect fill="#3b82f6" height="84" rx="2" width="18" x="115" y="16"></rect>
+<!-- 2023 Green -->
+<rect fill="#10b981" height="62" rx="2" width="18" x="155" y="38"></rect>
+<!-- 2024 Orange -->
+<rect fill="#f97316" height="48" rx="2" width="18" x="195" y="52"></rect>
+<!-- 2025 Yellow -->
+<rect fill="#eab308" height="26" rx="2" width="18" x="235" y="74"></rect>
+<!-- Baseline labels -->
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="44" y="114">'20</text>
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="84" y="114">'21</text>
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="124" y="114">'22</text>
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="164" y="114">'23</text>
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="204" y="114">'24</text>
+<text fill="#859393" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="244" y="114">'25</text>
+</svg>
+<div class="w-full flex items-center justify-between pt-space-xs font-code-md text-label-sm text-on-surface-variant">
+<span>UNIS / TECH HUBS</span>
+<span class="text-primary">STARTUPS &amp; WEAPONS LABS</span>
+</div>
+</div>
+<!-- Top Companies Employing PT Lanyard Alumni -->
+<div class="flex flex-col gap-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Top Destinations</span>
+<div class="flex flex-wrap gap-1.5 font-code-md text-label-sm">
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">OutSystems</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">Feedzai</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">Talkdesk</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">Farfetch</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">Critical Techworks</span>
+<span class="px-2 py-1 bg-surface-container rounded text-on-surface">Mercedes.io PT</span>
+</div>
+</div>
+</div>
+<!-- CAMPUS NORMS & LANYARD RULES -->
+<div class="bg-surface-container-low rounded-xl p-space-md flex flex-col gap-space-sm shadow-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-title-md">gavel</span>
+<span class="font-title-sm text-title-sm text-on-surface font-bold uppercase">Bocal Rules &amp; Norms</span>
+</div>
+<div class="space-y-2 text-on-surface-variant font-body-sm text-body-sm">
+<p class="leading-tight">
+            • <strong class="text-on-surface">Lanyard Display:</strong> Badges must remain visibly worn inside Saldanha and Porto bocal spaces at all times.
+          </p>
+<p class="leading-tight">
+            • <strong class="text-on-surface">Black Lanyard Respect:</strong> 2020 Founders retain permanent rights to reserve cluster conference modules.
+          </p>
+<p class="leading-tight">
+            • <strong class="text-on-surface">Peer Pairing:</strong> Cadets can exchange debug duck tokens upon completing code evaluations across differing lanyard tiers.
+          </p>
+</div>
+</div>
+</div>
+</div>
+</div></main></div></body></html>

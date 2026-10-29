@@ -1,0 +1,35 @@
+# Camada 3/4 — hooks de pre-commit.
+# Instalação: `npm install` corre `lefthook install` automaticamente (script prepare).
+#
+# Regra mais importante: nenhum caminho de .agent/protected-paths entra num commit
+# sem decisão humana (ACCEPT_CONTRACT_CHANGE=1 + ADR). Isto cobre o contrato
+# (testes de aceitação, datasets, thresholds) E os mecanismos que o verificam
+# (scripts, configs, workflows, regras do agente).
+# Este hook é a primeira linha; a garantia está no CI (guard.yml) e no CODEOWNERS.
+
+pre-commit:
+  parallel: false
+  commands:
+    protected-paths:
+      priority: 1
+      run: node scripts/protected-paths.mjs check --staged
+    format:
+      priority: 2
+      run: npx prettier --check . || (echo "→ corre 'make format' para corrigir" && exit 1)
+    validate-specs:
+      priority: 3
+      run: node scripts/validate-specs.mjs
+    typecheck:
+      priority: 4
+      run: npx tsc --noEmit
+    lint:
+      priority: 5
+      run: npx eslint src tests scripts .claude/hooks
+    test:
+      priority: 6
+      run: npx vitest run
+
+pre-push:
+  commands:
+    diff-budget:
+      run: node scripts/check-diff-budget.mjs || true # informativo local; bloqueante no CI

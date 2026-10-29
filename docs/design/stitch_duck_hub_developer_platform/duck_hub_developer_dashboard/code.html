@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline": "#859393", "on-tertiary-container": "#5a009c", "surface-variant": "#31353c", "error": "#ffb4ab", "tertiary-fixed-dim": "#ddb7ff", "on-primary": "#003737", "on-surface-variant": "#bbc9c9", "on-secondary": "#3e2e00", "on-secondary-container": "#6e5400", "on-error-container": "#ffdad6", "on-primary-container": "#004445", "on-background": "#dfe2eb", "primary-fixed": "#6bf7f8", "outline-variant": "#3c4949", "primary-fixed-dim": "#48dadc", "surface-bright": "#353940", "tertiary-container": "#c78eff", "surface-container-highest": "#31353c", "surface-container-lowest": "#0a0e14", "secondary": "#ffe9b9", "background": "#10141a", "inverse-on-surface": "#2d3137", "tertiary": "#ddb7ff", "error-container": "#93000a", "primary": "#48dadc", "surface-container-low": "#181c22", "on-secondary-fixed-variant": "#594400", "on-tertiary-fixed": "#2c0051", "surface-dim": "#10141a", "surface-tint": "#48dadc", "on-primary-fixed": "#002020", "tertiary-fixed": "#f0dbff", "on-secondary-fixed": "#251a00", "inverse-surface": "#dfe2eb", "primary-container": "#00babc", "surface-container-high": "#262a31", "on-tertiary": "#490080", "on-surface": "#dfe2eb", "on-tertiary-fixed-variant": "#6900b3", "surface": "#10141a", "on-error": "#690005", "inverse-primary": "#00696b", "secondary-fixed": "#ffdf94", "on-primary-fixed-variant": "#004f50", "secondary-container": "#ffc703", "surface-container": "#1c2026", "secondary-fixed-dim": "#f5bf00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xl": "2rem", "space-lg": "1.5rem", "margin": "1rem", "margin-lg": "2.5rem", "gutter-lg": "1.5rem", "space-2xl": "3rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "margin-md": "1.5rem" }, "fontFamily": { "title-sm": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Inter"], "headline-xl-mobile": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-sm": ["Inter"], "headline-lg": ["Inter"], "label-md": ["JetBrains Mono"], "code-lg": ["JetBrains Mono"], "headline-xl": ["Inter"] }, "fontSize": { "title-sm": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "code-md": ["13px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "code-lg": ["15px", { "lineHeight": "22px", "fontWeight": "500" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-lowest/60"><img alt="Duck Hub Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANw-v6T53wMIIQOfHOvyQO2142TzydSiI_ZkKahk48iIAUbNWpzvdcETCq2jFkC462oXPMVv8x4Aim-_0zvEqrTdSZmj7APXlzmLpF8yAdmaCq1i2LsG51lVcM9FzBIIiz4eil_s4eHf05784Xs4vWCb8HOOC5sgoPs3DA3P7LS-p2lgNKgd6TNFN1ZP93sfiNUpB5kV6cTKnVeqsGzEw8EqUwxTR32TsfKqxlcUmk"/><div class="flex flex-col"><span class="font-headline-sm text-title-sm tracking-tight text-on-surface font-bold">DUCK HUB</span><span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">CAMPUS TERMINAL</span></div></div><div class="px-space-md py-space-sm"><div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-xs px-space-xs">Core Navigation</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-bold shadow-[0_0_16px_rgba(0,186,188,0.25)]"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="home-feed" href="#"><span class="material-symbols-outlined text-title-md">terminal</span><span class="font-body-md text-body-md">Home / Feed</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-profile" href="#"><span class="material-symbols-outlined text-title-md">badge</span><span class="font-body-md text-body-md">My Profile</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="team-matchmaking" href="#"><span class="material-symbols-outlined text-title-md">hub</span><span class="font-body-md text-body-md">Team Matchmaking</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="42calculator" href="#"><span class="material-symbols-outlined text-title-md">calculate</span><span class="font-body-md text-body-md">42Calculator</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="mentorship" href="#"><span class="material-symbols-outlined text-title-md">psychology</span><span class="font-body-md text-body-md">Mentorship</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-title-md">tune</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest/80 flex flex-col gap-space-sm"><div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-code-md text-label-sm text-on-surface-variant">SYS_PING</span></div><span class="font-code-md text-label-sm text-primary font-bold">12ms</span></div><div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container rounded-lg"><span class="font-code-md text-label-sm text-on-surface-variant">TERMINAL HUD</span><kbd class="font-code-md text-label-sm bg-surface-container-highest px-space-xs py-0.5 rounded text-primary-fixed">Ctrl+K</kbd></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 px-space-lg flex items-center justify-between shadow-[0_1px_10px_rgba(0,0,0,0.5)]"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-title-md">search</span><input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-code-md text-body-sm pl-9 pr-space-md py-space-xs rounded-xl focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search alumni, repos, skills, or projects... [ / ]" type="text"/></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-sm py-1 bg-surface-container-low rounded-xl"><div class="flex flex-col items-end"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-secondary-container text-body-sm">token</span><span class="font-label-sm text-label-sm text-secondary font-bold tracking-wider">LVL 18 - KERNEL ARCHITECT</span></div><span class="font-code-md text-label-sm text-on-surface-variant">14,850 / 18,000 XP (82.5%)</span></div><div class="w-28 h-2 bg-surface-container-highest rounded-full overflow-hidden p-0.5"><div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary-container shadow-[0_0_8px_rgba(0,186,188,0.5)]" style="width: 82.5%"></div></div></div><div class="flex items-center gap-space-xs px-space-xs py-1 rounded-xl bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(72,218,220,0.8)]"></span><span class="font-code-md text-label-sm text-on-surface">ONLINE IN CLUSTER</span></div><button class="relative p-space-xs text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-title-md">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span></button><div class="flex items-center gap-space-xs pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaZyYGLyMKkIbcqPi7bHYmzMy9K9wj_2TholsolW1q31p4lrI3Kne9aiahIHtrLC4g4NXH51xlaRbDT5etf2StLTt7_2s6H7_ymrhjfFXjxN_2Iwncl9aVITm8Wl2lYpwevHAJKjF1UuUqfFGtHcu55PJHijLNQOPmDu1qVdm0dnWxDi6SAG4KgxYCwm92IC2yE_RPMlJifJhoyFzca1olu3ztD8Ol9qPL-xN2hZ6J"/></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full px-space-md py-space-md lg:px-space-xl lg:py-space-lg gap-space-lg max-w-[1600px] mx-auto">
+<!-- TOP HERO // TELEMETRY & TALENT RADAR -->
+<section class="relative overflow-hidden rounded-xl bg-surface-container-low shadow-xl p-space-md lg:p-space-lg">
+<!-- Ambient Cyber Glows -->
+<div class="pointer-events-none absolute -top-24 -right-16 w-96 h-96 rounded-full bg-primary/10 blur-3xl"></div>
+<div class="pointer-events-none absolute -bottom-24 -left-16 w-80 h-80 rounded-full bg-secondary-container/10 blur-3xl"></div>
+<div class="relative z-10 flex flex-col xl:flex-row gap-space-lg justify-between items-start xl:items-center">
+<!-- User ID & Spec Info -->
+<div class="flex flex-col gap-space-sm max-w-2xl">
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="inline-flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container-highest">
+<span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
+<span class="font-code-md text-label-sm text-primary tracking-widest uppercase">ONLINE // CLUSTER PARIS-42 · e2r08p04</span>
+</div>
+<span class="font-code-md text-label-sm text-on-surface-variant">NODE_LATENCY: 9.4ms</span>
+<span class="font-code-md text-label-sm text-secondary font-bold px-space-xs py-0.2 rounded bg-surface-container">COALITION: THE FEDERATION</span>
+</div>
+<div class="flex items-baseline gap-space-xs flex-wrap">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-extrabold">
+            Welcome back, <span class="text-primary underline decoration-primary/40 underline-offset-4">alex_vortex</span>
+</h1>
+<span class="inline-block w-2.5 h-6 bg-primary animate-pulse ml-1 align-middle"></span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Specialization: <strong class="text-on-surface font-semibold">System Architecture &amp; Full-Stack Cybernetics</strong>. You are currently tracking Level 18 with 82.5% progression toward Level 19 (Kernel Veteran status).
+        </p>
+<!-- XP & Metric Pills Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs pt-space-xs">
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high/80">
+<span class="font-label-sm text-label-sm text-on-surface-variant">CURRENT XP</span>
+<span class="font-code-lg text-title-md text-primary font-bold">14,850 <span class="text-xs font-normal text-on-surface-variant">XP</span></span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high/80">
+<span class="font-label-sm text-label-sm text-on-surface-variant">NEXT RANK GOAL</span>
+<span class="font-code-lg text-title-md text-on-surface font-bold">18,000 <span class="text-xs text-primary font-normal">(+3,150 left)</span></span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high/80">
+<span class="font-label-sm text-label-sm text-on-surface-variant">TODAY'S COALITION</span>
+<span class="font-code-lg text-title-md text-secondary-container font-bold">+450 <span class="text-xs font-normal text-secondary">pts</span></span>
+</div>
+<div class="flex flex-col p-space-sm rounded-lg bg-surface-container-high/80">
+<span class="font-label-sm text-label-sm text-on-surface-variant">ACTIVE STREAK</span>
+<span class="font-code-lg text-title-md text-secondary font-bold flex items-center gap-1">42 Days <span class="text-base">🔥</span></span>
+</div>
+</div>
+<!-- Action Row -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<button class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-secondary-container text-on-secondary font-code-md text-label-md font-bold shadow-[0_0_20px_rgba(255,199,3,0.3)] hover:brightness-110 active:scale-95 transition-all" id="btn-eval">
+<span class="material-symbols-outlined text-title-sm">rate_review</span>
+            [ + Log Project Evaluation ]
+          </button>
+<button class="inline-flex items-center gap-space-xs px-space-md py-space-xs rounded-lg bg-surface-container-highest text-on-surface font-code-md text-label-md font-medium hover:bg-surface-bright active:scale-95 transition-all" id="btn-share">
+<span class="material-symbols-outlined text-title-sm">podcasts</span>
+            [ Share Status // Broadcast ]
+          </button>
+</div>
+</div>
+<!-- Skill Hexagon / Radar Chart (Inline SVG) -->
+<div class="w-full xl:w-auto flex flex-col sm:flex-row items-center gap-space-md p-space-md rounded-xl bg-surface-container-lowest/80 backdrop-blur-md shadow-inner self-stretch xl:self-auto justify-center">
+<div class="relative flex items-center justify-center">
+<svg class="w-56 h-56 overflow-visible" viewbox="0 0 200 200">
+<defs>
+<lineargradient id="cyberPolyGrad" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#48dadc" stop-opacity="0.55"></stop>
+<stop offset="100%" stop-color="#ffc703" stop-opacity="0.25"></stop>
+</lineargradient>
+<filter height="140%" id="glowFilter" width="140%" x="-20%" y="-20%">
+<fegaussianblur result="blur" stddeviation="3"></fegaussianblur>
+<fecomposite in="SourceGraphic" in2="blur" operator="over"></fecomposite>
+</filter>
+</defs>
+<!-- Background Web Rings -->
+<polygon fill="none" points="100,20 176,55 176,145 100,180 24,145 24,55" stroke="#31353c" stroke-dasharray="2 3" stroke-width="1"></polygon>
+<polygon fill="none" points="100,45 152,68 152,132 100,155 48,132 48,68" stroke="#31353c" stroke-width="1"></polygon>
+<polygon fill="none" points="100,70 128,82 128,118 100,130 72,118 72,82" stroke="#31353c" stroke-dasharray="1 3" stroke-width="1"></polygon>
+<!-- Axis Rays -->
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="100" y1="100" y2="20"></line>
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="176" y1="100" y2="55"></line>
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="176" y1="100" y2="145"></line>
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="100" y1="100" y2="180"></line>
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="24" y1="100" y2="145"></line>
+<line stroke="#3c4949" stroke-width="1" x1="100" x2="24" y1="100" y2="55"></line>
+<!-- Data Radar Polygon (Sys: 98%, Algo: 94%, Fullstack: 88%, DevOps: 82%, Sec: 78%) -->
+<!-- Vertices scaled relative to center (100,100) -->
+<!-- 1. Systems (Top): 100, 22 -->
+<!-- 2. Algorithms (Top Right): 171, 58 -->
+<!-- 3. Fullstack (Bottom Right): 167, 140 -->
+<!-- 4. DevOps (Bottom): 100, 166 -->
+<!-- 5. Security (Bottom Left): 40, 135 -->
+<!-- 6. AI/Math (Top Left): 38, 62 -->
+<polygon fill="url(#cyberPolyGrad)" filter="url(#glowFilter)" points="100,24 170,58 165,139 100,165 41,135 39,63" stroke="#48dadc" stroke-width="2"></polygon>
+<!-- Vertex Knots -->
+<circle cx="100" cy="24" fill="#ffc703" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<circle cx="170" cy="58" fill="#48dadc" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<circle cx="165" cy="139" fill="#48dadc" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<circle cx="100" cy="165" fill="#ffc703" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<circle cx="41" cy="135" fill="#48dadc" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<circle cx="39" cy="63" fill="#ffc703" r="3.5" stroke="#10141a" stroke-width="1"></circle>
+<text class="font-code-md" fill="#48dadc" font-size="8.5" font-weight="700" text-anchor="middle" x="100" y="14">C/C++ SYS [98%]</text>
+<text class="font-code-md" fill="#dfe2eb" font-size="8" text-anchor="start" x="180" y="55">ALGO [94%]</text>
+<text class="font-code-md" fill="#dfe2eb" font-size="8" text-anchor="start" x="180" y="146">STACK [88%]</text>
+<text class="font-code-md" fill="#dfe2eb" font-size="8" text-anchor="middle" x="100" y="194">DEVOPS [82%]</text>
+<text class="font-code-md" fill="#dfe2eb" font-size="8" text-anchor="end" x="18" y="146">SEC [78%]</text>
+<text class="font-code-md" fill="#dfe2eb" font-size="8" text-anchor="end" x="22" y="55">MATH [86%]</text>
+</svg>
+</div>
+<div class="flex flex-col gap-space-xs text-left min-w-[140px]">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-bold tracking-wider">// PEER RADAR</span>
+<div class="flex items-center justify-between text-on-surface-variant font-code-md text-label-sm">
+<span>Core Score:</span>
+<span class="text-primary font-bold">A+ (92.4)</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-code-md text-label-sm">
+<span>Audits Passed:</span>
+<span class="text-on-surface font-bold">64 / 66</span>
+</div>
+<div class="flex items-center justify-between text-on-surface-variant font-code-md text-label-sm">
+<span>Eval Wallet:</span>
+<span class="text-secondary-container font-bold">5 Ducks 🦆</span>
+</div>
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden mt-1">
+<div class="bg-gradient-to-r from-primary to-secondary-container h-full" style="width: 89%;"></div>
+</div>
+<span class="font-code-md text-[10px] text-outline text-right">Top 4% on Campus</span>
+</div>
+</div>
+</div>
+</section>
+<!-- MAIN 2-COLUMN WORKSTATION GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg">
+<!-- LEFT COLUMN // ACTIVITY FEED & REPO SHOWCASE (7 Cols on LG, 8 on XL) -->
+<div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-md">
+<!-- Feed Filter Navigation Bar -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm p-space-xs rounded-xl bg-surface-container-low shadow-sm">
+<div class="flex items-center gap-space-xs overflow-x-auto py-1">
+<button class="px-space-md py-1.5 rounded-lg bg-primary-container text-on-primary font-code-md text-label-md font-bold shadow-[0_0_12px_rgba(0,186,188,0.3)] transition-all">
+            [ All Updates ]
+          </button>
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest font-code-md text-label-md transition-all">
+            [ Code &amp; Repos ]
+          </button>
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest font-code-md text-label-md transition-all">
+            [ Team Requests ]
+          </button>
+<button class="px-space-md py-1.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest font-code-md text-label-md transition-all">
+            [ Job Seekers ]
+          </button>
+</div>
+<div class="flex items-center gap-space-xs px-space-xs">
+<span class="material-symbols-outlined text-outline text-title-sm">filter_alt</span>
+<span class="font-code-md text-label-sm text-outline uppercase">LIVE_FEED: PARIS · LAUSANNE · BERLIN</span>
+</div>
+</div>
+<!-- Post Composer Box -->
+<div class="p-space-md rounded-xl bg-surface-container-low shadow-md flex flex-col gap-space-sm focus-within:ring-1 focus-within:ring-primary/40 transition-all">
+<div class="flex items-start gap-space-sm">
+<div class="relative shrink-0">
+<img class="w-10 h-10 rounded-full object-cover shadow-md" data-alt="Cyberpunk programmer female student wearing oversized headphones sitting at an illuminated dark coding terminal with matrix reflection" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOU3CrAI_OetUS2x7l7CYrB9H3dPNFC40zV_wQVEHzYuvoLIJ3SRVWa3APcxtkQjyUl75MR8yr8OusBKBZsbioeZcLLi4DwrW-I5gKApanWmst7Hf74GGyJsWQ962m1RvnWd22JUXORHP_dlhxza4eD6PqnA7Adn8QuzzUsQELgLHUEWRLvw7oIMoDjaOeogQj_bBg2OSX8t8Y-uUaZneG9P_beB3lK89yMG4X-XT3"/>
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-primary ring-2 ring-surface-container-low"></span>
+</div>
+<div class="flex-1 min-w-0">
+<textarea class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-code-md text-body-sm p-space-sm rounded-lg focus:outline-none shadow-inner resize-none" id="composer-input" placeholder="Broadcast to Duck Hub network, publish a peer review request, or paste repo link..." rows="2"></textarea>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm pt-space-xs">
+<div class="flex flex-wrap items-center gap-space-xs">
+<button class="px-2 py-1 rounded bg-surface-container-high text-primary font-code-md text-label-sm hover:bg-surface-bright transition-all">#ft_transcendence</button>
+<button class="px-2 py-1 rounded bg-surface-container-high text-primary font-code-md text-label-sm hover:bg-surface-bright transition-all">#internship</button>
+<button class="px-2 py-1 rounded bg-surface-container-high text-primary font-code-md text-label-sm hover:bg-surface-bright transition-all">#docker</button>
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container text-on-surface-variant font-code-md text-label-sm hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-title-sm">code</span> Snippet
+            </button>
+<button class="flex items-center gap-1 px-2 py-1 rounded bg-surface-container text-on-surface-variant font-code-md text-label-sm hover:text-on-surface transition-all">
+<span class="material-symbols-outlined text-title-sm">link</span> Git URL
+            </button>
+</div>
+<button class="px-space-md py-space-xs rounded-lg bg-primary-container text-on-primary font-code-md text-label-md font-bold shadow-[0_0_14px_rgba(0,186,188,0.35)] hover:brightness-110 active:scale-95 transition-all">
+            [ Publish // Ctrl+Enter ]
+          </button>
+</div>
+</div>
+<!-- FEED POST 1: Repo Showcase (Elena Kernel) -->
+<article class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm hover:bg-surface-container-low/95 transition-all">
+<!-- Post Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait of Elena, young female tech prodigy with neon cyan ambient lights and black hoodie smiling in server room" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4wWuOFHYo4LHYslPVJhT8puqOW1AuYn4pUGTghU3ru8E-ZuUXEHrGMGEfAqGQbojyZaDONISYxRlKAjnbda4Ly6mdisRPNjIK88m428rOaBO10SDJSEQ_2OzB8uStJaOteoibqftKEn4mHzYKF4tjH9xTleaezcmKOqagjqmPrOFt9nIeSj2UQ7y2Q3rta9c56CJCntNad3WoV8FwHQJyA_nps5tzW7p2NrJ0j1-h"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-sm text-title-sm text-on-surface font-bold">elena_kernel</span>
+<span class="material-symbols-outlined text-secondary-container text-title-sm" style="font-variation-settings: 'FILL' 1;" title="Verified Duck Master">verified</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-primary font-code-md text-label-sm">LVL 21 · ALUMNI</span>
+</div>
+<span class="font-code-md text-label-sm text-outline">42 Lausanne · Cluster L1 // 14m ago</span>
+</div>
+</div>
+<button class="text-on-surface-variant hover:text-on-surface p-1">
+<span class="material-symbols-outlined text-title-sm">more_horiz</span>
+</button>
+</div>
+<!-- Post Content -->
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+          Just shipped our multiplayer Pong microservice engine for <span class="text-primary font-code-md">ft_transcendence</span>! 🏓 Built with NestJS, WebSockets, Three.js 3D table renderer, and Dockerized with Prometheus telemetry. Looking for benchmark reviews and stress-test peers!
+        </p>
+<!-- Embedded Interactive Git Repo Preview Card -->
+<div class="rounded-xl bg-surface-container-lowest p-space-md flex flex-col gap-space-sm shadow-inner">
+<div class="flex flex-wrap items-center justify-between gap-space-xs">
+<div class="flex items-center gap-space-xs font-code-md text-body-sm text-primary font-bold">
+<span class="material-symbols-outlined text-title-sm text-outline">folder_open</span>
+<span>elena_kernel / transcendence-hyperdrive</span>
+<span class="text-outline font-normal">· [public]</span>
+</div>
+<a class="inline-flex items-center gap-1 font-code-md text-label-sm text-primary hover:text-primary-fixed underline decoration-primary/50" href="#">
+              [ View Repo on GitHub <span class="material-symbols-outlined text-label-sm">open_in_new</span> ]
+            </a>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+            Full-stack distributed real-time pong tournament platform with JWT 2FA, avatar vault, live spectator lobbies, and latency compensation.
+          </p>
+<!-- Repo Statistics Bar -->
+<div class="flex flex-wrap items-center gap-space-md font-code-md text-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1 text-secondary"><span class="material-symbols-outlined text-label-md">star</span> 38 stars</span>
+<span class="flex items-center gap-1 text-on-surface"><span class="material-symbols-outlined text-label-md">fork_right</span> 12 forks</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span> TypeScript 84%</span>
+<span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-full bg-secondary-container inline-block"></span> C++ 16%</span>
+<span class="text-outline">CI/CD: Passed (v1.4.2)</span>
+</div>
+<!-- Interactive CLI Snippet Preview -->
+<div class="p-space-sm rounded-lg bg-surface-dim font-code-md text-body-sm text-on-surface-variant select-all">
+<div class="flex items-center justify-between pb-1 text-outline text-[11px]">
+<span>TERMINAL RUNTIME BENCHMARK</span>
+<span>latency: 4.2ms avg</span>
+</div>
+<div class="text-primary-fixed">$&gt; git clone https://github.com/elena_kernel/transcendence-hyperdrive</div>
+<div class="text-outline">$&gt; docker compose up -d --build &amp;&amp; ./benchmark_ws.sh</div>
+<div class="text-secondary font-semibold">[SUCCESS] 1,200 concurrent socket matches routed · 0 drops</div>
+</div>
+</div>
+<!-- Social Action Buttons -->
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-code-md text-label-md">
+<div class="flex items-center gap-space-sm">
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-secondary font-bold transition-all">
+<span>🦆</span> 48 Ducks
+            </button>
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-title-sm">chat_bubble_outline</span> 14
+            </button>
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-title-sm">repeat</span> 6
+            </button>
+</div>
+<button class="hover:text-on-surface p-1">
+<span class="material-symbols-outlined text-title-sm">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- FEED POST 2: Job Seeking Opportunity (Marcus C) -->
+<article class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm hover:bg-surface-container-low/95 transition-all">
+<!-- Post Header -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="Portrait of male software engineer with glasses in high tech hacker room with ambient dual monitors behind" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsFwL5F5UkogEQeWHsT1_BxaVuUp1uFuqBtkELLvOlV_IJp7EYhBKC9_yV2snoQN7qO1-gFeYcYGfYrVA8TNBG09vC3FbwpaKuMmnPqq73KpIMn5YJn1I4R1jI8Qau_tvJyHZ8SPGj4B3F0ttUKu_4yx5Qm8Y2nuZw2-6Sx2R6RgacKkEo-YY8mISTwjWkrkovs6mNF4E-x1jxHyETbDUzccvYsDdggc3B0DjA1bym"/>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-sm text-title-sm text-on-surface font-bold">marcus_c</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container-highest text-secondary-container font-code-md text-label-sm font-bold">LVL 19 · FINAL YEAR</span>
+<span class="px-1.5 py-0.2 rounded bg-primary/10 text-primary font-code-md text-label-sm">💼 OPEN TO OFFERS</span>
+</div>
+<span class="font-code-md text-label-sm text-outline">Paris, France // Remote EU · 1h ago</span>
+</div>
+</div>
+<span class="font-code-md text-label-sm text-secondary bg-surface-container px-2 py-0.5 rounded">HIRING ACTIVE</span>
+</div>
+<!-- Post Content -->
+<p class="font-body-md text-body-md text-on-surface leading-relaxed">
+          Wrapping up my 42 Common Core and internship phase. Open for <strong>Junior / Mid Backend or Platform Systems Engineer</strong> roles in EU/Remote starting next month. Proficient in Go, Rust, Kubernetes orchestration, and Linux Kernel network stacks. Peer references available!
+        </p>
+<!-- Tech tags -->
+<div class="flex flex-wrap gap-space-xs font-code-md text-label-sm">
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary">#LookingForJob</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary">#Backend</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary">#GoLang</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary">#Rust</span>
+<span class="px-2 py-0.5 rounded bg-surface-container-highest text-primary">#Kubernetes</span>
+</div>
+<!-- Career Card Inset -->
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md">description</span>
+</div>
+<div class="flex flex-col">
+<span class="font-title-sm text-title-sm text-on-surface">marcus_correa_resume_2024.pdf</span>
+<span class="font-code-md text-label-sm text-outline">Size: 420 KB · Verified 42 Transcript Attached</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-space-sm py-1.5 rounded bg-surface-container-high hover:bg-surface-bright text-on-surface font-code-md text-label-sm font-semibold transition-all">
+              [ View CV / Portfolio ]
+            </button>
+<button class="flex-1 sm:flex-none px-space-sm py-1.5 rounded bg-primary-container text-on-primary font-code-md text-label-sm font-bold transition-all shadow-[0_0_8px_rgba(0,186,188,0.3)]">
+              [ DM Marcus ]
+            </button>
+</div>
+</div>
+<!-- Social Action Buttons -->
+<div class="flex items-center justify-between pt-space-xs text-on-surface-variant font-code-md text-label-md">
+<div class="flex items-center gap-space-sm">
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-secondary font-bold transition-all">
+<span>🦆</span> 62 Ducks
+            </button>
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-title-sm">chat_bubble_outline</span> 21
+            </button>
+<button class="flex items-center gap-1.5 px-space-sm py-1 rounded-lg hover:bg-surface-container transition-all">
+<span class="material-symbols-outlined text-title-sm">share</span> Share
+            </button>
+</div>
+</div>
+</article>
+<!-- FEED POST 3: Peer Evaluation Request (Sora Dev) -->
+<article class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm hover:bg-surface-container-low/95 transition-all">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold text-lg">
+              S
+            </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-space-xs">
+<span class="font-title-sm text-title-sm text-on-surface font-bold">sora_dev</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-on-surface-variant font-code-md text-label-sm">LVL 12 · CADETE</span>
+</div>
+<span class="font-code-md text-label-sm text-outline">Paris Cluster 1 · Row 4 · Seat 12 (e1r4p12) // 32m ago</span>
+</div>
+</div>
+<span class="px-2 py-0.5 rounded bg-error-container text-error font-code-md text-label-sm font-bold flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span> 2 SLOTS LEFT
+          </span>
+</div>
+<p class="font-body-md text-body-md text-on-surface">
+          Need 2 peer evaluations for <strong class="text-primary font-code-md">Minishell v4.2</strong> tonight before 23:00! Built comprehensive parsing, pipes, heredoc, signals &amp; built-ins. Happy to exchange eval points or buy campus espresso ☕!
+        </p>
+<div class="flex flex-wrap items-center justify-between gap-space-sm p-space-sm rounded-lg bg-surface-container-lowest">
+<div class="flex items-center gap-space-sm font-code-md text-label-sm">
+<span class="text-primary">[ Project: Minishell ]</span>
+<span class="text-secondary-container">[ Reward: +1 Eval Point ]</span>
+<span class="text-outline">[ ETA: ~45 mins ]</span>
+</div>
+<button class="px-space-md py-1 rounded bg-secondary-container text-on-secondary font-code-md text-label-sm font-bold shadow-[0_0_12px_rgba(255,199,3,0.3)] hover:brightness-110 active:scale-95 transition-all">
+            [ Claim Peer Slot // Grade Sora ]
+          </button>
+</div>
+</article>
+</div>
+<!-- RIGHT COLUMN // SIDEBAR WIDGETS (5 Cols on LG, 4 on XL) -->
+<div class="lg:col-span-5 xl:col-span-4 flex flex-col gap-space-md">
+<!-- WIDGET A: Team Matchmaking ("Looking for a Team?") -->
+<section class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-title-md">groups</span>
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Team Matchmaking</h2>
+</div>
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-code-md text-label-sm font-bold">48 OPEN</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+          Assemble your squad for high-tier group curriculum milestones:
+        </p>
+<!-- Matchmaking Cards Stack -->
+<div class="flex flex-col gap-space-xs pt-space-xs">
+<!-- Card 1 -->
+<div class="p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high transition-all flex flex-col gap-space-xs shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                  KP
+                </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-title-sm text-body-md text-on-surface font-bold">kai_parallel</span>
+<span class="text-outline text-xs">· Lv.20</span>
+</div>
+<span class="font-code-md text-[11px] text-primary">Proj: ft_transcendence</span>
+</div>
+</div>
+<button class="px-2 py-1 rounded bg-primary-container text-on-primary font-code-md text-label-sm font-bold hover:brightness-110 active:scale-95 transition-all">
+                [ Connect ]
+              </button>
+</div>
+<div class="flex flex-wrap gap-1 pt-1 font-code-md text-[10px]">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">React 18</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">NestJS</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">PostgreSQL</span>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-bold">Needs Frontend Lead</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high transition-all flex flex-col gap-space-xs shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-secondary-container/20 flex items-center justify-center text-secondary-container font-bold text-sm">
+                  VC
+                </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-title-sm text-body-md text-on-surface font-bold">val_cyber</span>
+<span class="text-outline text-xs">· Lv.22</span>
+</div>
+<span class="font-code-md text-[11px] text-secondary">Proj: Inception / Cloud-1</span>
+</div>
+</div>
+<button class="px-2 py-1 rounded bg-primary-container text-on-primary font-code-md text-label-sm font-bold hover:brightness-110 active:scale-95 transition-all">
+                [ Connect ]
+              </button>
+</div>
+<div class="flex flex-wrap gap-1 pt-1 font-code-md text-[10px]">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">Docker</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">Terraform</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">Kubernetes</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">Go</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="p-space-sm rounded-lg bg-surface-container hover:bg-surface-container-high transition-all flex flex-col gap-space-xs shadow-sm">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-surface-bright flex items-center justify-center text-on-surface font-bold text-sm">
+                  TB
+                </div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-title-sm text-body-md text-on-surface font-bold">tomas_byte</span>
+<span class="text-outline text-xs">· Lv.17</span>
+</div>
+<span class="font-code-md text-[11px] text-primary">Proj: Cub3D Raycaster</span>
+</div>
+</div>
+<button class="px-2 py-1 rounded bg-primary-container text-on-primary font-code-md text-label-sm font-bold hover:brightness-110 active:scale-95 transition-all">
+                [ Connect ]
+              </button>
+</div>
+<div class="flex flex-wrap gap-1 pt-1 font-code-md text-[10px]">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">C (Norminette)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">OpenGL</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest text-on-surface-variant">DDA Raycast Algo</span>
+</div>
+</div>
+</div>
+<a class="mt-space-xs inline-flex items-center justify-center gap-1 p-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-code-md text-label-sm transition-all text-center" href="#">
+          [ Explore All 48 Open Squads → ]
+        </a>
+</section>
+<!-- WIDGET B: Quick Tools ("42 Rank & XP Calculator") -->
+<section class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-container text-title-md">calculate</span>
+<h2 class="font-title-md text-title-md text-on-surface font-bold">42 Rank &amp; XP Calculator</h2>
+</div>
+<span class="font-code-md text-label-sm text-outline">SIM_V3</span>
+</div>
+<div class="flex flex-col gap-space-xs pt-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant uppercase font-semibold">Select Target Project</label>
+<div class="relative">
+<select class="w-full bg-surface-container-lowest text-on-surface font-code-md text-body-sm p-space-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-primary appearance-none cursor-pointer" id="calc-project">
+<option selected="" value="15750">ft_transcendence [15,750 XP]</option>
+<option value="9450">webserv [9,450 XP]</option>
+<option value="5775">cub3d [5,775 XP]</option>
+<option value="4200">minishell [4,200 XP]</option>
+<option value="12600">ft_irc [12,600 XP]</option>
+</select>
+<span class="material-symbols-outlined absolute right-space-sm top-1/2 -translate-y-1/2 text-outline pointer-events-none text-title-sm">expand_more</span>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<div class="flex justify-between font-label-sm text-label-sm">
+<span class="text-on-surface-variant uppercase font-semibold">Project Grade Score</span>
+<span class="text-secondary font-bold font-code-md" id="grade-display">115% (Bonus Passed)</span>
+</div>
+<input class="w-full h-2 bg-surface-container-lowest rounded-lg appearance-none cursor-pointer accent-secondary" id="grade-slider" max="125" min="100" type="range" value="115"/>
+<div class="flex justify-between font-code-md text-[10px] text-outline">
+<span>100% (Standard)</span>
+<span>125% (Outstanding)</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container-lowest">
+<span class="font-code-md text-label-sm text-on-surface-variant">Coalition Multiplier:</span>
+<span class="font-code-md text-label-sm text-primary font-bold">1.15x (Active Boost)</span>
+</div>
+<!-- Simulation Result Banner -->
+<div class="p-space-sm rounded-lg bg-primary-container/15 flex flex-col gap-1 shadow-sm" id="sim-result">
+<div class="flex items-center gap-1.5 text-primary font-code-md text-label-sm font-bold">
+<span class="material-symbols-outlined text-title-sm">bolt</span>
+<span>SIMULATION OUTCOME</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface">
+            Project completion will grant <strong class="text-primary font-code-md">+2,716 XP</strong> → elevates to <strong class="text-secondary font-code-md">Level 19 (Kernel Veteran)</strong>!
+          </p>
+</div>
+<button class="w-full py-space-xs rounded-lg bg-surface-container-highest hover:bg-surface-bright text-on-surface font-code-md text-label-md font-bold transition-all text-center" id="btn-deep-sim">
+          [ Run Deep XP Simulation ]
+        </button>
+</section>
+<!-- WIDGET C: Weekly Leaderboard Snippet -->
+<section class="p-space-md rounded-xl bg-surface-container-low shadow-lg flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-title-md">military_tech</span>
+<h2 class="font-title-md text-title-md text-on-surface font-bold">Top Active Alumni (Week 38)</h2>
+</div>
+<span class="material-symbols-outlined text-outline text-title-sm cursor-pointer hover:text-on-surface">refresh</span>
+</div>
+<!-- Ranking list -->
+<div class="flex flex-col gap-space-xs pt-1">
+<!-- Rank 1 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-label-md font-bold text-secondary-container flex items-center justify-center w-6">
+                🥇
+              </span>
+<div class="flex flex-col">
+<span class="font-title-sm text-body-md text-on-surface font-bold">neo_matrix</span>
+<span class="font-code-md text-[10px] text-outline">Level 24 · Federation</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-code-md text-body-sm text-secondary font-bold">3,420 XP</span>
+<span class="font-code-md text-[10px] text-primary">+840 pts today</span>
+</div>
+</div>
+<!-- Rank 2 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-label-md font-bold text-on-surface flex items-center justify-center w-6">
+                🥈
+              </span>
+<div class="flex flex-col">
+<span class="font-title-sm text-body-md text-on-surface font-bold">elena_kernel</span>
+<span class="font-code-md text-[10px] text-outline">Level 21 · Alliance</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-code-md text-body-sm text-on-surface font-bold">2,890 XP</span>
+<span class="font-code-md text-[10px] text-primary">+410 pts today</span>
+</div>
+</div>
+<!-- Rank 3 -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-label-md font-bold text-secondary flex items-center justify-center w-6">
+                🥉
+              </span>
+<div class="flex flex-col">
+<span class="font-title-sm text-body-md text-on-surface font-bold">d_duck</span>
+<span class="font-code-md text-[10px] text-outline">Level 20 · Order</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-code-md text-body-sm text-secondary font-bold">2,410 XP</span>
+<span class="font-code-md text-[10px] text-primary">+320 pts today</span>
+</div>
+</div>
+<!-- Rank 4 (YOU) -->
+<div class="flex items-center justify-between p-space-sm rounded-lg bg-primary-container/20 shadow-[0_0_12px_rgba(0,186,188,0.15)]">
+<div class="flex items-center gap-space-sm">
+<span class="font-code-md text-label-md font-bold text-primary flex items-center justify-center w-6">
+                #4
+              </span>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="font-title-sm text-body-md text-primary font-bold">you (alex_vortex)</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+</div>
+<span class="font-code-md text-[10px] text-on-surface-variant">Level 18 · Federation</span>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-code-md text-body-sm text-primary font-bold">1,980 XP</span>
+<span class="font-code-md text-[10px] text-secondary font-bold">#4 in Paris Cluster</span>
+</div>
+</div>
+</div>
+<a class="mt-space-xs inline-flex items-center justify-center gap-1 p-space-xs rounded-lg bg-surface-container-lowest hover:bg-surface-container text-on-surface font-code-md text-label-sm transition-all text-center" href="#">
+          [ Full Hall of Fame // Season 2024 🏆 ]
+        </a>
+</section>
+<!-- Campus Terminal HUD Footnote -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/60 text-outline font-code-md text-[11px] flex items-center justify-between">
+<span>SECURITY HASH: 0x42DEADBEEF</span>
+<span class="text-primary">CLUSTER V2.4_ONLINE</span>
+</div>
+</div>
+</div>
+<!-- Interactive JavaScript Micro-interactions -->
+<script>
+    (function initDuckDashboard() {
+      // Calculator Live Slider
+      const slider = document.getElementById('grade-slider');
+      const gradeDisplay = document.getElementById('grade-display');
+      const projectSelect = document.getElementById('calc-project');
+      const simResult = document.getElementById('sim-result');
+
+      function updateCalculator() {
+        if (!slider || !gradeDisplay || !projectSelect || !simResult) return;
+        const grade = parseInt(slider.value, 10);
+        const baseXP = parseInt(projectSelect.value, 10);
+        gradeDisplay.innerText = grade + '% ' + (grade > 100 ? '(Bonus Passed)' : '(Clean Pass)');
+
+        // Simple mock algorithm
+        const computedXP = Math.round((baseXP * 0.15) * (grade / 100) * 1.15);
+        const nextTotal = 14850 + computedXP;
+        const reachedRank = nextTotal >= 17000 ? 'Level 19 (Kernel Veteran)' : 'Level 18.8 (Senior Cadete)';
+
+        simResult.innerHTML = `
+          <div class="flex items-center gap-1.5 text-primary font-code-md text-label-sm font-bold">
+            <span class="material-symbols-outlined text-title-sm">bolt</span>
+            <span>SIMULATION OUTCOME</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface">
+            Project completion will grant <strong class="text-primary font-code-md">+` + computedXP.toLocaleString() + ` XP</strong> &rarr; elevates to <strong class="text-secondary font-code-md">` + reachedRank + `</strong>!
+          </p>
+        `;
+      }
+
+      if (slider && projectSelect) {
+        slider.addEventListener('input', updateCalculator);
+        projectSelect.addEventListener('change', updateCalculator);
+      }
+
+      // Composer shortcut listener
+      const composer = document.getElementById('composer-input');
+      if (composer) {
+        composer.addEventListener('keydown', function(e) {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            if (composer.value.trim() !== '') {
+              const original = composer.value;
+              composer.value = '';
+              composer.placeholder = 'Broadcast transmitted to campus peer mesh!';
+              setTimeout(() => {
+                composer.placeholder = 'Broadcast to Duck Hub network or paste repo link...';
+              }, 3000);
+            }
+          }
+        });
+      }
+    })();
+  </script>
+</div></main></div></body></html>

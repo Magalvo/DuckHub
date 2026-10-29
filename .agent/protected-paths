@@ -1,0 +1,43 @@
+# Caminhos protegidos — FONTE ÚNICA DE VERDADE.
+#
+# Daqui derivam (via `node scripts/protected-paths.mjs sync`, corrido por um humano):
+#   - .github/CODEOWNERS e o seu template      → review obrigatória do dono no servidor
+#   - regras Edit(...) deny do Claude Code     → bloqueio da ferramenta Edit E do sandbox (Bash)
+# E são lidos diretamente por:
+#   - hook pre-commit (lefthook)               → commit local exige ACCEPT_CONTRACT_CHANGE=1
+#   - workflow guard.yml                       → PR exige label contract-change-approved
+#   - .claude/hooks/bash-guard.mjs             → bloqueia escrita por Bash antes de correr
+# `make check` falha se os ficheiros derivados divergirem desta lista.
+#
+# Níveis:
+#   contract  — o que define "correto". O agente nunca altera, nem por proposta.
+#   guardrail — o que define como se verifica. O agente só propõe, em .agent/proposals/;
+#               um humano aplica com `make apply-proposals`.
+#
+# Formato: <nível> <padrão relativo à raiz>. `*` = um segmento, `**` = qualquer profundidade.
+
+contract   tests/acceptance/**
+contract   evals/datasets/**
+contract   evals/thresholds.json
+
+guardrail  scripts/**
+guardrail  Makefile
+guardrail  package.json
+guardrail  package-lock.json
+guardrail  tsconfig.json
+guardrail  eslint.config.js
+guardrail  vitest.config.ts
+guardrail  lefthook.yml
+guardrail  .prettierrc.json
+guardrail  .prettierignore
+guardrail  .gitignore
+guardrail  .github/**
+guardrail  .agent/protected-paths
+guardrail  .agent/permissions.json
+guardrail  .agent/templates/**
+guardrail  .claude/settings.json
+guardrail  .claude/hooks/**
+guardrail  .claude/skills/**
+guardrail  AGENTS.md
+guardrail  CLAUDE.md
+guardrail  formal/**

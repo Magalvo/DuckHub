@@ -1,0 +1,56 @@
+# Camada 5 — verificação independente. Corre num ambiente que o agente não controla.
+# Mesmo que o agente contorne hooks locais (--no-verify), aqui não passa.
+#
+# Este workflow corre o código da branch do PR. Por isso as alterações a
+# caminhos protegidos (scripts, configs, este próprio ficheiro) são verificadas
+# à parte, a partir da base, em guard.yml — e precisam de review do code owner.
+#
+# Proteções obrigatórias no GitHub (Settings → Branches → main):
+#   - Require pull request + 1 review + "Require review from Code Owners"
+#   - Require status checks: check, diff-budget, protected-paths (guard.yml)
+#   - Do not allow bypassing the above settings (inclui admins)
+#   - Bloquear force-push
+
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    name: check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Proteções sincronizadas com .agent/protected-paths
+        run: node scripts/protected-paths.mjs verify
+      - run: npx prettier --check .
+      - run: node scripts/validate-specs.mjs
+      - run: npx tsc --noEmit
+      - run: npx eslint src tests scripts .claude/hooks
+      - run: npx vitest run
+      # Corrida separada do contrato: se a config do vitest deixasse de incluir
+      # tests/acceptance/, esta corrida falha com "No test files found".
+      - name: Contrato (testes de aceitação)
+        run: npx vitest run tests/acceptance
+      - name: Testes das próprias guardas
+        run: bash scripts/test-guards.sh
+
+  diff-budget:
+    name: diff-budget
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Verificar orçamento
+        env:
+          DIFF_BUDGET_OVERRIDE: ${{ contains(github.event.pull_request.labels.*.name, 'diff-budget-override') && '1' || '0' }}
+        run: node scripts/check-diff-budget.mjs origin/${{ github.base_ref }}

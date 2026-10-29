@@ -1,0 +1,30 @@
+# GERADO a partir de .agent/protected-paths — não editar à mão.
+# Regenerar: node scripts/protected-paths.mjs sync (humano).
+# Com "Require review from Code Owners" ativo na branch protection, qualquer PR
+# que toque nestes caminhos precisa da aprovação do dono — inclusive alterações
+# aos próprios scripts e workflows que fazem as verificações.
+
+/tests/acceptance/**      @OWNER
+/evals/datasets/**        @OWNER
+/evals/thresholds.json    @OWNER
+/scripts/**               @OWNER
+/Makefile                 @OWNER
+/package.json             @OWNER
+/package-lock.json        @OWNER
+/tsconfig.json            @OWNER
+/eslint.config.js         @OWNER
+/vitest.config.ts         @OWNER
+/lefthook.yml             @OWNER
+/.prettierrc.json         @OWNER
+/.prettierignore          @OWNER
+/.gitignore               @OWNER
+/.github/**               @OWNER
+/.agent/protected-paths   @OWNER
+/.agent/permissions.json  @OWNER
+/.agent/templates/**      @OWNER
+/.claude/settings.json    @OWNER
+/.claude/hooks/**         @OWNER
+/.claude/skills/**        @OWNER
+/AGENTS.md                @OWNER
+/CLAUDE.md                @OWNER
+/formal/**                @OWNER

@@ -1,0 +1,120 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(make *)",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(npx prettier *)",
+      "Bash(node scripts/*)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git checkout -b wi/*)"
+    ],
+    "ask": [
+      "Bash(npm install *)",
+      "Bash(npm ci *)",
+      "Bash(git push *)"
+    ],
+    "deny": [
+      "Edit(/tests/acceptance/**)",
+      "Edit(/evals/datasets/**)",
+      "Edit(/evals/thresholds.json)",
+      "Edit(/scripts/**)",
+      "Edit(/Makefile)",
+      "Edit(/package.json)",
+      "Edit(/package-lock.json)",
+      "Edit(/tsconfig.json)",
+      "Edit(/eslint.config.js)",
+      "Edit(/vitest.config.ts)",
+      "Edit(/lefthook.yml)",
+      "Edit(/.prettierrc.json)",
+      "Edit(/.prettierignore)",
+      "Edit(/.gitignore)",
+      "Edit(/.github/**)",
+      "Edit(/.agent/protected-paths)",
+      "Edit(/.agent/permissions.json)",
+      "Edit(/.agent/templates/**)",
+      "Edit(/.claude/settings.json)",
+      "Edit(/.claude/hooks/**)",
+      "Edit(/.claude/skills/**)",
+      "Edit(/AGENTS.md)",
+      "Edit(/CLAUDE.md)",
+      "Edit(/formal/**)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Bash(make apply-proposals *)",
+      "Bash(node scripts/protected-paths.mjs sync *)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(rm -rf *)",
+      "Bash(curl *)",
+      "Bash(wget *)"
+    ],
+    "disableBypassPermissionsMode": "disable"
+  },
+  "sandbox": {
+    "enabled": true,
+    "allowUnsandboxedCommands": false,
+    "failIfUnavailable": true,
+    "excludedCommands": [
+      "npm install *",
+      "npm ci *"
+    ],
+    "network": {
+      "allowedDomains": [
+        "registry.npmjs.org"
+      ]
+    }
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/self-heal.mjs",
+              "--mark"
+            ],
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/bash-guard.mjs"
+            ],
+            "timeout": 10,
+            "onFailure": "block"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node",
+            "args": [
+              "${CLAUDE_PROJECT_DIR}/.claude/hooks/self-heal.mjs"
+            ],
+            "timeout": 300
+          }
+        ]
+      }
+    ]
+  }
+}

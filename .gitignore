@@ -1,0 +1,15 @@
+node_modules/
+dist/
+coverage/
+*.log
+.env
+.env.*
+formal/tla2tools.jar
+formal/states/
+
+# Propostas do agente (transitórias; o README fica)
+.agent/proposals/*
+!.agent/proposals/README.md
+
+# Estado do loop de auto-correção (local, por sessão)
+.claude/hooks/.state/

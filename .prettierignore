@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+package-lock.json
+
+# Gerados por scripts/protected-paths.mjs sync
+.agent/templates/claude-settings.json
+.agent/templates/CODEOWNERS
+.claude/settings.json
+.github/CODEOWNERS
+.agent/protected-paths
+.claude/hooks/.state/
+
+# Material de referência (originais, não formatar)
+docs/conceito/
+docs/design/

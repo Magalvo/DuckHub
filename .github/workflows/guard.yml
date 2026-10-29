@@ -1,0 +1,46 @@
+# Guarda dos caminhos protegidos — corre a partir da BRANCH BASE, não do PR.
+#
+# Porquê `pull_request_target`: com `pull_request`, um PR corre os workflows e
+# scripts da sua própria branch. Um agente podia então mudar o script de
+# verificação no mesmo PR em que muda o contrato, e a verificação aprovava-se
+# a si própria. Aqui o workflow, o script e a lista vêm sempre da base.
+#
+# SEGURANÇA: `pull_request_target` corre com permissões da base. Este job NUNCA
+# executa código do PR: só lê os NOMES dos ficheiros alterados. Não acrescentes
+# passos que façam checkout ou corram código da branch do PR.
+#
+# Para ser obrigatório: Settings → Branches → main → Require status checks →
+# "Guard / protected-paths". E "Require review from Code Owners" para que
+# alterações a .github/ (incluindo este ficheiro) precisem do dono.
+
+name: Guard
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+jobs:
+  protected-paths:
+    name: protected-paths
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout da base (nunca do PR)
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Obter os commits do PR (só para listar nomes de ficheiros)
+        run: git fetch --no-tags origin "+refs/pull/${{ github.event.pull_request.number }}/head:refs/remotes/pr/head"
+
+      - name: Verificar caminhos protegidos
+        env:
+          APPROVED: ${{ contains(github.event.pull_request.labels.*.name, 'contract-change-approved') }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          git diff --name-only --no-renames "$BASE_SHA"...refs/remotes/pr/head > "$RUNNER_TEMP/changed.txt"
+          echo "Ficheiros alterados no PR:"; sed 's/^/  /' "$RUNNER_TEMP/changed.txt"
+          node scripts/protected-paths.mjs check --files "$RUNNER_TEMP/changed.txt" --approved "$APPROVED"

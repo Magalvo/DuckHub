@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { "colors": { "outline": "#859393", "on-tertiary-container": "#5a009c", "surface-variant": "#31353c", "error": "#ffb4ab", "tertiary-fixed-dim": "#ddb7ff", "on-primary": "#003737", "on-surface-variant": "#bbc9c9", "on-secondary": "#3e2e00", "on-secondary-container": "#6e5400", "on-error-container": "#ffdad6", "on-primary-container": "#004445", "on-background": "#dfe2eb", "primary-fixed": "#6bf7f8", "outline-variant": "#3c4949", "primary-fixed-dim": "#48dadc", "surface-bright": "#353940", "tertiary-container": "#c78eff", "surface-container-highest": "#31353c", "surface-container-lowest": "#0a0e14", "secondary": "#ffe9b9", "background": "#10141a", "inverse-on-surface": "#2d3137", "tertiary": "#ddb7ff", "error-container": "#93000a", "primary": "#48dadc", "surface-container-low": "#181c22", "on-secondary-fixed-variant": "#594400", "on-tertiary-fixed": "#2c0051", "surface-dim": "#10141a", "surface-tint": "#48dadc", "on-primary-fixed": "#002020", "tertiary-fixed": "#f0dbff", "on-secondary-fixed": "#251a00", "inverse-surface": "#dfe2eb", "primary-container": "#00babc", "surface-container-high": "#262a31", "on-tertiary": "#490080", "on-surface": "#dfe2eb", "on-tertiary-fixed-variant": "#6900b3", "surface": "#10141a", "on-error": "#690005", "inverse-primary": "#00696b", "secondary-fixed": "#ffdf94", "on-primary-fixed-variant": "#004f50", "secondary-container": "#ffc703", "surface-container": "#1c2026", "secondary-fixed-dim": "#f5bf00" }, "borderRadius": { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" }, "spacing": { "space-xl": "2rem", "space-lg": "1.5rem", "margin": "1rem", "margin-lg": "2.5rem", "gutter-lg": "1.5rem", "space-2xl": "3rem", "space-xs": "0.25rem", "space-md": "1rem", "gutter": "1rem", "space-sm": "0.5rem", "margin-md": "1.5rem" }, "fontFamily": { "title-sm": ["Inter"], "body-sm": ["Inter"], "headline-lg-mobile": ["Inter"], "label-sm": ["JetBrains Mono"], "body-lg": ["Inter"], "title-md": ["Inter"], "headline-md": ["Inter"], "headline-xl-mobile": ["Inter"], "code-md": ["JetBrains Mono"], "body-md": ["Inter"], "headline-sm": ["Inter"], "headline-lg": ["Inter"], "label-md": ["JetBrains Mono"], "code-lg": ["JetBrains Mono"], "headline-xl": ["Inter"] }, "fontSize": { "title-sm": ["14px", { "lineHeight": "20px", "fontWeight": "600" }], "body-sm": ["12px", { "lineHeight": "18px", "fontWeight": "400" }], "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-sm": ["10px", { "lineHeight": "14px", "letterSpacing": "0.06em", "fontWeight": "600" }], "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }], "title-md": ["16px", { "lineHeight": "24px", "fontWeight": "600" }], "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }], "headline-xl-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "800" }], "code-md": ["13px", { "lineHeight": "20px", "fontWeight": "500" }], "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }], "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }], "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }], "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "600" }], "code-lg": ["15px", { "lineHeight": "22px", "fontWeight": "500" }], "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "800" }] } } } };</script></head><body class="bg-surface text-on-surface font-body-md text-body-md antialiased selection:bg-primary-container selection:text-on-primary"><aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-low/95 backdrop-blur-xl z-50 flex flex-col justify-between shadow-[0_1px_12px_rgba(0,0,0,0.4)]"><div class="flex flex-col"><div class="h-16 px-space-md flex items-center gap-space-sm bg-surface-container-lowest/60"><img alt="Duck Hub Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuANw-v6T53wMIIQOfHOvyQO2142TzydSiI_ZkKahk48iIAUbNWpzvdcETCq2jFkC462oXPMVv8x4Aim-_0zvEqrTdSZmj7APXlzmLpF8yAdmaCq1i2LsG51lVcM9FzBIIiz4eil_s4eHf05784Xs4vWCb8HOOC5sgoPs3DA3P7LS-p2lgNKgd6TNFN1ZP93sfiNUpB5kV6cTKnVeqsGzEw8EqUwxTR32TsfKqxlcUmk"/><div class="flex flex-col"><span class="font-headline-sm text-title-sm tracking-tight text-on-surface font-bold">DUCK HUB</span><span class="font-label-sm text-label-sm text-primary tracking-wider uppercase">CAMPUS TERMINAL</span></div></div><div class="px-space-md py-space-sm"><div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-space-xs px-space-xs">Core Navigation</div><nav class="flex flex-col gap-space-xs" data-active-classes="bg-primary-container text-on-primary font-bold shadow-[0_0_16px_rgba(0,186,188,0.25)]"><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="home-feed" href="#"><span class="material-symbols-outlined text-title-md">terminal</span><span class="font-body-md text-body-md">Home / Feed</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="my-profile" href="#"><span class="material-symbols-outlined text-title-md">badge</span><span class="font-body-md text-body-md">My Profile</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="team-matchmaking" href="#"><span class="material-symbols-outlined text-title-md">hub</span><span class="font-body-md text-body-md">Team Matchmaking</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="42calculator" href="#"><span class="material-symbols-outlined text-title-md">calculate</span><span class="font-body-md text-body-md">42Calculator</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="mentorship" href="#"><span class="material-symbols-outlined text-title-md">psychology</span><span class="font-body-md text-body-md">Mentorship</span></a><a class="flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all" data-path="settings" href="#"><span class="material-symbols-outlined text-title-md">tune</span><span class="font-body-md text-body-md">Settings</span></a></nav></div></div><div class="p-space-md bg-surface-container-lowest/80 flex flex-col gap-space-sm"><div class="flex items-center justify-between px-space-xs"><div class="flex items-center gap-space-xs"><span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span><span class="font-code-md text-label-sm text-on-surface-variant">SYS_PING</span></div><span class="font-code-md text-label-sm text-primary font-bold">12ms</span></div><div class="flex items-center justify-between px-space-sm py-space-xs bg-surface-container rounded-lg"><span class="font-code-md text-label-sm text-on-surface-variant">TERMINAL HUD</span><kbd class="font-code-md text-label-sm bg-surface-container-highest px-space-xs py-0.5 rounded text-primary-fixed">Ctrl+K</kbd></div></div></aside><div class="pl-64"><header class="fixed top-0 left-64 right-0 h-16 bg-surface/85 backdrop-blur-xl z-40 px-space-lg flex items-center justify-between shadow-[0_1px_10px_rgba(0,0,0,0.5)]"><div class="flex items-center gap-space-md flex-1 max-w-xl"><div class="relative w-full"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-title-md">search</span><input class="w-full bg-surface-container-lowest text-on-surface placeholder:text-outline font-code-md text-body-sm pl-9 pr-space-md py-space-xs rounded-xl focus:outline-none focus:ring-1 focus:ring-primary shadow-inner" placeholder="Search alumni, repos, skills, or projects... [ / ]" type="text"/></div></div><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm px-space-sm py-1 bg-surface-container-low rounded-xl"><div class="flex flex-col items-end"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-secondary-container text-body-sm">token</span><span class="font-label-sm text-label-sm text-secondary font-bold tracking-wider">LVL 18 - KERNEL ARCHITECT</span></div><span class="font-code-md text-label-sm text-on-surface-variant">14,850 / 18,000 XP (82.5%)</span></div><div class="w-28 h-2 bg-surface-container-highest rounded-full overflow-hidden p-0.5"><div class="h-full rounded-full bg-gradient-to-r from-primary to-secondary-container shadow-[0_0_8px_rgba(0,186,188,0.5)]" style="width: 82.5%"></div></div></div><div class="flex items-center gap-space-xs px-space-xs py-1 rounded-xl bg-surface-container-low"><span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(72,218,220,0.8)]"></span><span class="font-code-md text-label-sm text-on-surface">ONLINE IN CLUSTER</span></div><button class="relative p-space-xs text-on-surface-variant hover:text-on-surface transition-colors"><span class="material-symbols-outlined text-title-md">notifications</span><span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full ring-2 ring-surface"></span></button><div class="flex items-center gap-space-xs pl-space-xs"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaZyYGLyMKkIbcqPi7bHYmzMy9K9wj_2TholsolW1q31p4lrI3Kne9aiahIHtrLC4g4NXH51xlaRbDT5etf2StLTt7_2s6H7_ymrhjfFXjxN_2Iwncl9aVITm8Wl2lYpwevHAJKjF1UuUqfFGtHcu55PJHijLNQOPmDu1qVdm0dnWxDi6SAG4KgxYCwm92IC2yE_RPMlJifJhoyFzca1olu3ztD8Ol9qPL-xN2hZ6J"/></div></div></header><main class="w-full pt-16 bg-surface min-h-screen"><div class="flex flex-col w-full">
+<!-- Interactive Nav Link Activation Script -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const navLinks = document.querySelectorAll('aside nav a[data-path]');
+      navLinks.forEach(link => {
+        if (link.getAttribute('data-path') === 'team-matchmaking') {
+          link.className = "flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl bg-primary-container text-on-primary font-bold shadow-[0_0_16px_rgba(0,186,188,0.35)] transition-all";
+        } else {
+          link.className = "flex items-center gap-space-sm px-space-sm py-space-xs rounded-xl text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all";
+        }
+      });
+    });
+  </script>
+<div class="p-space-lg flex flex-col gap-space-xl max-w-[1600px] mx-auto w-full">
+<!-- 1. Header / Telemetry Banner -->
+<header class="relative rounded-xl p-space-lg bg-surface-container-low shadow-xl overflow-hidden">
+<!-- Glow ambient background blobs -->
+<div class="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-primary/10 blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 right-1/4 w-96 h-96 rounded-full bg-secondary-container/10 blur-3xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-space-lg">
+<div class="flex flex-col gap-space-xs max-w-3xl">
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high text-primary font-label-sm text-label-sm uppercase tracking-wider shadow-sm">Cluster Matchmaking v3.4</span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+<span class="font-code-md text-label-sm text-on-surface-variant">PEER_SYNC_ONLINE</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight font-extrabold flex items-center gap-space-sm">
+<span>Team Matchmaking</span>
+<span class="text-primary font-code-lg text-headline-md font-semibold">// Squad Assembler</span>
+</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Find your co-founders &amp; peers for curriculum milestones, hackathons, and moonshot open-source builds across physical clusters and cloud workspaces.
+          </p>
+</div>
+<!-- Action Triggers -->
+<div class="flex flex-wrap items-center gap-space-sm shrink-0">
+<button class="flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-secondary-container text-on-secondary font-code-md text-body-md font-bold shadow-[0_0_20px_rgba(255,199,3,0.35)] hover:scale-105 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-title-md">add_circle</span>
+<span>[ + Create Squad / Pitch Project ]</span>
+</button>
+<button class="relative flex items-center gap-space-xs px-space-md py-space-sm rounded-lg bg-surface-container-high text-on-surface hover:bg-surface-container-highest hover:text-primary transition-all shadow-sm">
+<span class="material-symbols-outlined text-title-md text-primary">groups_3</span>
+<span class="font-code-md text-body-md">[ My Active Applications (3) ]</span>
+<span class="w-2.5 h-2.5 rounded-full bg-primary shadow-[0_0_8px_rgba(72,218,220,0.9)] absolute -top-1 -right-1"></span>
+</button>
+<button class="flex items-center gap-space-xs px-space-sm py-space-sm rounded-lg bg-surface-container text-on-surface-variant hover:text-on-surface transition-all shadow-sm">
+<span class="material-symbols-outlined text-title-md">bookmarks</span>
+<span class="font-code-md text-body-md">[ Saved Squads ]</span>
+</button>
+</div>
+</div>
+<!-- Telemetry Strip -->
+<div class="mt-space-lg pt-space-md grid grid-cols-2 md:grid-cols-4 gap-space-md">
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest/80 shadow-inner">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Active Squads Recruiting
+          </span>
+<div class="flex items-baseline gap-space-xs mt-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-on-surface font-code-md">48</span>
+<span class="font-code-md text-body-sm text-primary">Teams</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">+12 today in Paris &amp; Berlin</span>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest/80 shadow-inner">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Open Roles Available
+          </span>
+<div class="flex items-baseline gap-space-xs mt-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-secondary font-code-md">112</span>
+<span class="font-code-md text-body-sm text-on-surface-variant">Slots</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">34 high priority</span>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest/80 shadow-inner">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed"></span> Match Rate (Peer Radar)
+          </span>
+<div class="flex items-baseline gap-space-xs mt-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-primary-fixed font-code-md">94.2%</span>
+<span class="font-code-md text-body-sm text-primary">Optimal</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Based on C/Web stack telemetry</span>
+</div>
+<div class="flex flex-col p-space-md rounded-lg bg-surface-container-lowest/80 shadow-inner">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> Avg Formation Time
+          </span>
+<div class="flex items-baseline gap-space-xs mt-space-xs">
+<span class="font-headline-md text-headline-md font-bold text-tertiary-fixed-dim font-code-md">36</span>
+<span class="font-code-md text-body-sm text-on-surface-variant">Hours</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">-8 hrs faster this curriculum</span>
+</div>
+</div>
+</header>
+<!-- 2. Filter & Command Toolbar -->
+<section class="flex flex-col gap-space-md bg-surface-container p-space-md rounded-xl shadow-md">
+<!-- Search Line & Primary Sort -->
+<div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-space-md">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-title-md">manage_search</span>
+<input class="w-full pl-11 pr-space-md py-space-sm bg-surface-container-lowest rounded-lg text-on-surface placeholder:text-outline font-code-md text-body-sm shadow-inner focus:outline-none focus:ring-1 focus:ring-primary" placeholder="Filter by project name, tech stack, or squad leader... [ / ]" type="text"/>
+</div>
+<div class="flex items-center gap-space-sm self-end lg:self-auto shrink-0">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Sort Mode:</span>
+<button class="flex items-center gap-space-xs px-space-sm py-space-xs rounded-lg bg-surface-container-high text-primary font-code-md text-body-sm shadow-sm hover:bg-surface-container-highest">
+<span class="material-symbols-outlined text-body-md">tune</span>
+<span>Sorted by: Peer Synergy Match (Highest) ▼</span>
+</button>
+</div>
+</div>
+<!-- Curriculum Tabs -->
+<div class="flex items-center gap-space-xs overflow-x-auto pb-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider shrink-0 mr-1">Milestones:</span>
+<button class="px-space-sm py-1 rounded bg-primary-container text-on-primary font-code-md text-body-sm font-semibold shadow-sm shrink-0">All Projects (48)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-sm shrink-0">ft_transcendence (14)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-sm shrink-0">Inception (9)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-sm shrink-0">Cub3D / MiniRT (7)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-sm shrink-0">Webserv (6)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-sm shrink-0">Minishell (8)</button>
+<button class="px-space-sm py-1 rounded bg-surface-container-high text-secondary hover:text-secondary-fixed font-code-md text-body-sm shrink-0">AI / LLM Track (4)</button>
+</div>
+<!-- Extended Filter Badges & Dropdowns -->
+<div class="flex flex-wrap items-center gap-space-sm pt-space-xs">
+<!-- Role Types Filter -->
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low rounded-lg shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Role:</span>
+<select class="bg-transparent text-on-surface font-code-md text-body-sm outline-none cursor-pointer">
+<option class="bg-surface-container">All Technical Roles</option>
+<option class="bg-surface-container">Frontend Lead</option>
+<option class="bg-surface-container">Backend / Systems (C++/Go)</option>
+<option class="bg-surface-container">DevOps / Infrastructure</option>
+<option class="bg-surface-container">Full-Stack</option>
+<option class="bg-surface-container">Game Dev / Graphics (GLSL/C)</option>
+</select>
+</div>
+<!-- Commitment Filter -->
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low rounded-lg shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Pace:</span>
+<select class="bg-transparent text-on-surface font-code-md text-body-sm outline-none cursor-pointer">
+<option class="bg-surface-container">All Commitments</option>
+<option class="bg-surface-container">Full-Time Sprint (2-3 wks)</option>
+<option class="bg-surface-container">Part-Time Evening</option>
+<option class="bg-surface-container">Weekend Hackathon</option>
+</select>
+</div>
+<!-- Campus / Cluster -->
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low rounded-lg shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Cluster:</span>
+<select class="bg-transparent text-on-surface font-code-md text-body-sm outline-none cursor-pointer">
+<option class="bg-surface-container">Global Campus Network</option>
+<option class="bg-surface-container">Paris (Cluster 1-3)</option>
+<option class="bg-surface-container">Remote EU</option>
+<option class="bg-surface-container">Berlin</option>
+<option class="bg-surface-container">Lausanne</option>
+</select>
+</div>
+<!-- Rank Filter -->
+<div class="flex items-center gap-1.5 px-space-sm py-1 bg-surface-container-low rounded-lg shadow-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Rank Reqd:</span>
+<select class="bg-transparent text-on-surface font-code-md text-body-sm outline-none cursor-pointer">
+<option class="bg-surface-container">Any Level</option>
+<option class="bg-surface-container">Cadet (Lvl 0-9)</option>
+<option class="bg-surface-container">Veteran (Lvl 10-18)</option>
+<option class="bg-surface-container">Kernel Architect (Lvl 19+)</option>
+</select>
+</div>
+<button class="ml-auto text-primary font-code-md text-label-md hover:underline flex items-center gap-1">
+<span class="material-symbols-outlined text-body-sm">restart_alt</span> Reset Filters
+        </button>
+</div>
+</section>
+<!-- Main Content Workspace (Split Grid: Left Cards 8 cols, Right Rail 4 cols) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+<!-- Left Column: Squad Feed Cards (8 cols) -->
+<main class="lg:col-span-8 flex flex-col gap-space-lg">
+<!-- Card 1: Featured / High Synergy -->
+<article class="p-space-lg rounded-xl bg-surface-container-low shadow-xl relative overflow-hidden group hover:shadow-[0_0_24px_rgba(0,186,188,0.2)] transition-all">
+<div class="absolute top-0 right-0 left-0 h-1 bg-gradient-to-r from-primary via-primary-container to-secondary-container"></div>
+<!-- Micro-header breadcrumb & synergy score -->
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-code-md text-label-sm text-on-surface-variant uppercase">CURRICULUM // COMMON_CORE // CAPSTONE</span>
+<span class="px-space-xs py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm uppercase font-bold">Featured Sprint</span>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-primary-container/20 text-primary shadow-[0_0_12px_rgba(72,218,220,0.3)]">
+<span class="material-symbols-outlined text-body-md animate-spin" style="animation-duration: 6s;">radar</span>
+<span class="font-code-md text-label-md font-bold">98% Synergy Match with alex_vortex</span>
+</div>
+</div>
+<!-- Squad Header -->
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-space-xs">
+<span>ft_transcendence</span>
+<span class="text-primary font-code-md text-title-sm">// CyberPong Web3 Championship</span>
+</h2>
+<div class="flex items-center gap-space-sm mt-space-xs">
+<span class="font-code-md text-body-sm text-on-surface-variant">Squad Leader:</span>
+<span class="font-code-md text-body-sm text-secondary font-bold">kai_parallel</span>
+<span class="px-space-xs py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Lvl 20 • The Federation • Paris Cl-2</span>
+</div>
+</div>
+<!-- Capacity Counter -->
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-lg self-start">
+<span class="material-symbols-outlined text-body-md text-primary">group</span>
+<span class="font-code-md text-body-sm font-bold text-on-surface">3 / 4 Members Filled</span>
+</div>
+</div>
+<!-- Project Description -->
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+            Building an esports-grade real-time Pong tournament platform with Three.js 3D arena, microservices in NestJS, and Redis matchmaking. Target launch is within 21 days for the cluster showcase demo.
+          </p>
+<!-- Current Roster Avatars -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-md my-space-md p-space-sm rounded-lg bg-surface-container-lowest/80">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Current Roster:</span>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1.5 px-space-xs py-0.5 rounded bg-surface-container">
+<img class="w-5 h-5 rounded-full object-cover" data-alt="Avatar portrait of kai_parallel, lead architect programmer wearing cybernetic visor glowing cyan in dark terminal laboratory" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKhhX8l37r1sjj5_xyOJgS3Z05IVUNGkjtIMgHJp5UVCRZlRYlA9cwsw43HEbUZqHij7CGsE_MH1wgn7BxVhjhZ5d5Ccoiz1TYru-Ef8LHOHpCIiYitRiOzoBLPzZCdkkT5gEMWTwom1-lnCtZ6sP2XlCkg9wotkZVmCpAu1Jo_pJ7lq8E4eu9GJRh2gs24eKhzrnDh4ZwsoYUSOoazkl_2htRCHHo2ERk4y_3nnj4"/>
+<span class="font-code-md text-label-sm text-on-surface">kai_parallel <span class="text-on-surface-variant">(Architect)</span></span>
+</div>
+<div class="flex items-center gap-1.5 px-space-xs py-0.5 rounded bg-surface-container">
+<img class="w-5 h-5 rounded-full object-cover" data-alt="Avatar portrait of nova_gl, graphics specialist coder with holographic matrix reflection in dark developer space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMXsUvHvV_pNwf1NjnCdg1GhSYAiOWyliYY4ntiDgbqaVO0d4b4ZZKs1_1hb1b8eIfkGK7ci1aqgqA17hm4daqO5oniha_fpTp_mUNBu-RR_mUALwKgom0F353IFZz-lJaOTxuI9B3dyMIGb14hNQ_fRY9CqwfYv1mJTehUheascEaFNW2VWLb6erIeoiq21dKjosekspwW87vXZ8rUpznUOQLiMSVZi2nqbZzkvSy"/>
+<span class="font-code-md text-label-sm text-on-surface">nova_gl <span class="text-on-surface-variant">(Three.js)</span></span>
+</div>
+<div class="flex items-center gap-1.5 px-space-xs py-0.5 rounded bg-surface-container">
+<img class="w-5 h-5 rounded-full object-cover" data-alt="Avatar portrait of zero_k, backend engineer with soft amber neon cluster glow in industrial computer lab" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCYk2kJ4ALf_0v9i54zFkNTzSTyf8H8DRcjaXGIUgRi-e2uOV8Sa8dja0CsGifZpenALAL8KYAQQlAPkwBuKCYd0FPjs7NiLIJ4eFQBbl_tQP7Ih66f7aRI9cOnS7R-DEtMvFv9Iw1ZTtJVZhFOiLneLOQjND7hRuk7eQj_nos8E6353U_62NK4iLwlEggFglKYBlZvg7azyX8kK6wVhdFlGXsR7vYAbTyApVozPRBD"/>
+<span class="font-code-md text-label-sm text-on-surface">zero_k <span class="text-on-surface-variant">(Backend)</span></span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-primary font-code-md text-label-md">
+<span class="material-symbols-outlined text-body-md">pace</span>
+<span>25 hrs / week pace</span>
+</div>
+</div>
+<!-- Highlight Open Role -->
+<div class="p-space-md rounded-lg bg-surface-container/70 shadow-sm flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-ping"></span>
+<span class="font-title-sm text-title-sm text-primary font-bold">Role needed: Frontend Lead (UI/UX + React 18 / Tailwind / WebSocket state)</span>
+</div>
+<span class="px-space-xs py-0.5 bg-primary/10 text-primary font-label-sm text-label-sm rounded uppercase">High Priority</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              You will own the responsive WebGL HUD interface, bracket tournament state machine, and real-time paddle input synchronization over low-latency binary WebSockets.
+            </p>
+<div class="flex flex-wrap items-center gap-space-xs mt-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ React 18 ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ WebSockets ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ Tailwind ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ State Management ]</span>
+</div>
+</div>
+<!-- Card Actions -->
+<div class="flex flex-wrap items-center justify-between gap-space-sm mt-space-lg pt-space-sm">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg bg-primary text-on-primary font-code-md text-body-md font-bold shadow-[0_0_16px_rgba(0,186,188,0.4)] hover:bg-primary-fixed hover:scale-105 active:scale-95 transition-all flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-title-md">send</span>
+<span>[ Apply for Role ]</span>
+</button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container-high text-on-surface hover:text-primary font-code-md text-body-md transition-all shadow-sm flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-title-md">description</span>
+<span>[ View Repo Pitch &amp; Wireframes ]</span>
+</button>
+</div>
+<button class="p-space-xs rounded-lg text-on-surface-variant hover:text-secondary hover:bg-surface-container transition-all" title="Bookmark Squad">
+<span class="material-symbols-outlined text-title-md">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 2: Inception -->
+<article class="p-space-lg rounded-xl bg-surface-container-low shadow-xl relative overflow-hidden group hover:shadow-[0_0_18px_rgba(255,255,255,0.06)] transition-all">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<span class="font-code-md text-label-sm text-on-surface-variant uppercase">INFRASTRUCTURE // SYSADMIN // CLUSTER_SYSTEMS</span>
+<div class="flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary">
+<span class="material-symbols-outlined text-body-md">offline_bolt</span>
+<span class="font-code-md text-label-md font-bold">89% Synergy Match</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-space-xs">
+<span>Inception</span>
+<span class="text-on-surface-variant font-code-md text-title-sm">// High-Availability Multi-Cloud Cluster</span>
+</h2>
+<div class="flex items-center gap-space-sm mt-space-xs">
+<span class="font-code-md text-body-sm text-on-surface-variant">Squad Leader:</span>
+<span class="font-code-md text-body-sm text-primary font-bold">val_cyber</span>
+<span class="px-space-xs py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Lvl 22 • Alliance • Lausanne</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-lg self-start">
+<span class="material-symbols-outlined text-body-md text-secondary">group</span>
+<span class="font-code-md text-body-sm font-bold text-on-surface">2 / 3 Members Filled</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+            Setting up a hardened multi-container architecture with custom NGINX, TLS 1.3 certificates, automated backup cron daemons, and Prometheus/Grafana monitoring dashboards running on Alpine Linux VMs.
+          </p>
+<!-- Open Roles Dual Slot -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm my-space-md">
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 flex flex-col justify-between gap-space-xs shadow-inner">
+<div class="flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-on-surface font-semibold">Slot 1: Infrastructure / Security Auditor</span>
+<span class="px-space-xs py-0.5 rounded bg-primary/20 text-primary font-label-sm text-label-sm uppercase">Open</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Docker networks isolation, custom Alpine kernels, sudo hardening.</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-primary font-code-md text-label-sm">[ Docker ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-primary font-code-md text-label-sm">[ Alpine Linux ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-primary font-code-md text-label-sm">[ Bash ]</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/40 opacity-75 flex flex-col justify-between gap-space-xs shadow-inner">
+<div class="flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-on-surface font-semibold">Slot 2: Monitoring Engineer</span>
+<span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm uppercase">Pending Review</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Scraping metrics, alerting alerts, cAdvisor pipeline integration.</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-code-md text-label-sm">[ Prometheus ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container text-on-surface-variant font-code-md text-label-sm">[ Grafana ]</span>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm mt-space-md pt-space-xs">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary font-code-md text-body-md font-bold hover:bg-primary shadow-[0_0_12px_rgba(0,186,188,0.3)] transition-all">
+                [ Apply: Security Auditor ]
+              </button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface hover:text-primary font-code-md text-body-md transition-all">
+                [ Inspect Architecture Spec ]
+              </button>
+</div>
+<button class="p-space-xs rounded-lg text-on-surface-variant hover:text-secondary" title="Bookmark Squad">
+<span class="material-symbols-outlined text-title-md">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 3: Cub3D -->
+<article class="p-space-lg rounded-xl bg-surface-container-low shadow-xl relative overflow-hidden group hover:shadow-[0_0_18px_rgba(255,255,255,0.06)] transition-all">
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<span class="font-code-md text-label-sm text-on-surface-variant uppercase">GRAPHICS // RAYCASTER // LOW_LEVEL_C</span>
+<div class="flex items-center gap-space-xs px-space-sm py-0.5 rounded-full bg-surface-container-high text-primary">
+<span class="material-symbols-outlined text-body-md">offline_bolt</span>
+<span class="font-code-md text-label-md font-bold">92% Synergy Match</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-space-xs">
+<span>Cub3D</span>
+<span class="text-on-surface-variant font-code-md text-title-sm">// Raycasting Doom Engine &amp; Vulkan Extension</span>
+</h2>
+<div class="flex items-center gap-space-sm mt-space-xs">
+<span class="font-code-md text-body-sm text-on-surface-variant">Squad Leader:</span>
+<span class="font-code-md text-body-sm text-tertiary-fixed-dim font-bold">tomas_byte</span>
+<span class="px-space-xs py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Lvl 17 • Order • Berlin</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-lg self-start">
+<span class="material-symbols-outlined text-body-md text-error">group</span>
+<span class="font-code-md text-body-sm font-bold text-on-surface">1 / 2 Members Filled</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+            Pure C Raycaster with DDA algorithm, texture mapping, sprite collision detection, and audio engine. Pushing for 125% bonus grade with custom floor/ceiling skybox shaders!
+          </p>
+<div class="p-space-md rounded-lg bg-surface-container/70 shadow-sm flex flex-col gap-space-xs my-space-md">
+<div class="flex items-center justify-between">
+<span class="font-title-sm text-title-sm text-primary font-bold">Open Role: DDA Algorithm &amp; Optimization Specialist</span>
+<span class="px-space-xs py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm uppercase">Slot 2</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+              Math heavy: calculate wall slice distances, fish-eye correction vectors, and custom ray-plane intersections conforming to 42 Norminette standards.
+            </p>
+<div class="flex flex-wrap items-center gap-space-xs mt-space-xs">
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ C (Norminette) ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ Math / Linear Algebra ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container-high font-code-md text-label-sm text-primary-fixed">[ MinilibX / OpenGL ]</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm mt-space-md pt-space-xs">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg bg-primary-container text-on-primary font-code-md text-body-md font-bold hover:bg-primary shadow-[0_0_12px_rgba(0,186,188,0.3)] transition-all">
+                [ Apply for Role ]
+              </button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface hover:text-primary font-code-md text-body-md transition-all flex items-center gap-1">
+<span class="material-symbols-outlined text-body-md">chat</span>
+<span>[ Quick DM ]</span>
+</button>
+</div>
+<button class="p-space-xs rounded-lg text-on-surface-variant hover:text-secondary" title="Bookmark Squad">
+<span class="material-symbols-outlined text-title-md">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 4: Autonomous Duck Drone Hackathon Moonshot -->
+<article class="p-space-lg rounded-xl bg-surface-container-low shadow-xl relative overflow-hidden group hover:shadow-[0_0_24px_rgba(255,199,3,0.2)] transition-all">
+<div class="absolute top-0 right-0 left-0 h-1 bg-secondary-container"></div>
+<div class="flex flex-wrap items-center justify-between gap-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="font-code-md text-label-sm text-on-surface-variant uppercase">EXTERNAL HACKATHON // ROBOTICS &amp; AI</span>
+<span class="px-space-xs py-0.5 rounded bg-secondary-container text-on-secondary font-label-sm text-label-sm uppercase font-bold shadow-sm">
+                [ HACKATHON // PRIZE POOL 5,000 DUCKS ]
+              </span>
+</div>
+<span class="font-code-md text-label-sm text-secondary">48h Remaining to Lock Roster</span>
+</div>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-space-md">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-space-xs">
+<span>Autonomous Duck Drone</span>
+<span class="text-secondary font-code-md text-title-sm">// 42 Hackathon Moonshot</span>
+</h2>
+<div class="flex items-center gap-space-sm mt-space-xs">
+<span class="font-code-md text-body-sm text-on-surface-variant">Squad Leader:</span>
+<span class="font-code-md text-body-sm text-secondary font-bold">sarah_kernel</span>
+<span class="px-space-xs py-0.2 rounded bg-surface-container font-label-sm text-label-sm text-on-surface-variant">Lvl 24 • Federation • Remote EU</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs px-space-sm py-space-xs bg-surface-container rounded-lg self-start">
+<span class="material-symbols-outlined text-body-md text-secondary">group</span>
+<span class="font-code-md text-body-sm font-bold text-on-surface">2 / 4 Members Filled</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mt-space-md">
+            Autonomous vision rover using ROS2, OpenCV, and lightweight edge LLM model for cluster navigation and automated duck toy retrieval. Ready hardware rig with Jetson Orin Nano.
+          </p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm my-space-md">
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 shadow-inner flex flex-col justify-between">
+<span class="font-title-sm text-title-sm text-secondary font-semibold">Needed: Computer Vision dev</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">YOLOv8 fine-tuning on custom rubber duck dataset &amp; SLAM.</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-secondary">[ Python ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-secondary">[ OpenCV ]</span>
+</div>
+</div>
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/80 shadow-inner flex flex-col justify-between">
+<span class="font-title-sm text-title-sm text-secondary font-semibold">Needed: Embedded C++ dev</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Motor serial controller daemon, ROS2 node messaging, telemetry.</span>
+<div class="flex items-center gap-1 mt-1">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-secondary">[ C++20 ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-secondary">[ ROS2 / Linux ]</span>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap items-center justify-between gap-space-sm mt-space-md pt-space-xs">
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-space-sm rounded-lg bg-secondary-container text-on-secondary font-code-md text-body-md font-bold shadow-[0_0_16px_rgba(255,199,3,0.35)] hover:scale-105 active:scale-95 transition-all">
+                [ Apply for Role ]
+              </button>
+<button class="px-space-md py-space-sm rounded-lg bg-surface-container text-on-surface hover:text-secondary font-code-md text-body-md transition-all">
+                [ Read Whitepaper ]
+              </button>
+</div>
+<button class="p-space-xs rounded-lg text-on-surface-variant hover:text-secondary" title="Bookmark Squad">
+<span class="material-symbols-outlined text-title-md">bookmark_border</span>
+</button>
+</div>
+</article>
+</main>
+<!-- Right Column: Auxiliary Telemetry & Matchmaking Drawer (4 cols) -->
+<aside class="lg:col-span-4 flex flex-col gap-space-lg sticky top-20">
+<!-- Widget 1: Quick Application Status Drawer -->
+<section class="p-space-md rounded-xl bg-surface-container-low shadow-xl">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-body-md">hourglass_top</span>
+<h3 class="font-title-sm text-title-sm text-on-surface uppercase tracking-wider font-bold">Your Active Applications (2)</h3>
+</div>
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+<div class="flex flex-col gap-space-sm">
+<!-- App 1 -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/90 shadow-inner flex flex-col gap-1 hover:bg-surface-container-highest/60 transition-all">
+<div class="flex items-center justify-between">
+<span class="font-code-md text-title-sm text-on-surface font-semibold">Webserv Engine</span>
+<span class="px-space-xs py-0.5 rounded bg-primary/20 text-primary font-label-sm text-label-sm">Stage 2 Review</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-md text-on-surface-variant">
+<span>Role: HTTP Parser Specialist</span>
+<span>Lead: <span class="text-primary font-bold">@mrx</span></span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-primary h-full rounded-full" style="width: 65%;"></div>
+</div>
+</div>
+<!-- App 2 -->
+<div class="p-space-sm rounded-lg bg-surface-container-lowest/90 shadow-inner flex flex-col gap-1 hover:bg-surface-container-highest/60 transition-all">
+<div class="flex items-center justify-between">
+<span class="font-code-md text-title-sm text-on-surface font-semibold">KFS (Kernel From Scratch)</span>
+<span class="px-space-xs py-0.5 rounded bg-secondary-container/20 text-secondary font-label-sm text-label-sm">Pair Code Invite</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-code-md text-on-surface-variant">
+<span>Role: x86 ASM Lead</span>
+<span>Lead: <span class="text-secondary font-bold">@turing_bot</span></span>
+</div>
+<div class="w-full bg-surface-container h-1 rounded-full overflow-hidden mt-1">
+<div class="bg-secondary h-full rounded-full" style="width: 85%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Widget 2: Synergy Radar & Recommendation Profile -->
+<section class="p-space-md rounded-xl bg-surface-container-low shadow-xl">
+<div class="flex items-center justify-between pb-space-xs mb-space-sm">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-body-md">radar</span>
+<h3 class="font-title-sm text-title-sm text-on-surface uppercase tracking-wider font-bold">Synergy Radar Profile</h3>
+</div>
+<span class="font-code-md text-label-sm text-primary">alex_vortex</span>
+</div>
+<!-- Availability Tag -->
+<div class="px-space-sm py-space-xs rounded-lg bg-surface-container-lowest flex items-center justify-between shadow-inner">
+<div class="flex items-center gap-space-xs">
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(72,218,220,0.9)]"></span>
+<span class="font-code-md text-body-sm text-on-surface">Status: Available for 1 Team</span>
+</div>
+<span class="font-code-md text-label-sm text-on-surface-variant">20h / wk</span>
+</div>
+<!-- Radar Matchmaking Graphic (Inline SVG) -->
+<div class="my-space-md relative flex items-center justify-center p-space-sm bg-surface-container-lowest rounded-lg shadow-inner overflow-hidden">
+<svg class="w-48 h-48 text-primary" viewbox="0 0 100 100">
+<!-- Grid Web -->
+<circle cx="50" cy="50" fill="none" r="40" stroke="currentColor" stroke-dasharray="2 2" stroke-opacity="0.15" stroke-width="0.8"></circle>
+<circle cx="50" cy="50" fill="none" r="28" stroke="currentColor" stroke-opacity="0.25" stroke-width="0.8"></circle>
+<circle cx="50" cy="50" fill="none" r="14" stroke="currentColor" stroke-opacity="0.35" stroke-width="0.8"></circle>
+<line stroke="currentColor" stroke-opacity="0.15" stroke-width="0.8" x1="50" x2="50" y1="10" y2="90"></line>
+<line stroke="currentColor" stroke-opacity="0.15" stroke-width="0.8" x1="10" x2="90" y1="50" y2="50"></line>
+<!-- Polygon Radar Shape -->
+<polygon fill="currentColor" fill-opacity="0.18" points="50,16 84,45 68,82 32,82 16,45" stroke="currentColor" stroke-width="1.8"></polygon>
+<!-- Radar Nodes -->
+<circle cx="50" cy="16" fill="#48dadc" r="2.5"></circle>
+<circle cx="84" cy="45" fill="#48dadc" r="2.5"></circle>
+<circle cx="68" cy="82" fill="#ffc703" r="2.5"></circle>
+<circle cx="32" cy="82" fill="#48dadc" r="2.5"></circle>
+<circle cx="16" cy="45" fill="#48dadc" r="2.5"></circle>
+</svg>
+<div class="absolute bottom-2 right-3 font-code-md text-label-sm text-on-surface-variant">Radar Index: 0.94</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Recommended Target Role:</span>
+<span class="font-title-sm text-title-sm text-primary font-bold">Systems Architecture / C++ Lead</span>
+</div>
+<div class="flex flex-col gap-space-xs mt-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Preferred Telemetry Tech Tags:</span>
+<div class="flex flex-wrap gap-1">
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-primary">[ C/C++ ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-primary">[ NestJS ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-primary">[ Docker ]</span>
+<span class="px-space-xs py-0.5 rounded bg-surface-container font-code-md text-label-sm text-primary">[ TypeScript ]</span>
+</div>
+</div>
+</section>
+<!-- Widget 3: Quick Squad Wizard CTA Card -->
+<section class="p-space-lg rounded-xl bg-surface-container-low shadow-xl relative overflow-hidden">
+<div class="absolute -right-8 -bottom-8 w-32 h-32 rounded-full bg-secondary-container/15 blur-2xl pointer-events-none"></div>
+<div class="flex items-center gap-space-xs mb-space-xs">
+<span class="material-symbols-outlined text-secondary text-title-md">sensors</span>
+<h3 class="font-headline-sm text-title-md font-bold text-on-surface">Broadcasting Station</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+            Need peers for your upcoming milestone? Broadcast your project pitch to <strong class="text-on-surface">1,200+ online cluster peers</strong> in seconds.
+          </p>
+<button class="w-full mt-space-md py-space-sm px-space-md rounded-lg bg-secondary-container text-on-secondary font-code-md text-body-md font-bold shadow-[0_0_18px_rgba(255,199,3,0.35)] hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-space-xs">
+<span class="material-symbols-outlined text-title-md">bolt</span>
+<span>[ Start Squad Wizard ]</span>
+</button>
+</section>
+</aside>
+</div>
+</div>
+</div></main></div></body></html>
