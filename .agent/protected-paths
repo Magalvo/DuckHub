@@ -25,6 +25,7 @@ guardrail  package-lock.json
 guardrail  tsconfig.json
 guardrail  eslint.config.js
 guardrail  vitest.config.ts
+guardrail  playwright.config.ts
 guardrail  lefthook.yml
 guardrail  .prettierrc.json
 guardrail  .prettierignore

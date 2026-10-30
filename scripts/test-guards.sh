@@ -22,11 +22,14 @@ expect() { # expect <descrição> <esperado: 0|1> <comando...>
   [ "$got" = "$want" ] && ok "$desc" || ko "$desc (esperado exit $want, obtido $got)"
 }
 
-# Cópia do projeto (node_modules por symlink) num repo git limpo
+# Cópia do projeto num repo git limpo. O node_modules vai por hardlinks, não por
+# symlink: o Turbopack (Next) recusa um node_modules que aponta para fora do
+# projeto, e o make check da cópia falharia sempre.
 P="$WORK/proj"
 mkdir -p "$P"
 (cd "$SRC" && tar --exclude=node_modules --exclude=.git -cf - .) | (cd "$P" && tar -xf -)
-ln -s "$SRC/node_modules" "$P/node_modules"
+cp -al "$SRC/node_modules" "$P/node_modules" 2>/dev/null \
+  || { rm -rf "$P/node_modules" && cp -a "$SRC/node_modules" "$P/node_modules"; }
 cd "$P"
 git init -q && git config user.email t@t && git config user.name t
 git add -A && git commit -qm base --no-verify

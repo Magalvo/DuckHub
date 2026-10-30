@@ -23,19 +23,27 @@
 
 ### Cores
 
-| Papel                    | Token       | Valor                    | Uso                                                 |
-| ------------------------ | ----------- | ------------------------ | --------------------------------------------------- |
-| Fundo                    | `void`      | `#080B0F` / `#0D1117`    | Canvas                                              |
-| Superfície 1             | `surface-1` | `#12161E`                | Rails, painéis estruturais                          |
-| Superfície 2             | `surface-2` | `#161B22`                | Cartões                                             |
-| Superfície 3             | `surface-3` | `#21262D`                | Inputs, destaques de lista                          |
-| Vidro                    | `glass`     | `rgba(22, 27, 34, 0.72)` | Com `backdrop-filter: blur(12px)`                   |
-| Primária (Cyber-Teal)    | `primary`   | `#00BABC`                | Ações, estado ativo                                 |
-| Secundária (Duck Gold)   | `duck`      | `#FFC700`                | **Só** gamificação: Ducks, marcos, conquistas       |
-| Terciária (Synth-Purple) | `alumni`    | `#A855F7`                | Estatuto Alumni, distinções lendárias               |
-| Micro-acento             | `cyan`      | `#00F0FF`                | Foco, cursores                                      |
-| Perigo (Vampire Red)     | `danger`    | `#F85149`                | Erros, Black Hole                                   |
-| Coalition                | `coalition` | da API                   | Cor de destaque do Passaporte; sem Coalition → teal |
+| Papel                    | Token        | Valor                    | Uso                                                 |
+| ------------------------ | ------------ | ------------------------ | --------------------------------------------------- |
+| Fundo                    | `void`       | `#080B0F` / `#0D1117`    | Canvas (`#0D1117` = `void-inset`)                   |
+| Superfície 1             | `surface-1`  | `#12161E`                | Rails, painéis estruturais                          |
+| Superfície 2             | `surface-2`  | `#161B22`                | Cartões                                             |
+| Superfície 3             | `surface-3`  | `#21262D`                | Inputs, destaques de lista                          |
+| Vidro                    | `glass`      | `rgba(22, 27, 34, 0.72)` | Com `backdrop-filter: blur(12px)`                   |
+| Primária (Cyber-Teal)    | `primary`    | `#00BABC`                | Ações, estado ativo                                 |
+| Secundária (Duck Gold)   | `duck`       | `#FFC700`                | **Só** gamificação: Ducks, marcos, conquistas       |
+| Terciária (Synth-Purple) | `alumni`     | `#A855F7`                | Estatuto Alumni, distinções lendárias               |
+| Micro-acento             | `cyan`       | `#00F0FF`                | Foco, cursores                                      |
+| Perigo (Vampire Red)     | `danger`     | `#F85149`                | Erros, Black Hole                                   |
+| Coalition                | `coalition`  | da API                   | Cor de destaque do Passaporte; sem Coalition → teal |
+| Texto                    | `text`       | `#E6EDF3`                | Texto principal                                     |
+| Texto secundário         | `text-muted` | `#8B949E`                | Metadados, estados inativos                         |
+
+Os valores vivem em `src/theme/tokens.ts`, que também lista os pares
+texto/superfície permitidos (ADR 0006). O **alumni** só serve de texto sobre
+`void` e `surface-1`: sobre `surface-2` (4.37:1) e `surface-3` (3.85:1) fica
+abaixo de AA, por isso aí só é preenchimento ou borda. O texto sobre botões
+cheios (`primary`, `duck`) é o `void`.
 
 ### Tipografia
 

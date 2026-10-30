@@ -1,0 +1,51 @@
+/* Só src/ tem classes; varrer a raiz apanharia ficheiros que não são da app. */
+@import 'tailwindcss' source('../');
+
+/* As cores vêm de src/theme/tokens.ts: o layout injeta as variáveis --dh-*.
+   Aqui só se ligam ao Tailwind. Breakpoints, raios e fontes seguem
+   docs/canonical/design.md. */
+@theme inline {
+  --color-*: initial;
+  --color-void: var(--dh-void);
+  --color-void-inset: var(--dh-void-inset);
+  --color-surface-1: var(--dh-surface-1);
+  --color-surface-2: var(--dh-surface-2);
+  --color-surface-3: var(--dh-surface-3);
+  --color-text: var(--dh-text);
+  --color-text-muted: var(--dh-text-muted);
+  --color-primary: var(--dh-primary);
+  --color-duck: var(--dh-duck);
+  --color-alumni: var(--dh-alumni);
+  --color-cyan: var(--dh-cyan);
+  --color-danger: var(--dh-danger);
+  --color-hairline: rgb(255 255 255 / 0.08);
+}
+
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-md: 48rem;
+  --breakpoint-xl: 75rem;
+
+  --radius-*: initial;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+}
+
+/* Só dark mode, independentemente de prefers-color-scheme (AC2). */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background-color: var(--dh-void);
+  color: var(--dh-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--dh-cyan);
+  outline-offset: 2px;
+}

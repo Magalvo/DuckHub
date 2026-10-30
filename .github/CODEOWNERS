@@ -12,6 +12,7 @@
 /tsconfig.json            @Magalvo
 /eslint.config.js         @Magalvo
 /vitest.config.ts         @Magalvo
+/playwright.config.ts     @Magalvo
 /lefthook.yml             @Magalvo
 /.prettierrc.json         @Magalvo
 /.prettierignore          @Magalvo

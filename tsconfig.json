@@ -3,7 +3,7 @@
     "target": "ES2022",
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "lib": ["ES2022"],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
     /* Camada 1: modo máximo de rigor. NÃO relaxar sem ADR. */
     "strict": true,
@@ -16,9 +16,29 @@
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
 
+    /* Exigidos pelo Next.js (WI-0002). Sem estas chaves o `next dev` reescreve
+       este ficheiro sozinho. `allowJs` e `incremental` ficam explícitos pela
+       mesma razão. */
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": false,
+    "incremental": false,
+    "plugins": [{ "name": "next" }],
+
     "skipLibCheck": true,
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts"]
+  "include": [
+    "next-env.d.ts",
+    "next.config.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
 }

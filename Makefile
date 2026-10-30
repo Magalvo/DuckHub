@@ -5,20 +5,30 @@
 # =============================================================================
 
 .PHONY: help setup check format format-check typecheck lint test test-unit \
-        test-acceptance test-properties validate-specs verify-protected test-guards \
-        diff-budget onboard-status apply-proposals sync-protected \
+        test-acceptance test-properties test-e2e validate-specs verify-protected \
+        test-guards dev db-up db-down diff-budget onboard-status apply-proposals sync-protected \
         new-item new-track new-adr
 
 help: ## Lista os comandos disponíveis
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-setup: ## Instala dependências e hooks
+setup: ## Instala dependências, hooks e o browser dos testes e2e
 	npm install
+	npx playwright install chromium
+
+dev: ## Arranca a app localmente (http://localhost:3000); não precisa da DB
+	NEXT_TELEMETRY_DISABLED=1 npx next dev --port 3000
+
+db-up: ## Sobe o PostgreSQL local (Docker Compose)
+	docker compose up -d --wait db
+
+db-down: ## Pára o PostgreSQL local (os dados ficam no volume)
+	docker compose down
 
 onboard-status: ## O que falta configurar (o agente usa isto na skill de onboarding)
 	@node scripts/onboarding-status.mjs
 
-check: verify-protected validate-specs format-check typecheck lint test ## TUDO, sem alterar nada. O loop do agente: correr até verde.
+check: verify-protected validate-specs format-check typecheck lint test test-e2e ## TUDO, sem alterar nada. O loop do agente: correr até verde.
 	@echo ""
 	@echo "✓✓✓ Tudo verde. ✓✓✓"
 
@@ -45,6 +55,9 @@ test-acceptance: ## Só o contrato (tests/acceptance — intocável pelo agente)
 
 test-properties: ## Só property-based tests
 	npx vitest run tests/properties
+
+test-e2e: ## Contrato com browser (Playwright + axe, ADR 0005); sobe a app via make dev
+	npx playwright test
 
 verify-protected: ## Proteções sincronizadas com .agent/protected-paths
 	@node scripts/protected-paths.mjs verify
