@@ -42,12 +42,14 @@ jobs:
       # tests/acceptance/, esta corrida falha com "No test files found".
       - name: Contrato (testes de aceitação)
         run: npx vitest run tests/acceptance
+      # Chromium antes das guardas: o test-guards corre um make check completo,
+      # que inclui o contrato com browser (ADR 0005).
+      - name: Instalar Chromium (Playwright)
+        run: npx playwright install --with-deps chromium
       - name: Testes das próprias guardas
         run: bash scripts/test-guards.sh
       # Contrato com browser (ADR 0005). O webServer da config sobe a app via
       # `make dev`; sem testes em tests/acceptance/e2e/ o Playwright falha.
-      - name: Instalar Chromium (Playwright)
-        run: npx playwright install --with-deps chromium
       - name: Contrato com browser (Playwright + axe)
         run: npx playwright test
       - name: Relatório do Playwright
