@@ -31,6 +31,35 @@ mkdir -p "$P"
 cp -al "$SRC/node_modules" "$P/node_modules" 2>/dev/null \
   || { rm -rf "$P/node_modules" && cp -a "$SRC/node_modules" "$P/node_modules"; }
 cd "$P"
+
+# Domínio sintético, só na cópia: código com um bug fácil de introduzir e um
+# teste de aceitação (AC3) que o apanha. Assim as guardas não dependem do
+# código do produto e não partem quando ele muda.
+F_SRC=src/guards-fixture.ts
+F_ACC=tests/acceptance/guards-fixture.acceptance.test.ts
+cat > "$F_SRC" <<'TS'
+// Domínio sintético criado pelo scripts/test-guards.sh, só na cópia temporária.
+export interface Line {
+  readonly quantity: number;
+  readonly unitPriceCents: number;
+}
+
+export function totalCents(lines: readonly Line[]): number {
+  return lines.reduce((sum, line) => sum + line.quantity * line.unitPriceCents, 0);
+}
+TS
+cat > "$F_ACC" <<'TS'
+import { describe, expect, it } from 'vitest';
+
+import { totalCents } from '../../src/guards-fixture.js';
+
+describe('domínio sintético das guardas', () => {
+  it('AC3: o total multiplica a quantidade pelo preço unitário', () => {
+    expect(totalCents([{ quantity: 2, unitPriceCents: 350 }])).toBe(700);
+  });
+});
+TS
+
 git init -q && git config user.email t@t && git config user.name t
 git add -A && git commit -qm base --no-verify
 npx --no-install lefthook install >/dev/null 2>&1
@@ -44,28 +73,25 @@ guard() { # devolve 1 se o comando for NEGADO
 }
 expect "nega commit com --no-verify"                      1 guard 'git commit -m x --no-verify'
 expect "nega autoaprovação ACCEPT_CONTRACT_CHANGE=1"      1 guard 'ACCEPT_CONTRACT_CHANGE=1 git commit -m x'
-expect "nega enfraquecer aceitação com sed -i"            1 guard "sed -i 's/toBe/not.toBe/' tests/acceptance/order.acceptance.test.ts"
+expect "nega enfraquecer aceitação com sed -i"            1 guard "sed -i 's/toBe/not.toBe/' $F_ACC"
 expect "nega reescrever validador por redireção"          1 guard 'echo "process.exit(0)" > scripts/validate-specs.mjs'
-expect "nega apagar teste de aceitação"                   1 guard 'rm tests/acceptance/order.acceptance.test.ts'
+expect "nega apagar teste de aceitação"                   1 guard "rm $F_ACC"
 expect "nega repor contrato via git checkout"             1 guard 'git checkout -- tests/acceptance/'
 expect "nega escrever Makefile via node -e"               1 guard "node -e \"require('fs').writeFileSync('Makefile','')\""
 expect "nega desligar o loop (SELF_HEAL_*)"               1 guard 'export SELF_HEAL_TEST_STATE_DIR=/tmp/x'
 expect "nega aplicar propostas (ação humana)"             1 guard 'make apply-proposals'
 expect "nega mexer nos hooks de git"                      1 guard 'echo "exit 0" > .git/hooks/pre-commit'
 expect "permite make check"                               0 guard 'make check'
-expect "permite ler o contrato"                           0 guard 'cat tests/acceptance/order.acceptance.test.ts && grep -n AC1 tests/acceptance/order.acceptance.test.ts'
+expect "permite ler o contrato"                           0 guard "cat $F_ACC && grep -n AC3 $F_ACC"
 expect "permite correr scripts com 2>&1"                  0 guard 'node scripts/validate-specs.mjs 2>&1 | tail -5'
 expect "permite copiar para uma proposta"                 0 guard 'mkdir -p .agent/proposals/scripts && cp scripts/validate-specs.mjs .agent/proposals/scripts/validate-specs.mjs'
-expect "permite editar código de produção"                0 guard "sed -i 's/a/b/' src/order.ts"
+expect "permite editar código de produção"                0 guard "sed -i 's/a/b/' $F_SRC"
 
 # ---------- 2. Lista de caminhos protegidos ----------
 echo "Lista de caminhos protegidos"
-printf 'src/order.ts\ntests/unit/order.test.ts\n' > "$WORK/legit.txt"
-printf 'src/order.ts
-scripts/validate-specs.mjs
-' > "$WORK/guardrail.txt"
-printf 'tests/acceptance/order.acceptance.test.ts
-' > "$WORK/contract.txt"
+printf '%s\n' "$F_SRC" tests/unit/guards-fixture.test.ts > "$WORK/legit.txt"
+printf '%s\n' "$F_SRC" scripts/validate-specs.mjs > "$WORK/guardrail.txt"
+printf '%s\n' "$F_ACC" > "$WORK/contract.txt"
 expect "aceita alterações só a código e testes unitários" 0 node scripts/protected-paths.mjs check --files "$WORK/legit.txt"
 expect "bloqueia alteração a script de verificação"       1 node scripts/protected-paths.mjs check --files "$WORK/guardrail.txt"
 expect "bloqueia alteração ao contrato"                   1 node scripts/protected-paths.mjs check --files "$WORK/contract.txt"
@@ -82,7 +108,7 @@ git branch -q -M main
 git checkout -q -b pr-ataque
 # O "agente" salta o hook local e, no mesmo PR, desliga o guarda e enfraquece o contrato
 sed -i 's/if (hits.length === 0) {/if (true) {/' scripts/protected-paths.mjs
-echo "// enfraquecido" >> tests/acceptance/order.acceptance.test.ts
+echo "// enfraquecido" >> "$F_ACC"
 git add -A && git commit -qm "ataque" --no-verify
 git diff --name-only --no-renames main...pr-ataque > "$WORK/pr.txt"
 expect "o guarda DA BRANCH DO PR deixaria passar"         0 node scripts/protected-paths.mjs check --files "$WORK/pr.txt"
@@ -97,7 +123,7 @@ commit_try() { git add -A && git commit -qm "$1"; }
 echo "// enfraquecido" >> scripts/validate-specs.mjs
 expect "bloqueia commit que altera scripts/"              1 commit_try "mexer no validador"
 git reset -q --hard
-echo "// enfraquecido" >> tests/acceptance/order.acceptance.test.ts
+echo "// enfraquecido" >> "$F_ACC"
 expect "bloqueia commit que altera o contrato"            1 commit_try "enfraquecer aceitação"
 git reset -q --hard
 
@@ -108,7 +134,7 @@ stop() { echo "{\"session_id\":\"t\",\"cwd\":\"$P\"}" | CLAUDE_PROJECT_DIR="$P" 
 blocks() { stop | grep -q '"decision":"block"'; }   # exit 0 = impediu o agente de parar
 expect "sem alterações: deixa parar"                      1 blocks
 # Bug real no código: o total ignora a quantidade
-sed -i 's/item.quantity \* item.unitPriceCents/item.unitPriceCents/' src/order.ts
+sed -i 's/line.quantity \* line.unitPriceCents/line.unitPriceCents/' "$F_SRC"
 out=$(stop)
 echo "$out" | grep -q '"decision":"block"' && ok "código partido: impede parar e devolve falhas" || ko "código partido: devia bloquear"
 echo "$out" | grep -q 'tentativa 1 de 4' && ok "indica a tentativa (1 de 4)" || ko "devia indicar a tentativa"
@@ -117,10 +143,10 @@ stop >/dev/null
 out=$(stop)
 echo "$out" | grep -q 'A mesma falha repetiu-se 3 vezes' && ok "mesma falha 3x: escala para o humano" || ko "devia escalar ao fim de 3 falhas iguais"
 expect "depois do relatório: deixa parar"                 1 blocks
-git checkout -q -- src/order.ts
-echo "// alteração inofensiva" >> src/order.ts
+git checkout -q -- "$F_SRC"
+echo "// alteração inofensiva" >> "$F_SRC"
 expect "código corrigido: deixa parar"                    1 blocks
-git checkout -q -- src/order.ts
+git checkout -q -- "$F_SRC"
 
 echo "Loop de auto-correção — fluxo TDD e pedidos de input"
 rm -rf "$SELF_HEAL_TEST_STATE_DIR"
@@ -137,10 +163,10 @@ TS
 mark
 expect "agente só apresenta o plano: pode parar com teste vermelho" 1 blocks2
 # O agente começa a implementar e altera código: agora o check é obrigatório
-echo "export const novo = 1;" >> src/order.ts
+echo "export const novo = 1;" >> "$F_SRC"
 expect "agente alterou código com check vermelho: não pode parar" 0 blocks2
 expect "agente pede decisão com [INPUT-HUMANO]: pode parar"       1 blocks2 'Preciso que confirmes X. [INPUT-HUMANO]'
-git checkout -q -- src/order.ts && rm tests/acceptance/novo.acceptance.test.ts
+git checkout -q -- "$F_SRC" && rm tests/acceptance/novo.acceptance.test.ts
 expect "o estado do loop está fora do alcance do agente (guarda)" 1 guard 'echo "{\"escalated\":true}" > .claude/hooks/.state/t2.json'
 
 # ---------- 5. Ações humanas ----------
