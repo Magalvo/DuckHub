@@ -1,8 +1,8 @@
 ---
-id: { { ID } }
+id: {{ID}}
 title: <título da tarefa>
 status: draft
-track: { { TRACK } }
+track: {{TRACK}}
 owner: <nome-humano>
 acceptance:
   - AC1: <critério verificável — vira um teste em tests/acceptance/>

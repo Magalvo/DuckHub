@@ -1,5 +1,5 @@
 ---
-id: { { ID } }
+id: {{ID}}
 title: <título do épico>
 status: draft
 owner: <nome-humano>

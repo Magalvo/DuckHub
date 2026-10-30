@@ -11,6 +11,11 @@ package-lock.json
 .agent/protected-paths
 .claude/hooks/.state/
 
+# Templates de scaffold: o Prettier reescreve {{ID}} no frontmatter para
+# { { ID } } e o make new-track/new-item deixa de substituir o marcador.
+.agent/templates/track.md
+.agent/templates/work-item.md
+
 # Material de referência (originais, não formatar)
 docs/conceito/
 docs/design/
