@@ -43,7 +43,7 @@ Requisitos: Node 22+, make, git.
 
 | #   | Camada                             | Neste repo                                                                                        |
 | --- | ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 1   | Estados inválidos irrepresentáveis | `tsconfig.json` estrito · Zod nas fronteiras (`src/order.ts`)                                     |
+| 1   | Estados inválidos irrepresentáveis | `tsconfig.json` estrito · Zod nas fronteiras (regra dura 4 do `AGENTS.md`)                        |
 | 2   | Portão de planeamento              | Workflow obrigatório no `AGENTS.md` (plano + perguntas antes de código)                           |
 | 3   | Loop determinístico                | `make check` · `lefthook.yml` · caminhos protegidos · Stop hook de auto-correção · property tests |
 | 4   | Isolamento e reversibilidade       | Branch por work-item · `.agent/permissions.json` · worktrees                                      |
@@ -170,10 +170,10 @@ E o inverso — sinais de que está na hora de ativar uma camada que deixaste fo
 
 ## Adaptar ao teu projeto
 
-1. Substitui `src/order.ts` (e testes) pelo teu domínio — mantém os padrões.
+1. Substitui o domínio de exemplo pelo teu — mantém os padrões. No Duck Hub
+   já foi removido (o `order` e os exemplos WT/WI-0001).
 2. Reescreve o `AGENTS.md`: propósito, stack, regras duras específicas.
-3. Cria o teu primeiro track e work-item reais; apaga os exemplos WT/WI-0001
-   quando já não precisares deles como referência.
+3. Cria o teu primeiro track e work-item reais.
 4. Configura branch protection no GitHub (instruções no topo do `ci.yml`).
 5. Opcional mas recomendado: mutation testing (Stryker) como job noturno no
    CI — mede se os testes realmente falham quando o código muda.

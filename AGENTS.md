@@ -18,7 +18,6 @@ alunos e Alumni da 42 mantêm o convívio, encontram equipa e usam ferramentas
 fricção). Começa pela 42 Portugal.
 
 Produto: `docs/canonical/produto.md` · Design: `docs/canonical/design.md`.
-O módulo `src/order.ts` é o exemplo do boilerplate, a remover.
 
 ## Stack
 
