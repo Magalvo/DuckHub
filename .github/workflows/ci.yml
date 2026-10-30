@@ -14,6 +14,9 @@
 name: CI
 on:
   pull_request:
+    # labeled/unlabeled: a label diff-budget-override só tem efeito se o CI
+    # voltar a correr quando ela é adicionada (o evento original não a tem).
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   push:
     branches: [main]
 
