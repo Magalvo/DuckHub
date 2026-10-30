@@ -141,7 +141,16 @@ decididas pelo humano.
    que a calcule. Cores conhecidas: preto, vermelho, azul, verde, laranja e
    amarelo. Quando a funcionalidade vier, será uma tabela curada ano→cor,
    atualizada pelo humano.
-10. **Fecho:** o projeto é trancado na próxima sessão, já em WSL2.
+10. **Fecho (feito, 2026-10-29, em WSL2):** `.claude/settings.json` escrito
+    a partir do template, com o sandbox ativo (`bwrap` e `socat` presentes,
+    `failIfUnavailable: true`), a guarda de Bash e o loop de
+    auto-correção. Isto resolve o pendente 3. O `make check` está verde e o
+    `make test-guards` dá 38/38 em WSL2. O pendente 5 fica resolvido para
+    WSL2; a correção para Windows nativo só é precisa se o projeto voltar a
+    ser usado lá. Efeito lateral: dentro do sandbox, o `format-check` falha
+    com EACCES nos stubs `/dev/null` do `bwrap` (`.zshrc`, `.vscode`…).
+    A correção está proposta em `.agent/proposals/.prettierignore`, que também
+    resolve o pendente 6.
 
 ## Em aberto
 
