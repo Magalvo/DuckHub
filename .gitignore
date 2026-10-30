@@ -1,6 +1,16 @@
 node_modules/
 dist/
 coverage/
+
+# Next.js (WI-0002)
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# Saída do Playwright (ADR 0005)
+test-results/
+playwright-report/
+blob-report/
 *.log
 .env
 .env.*

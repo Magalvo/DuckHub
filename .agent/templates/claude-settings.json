@@ -28,6 +28,7 @@
       "Edit(/tsconfig.json)",
       "Edit(/eslint.config.js)",
       "Edit(/vitest.config.ts)",
+      "Edit(/playwright.config.ts)",
       "Edit(/lefthook.yml)",
       "Edit(/.prettierrc.json)",
       "Edit(/.prettierignore)",

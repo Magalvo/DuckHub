@@ -1,7 +1,7 @@
 ---
 id: WI-0002
 title: Esqueleto da app com o tema Cyber Duck
-status: draft
+status: done
 track: WT-0002
 owner: Magalvo
 acceptance:

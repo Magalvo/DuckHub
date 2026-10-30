@@ -1,10 +1,23 @@
 // Camada 3 — loop determinístico: o linter dá feedback que o agente lê e corrige.
 // Regras estritas de propósito. Cada regra desligada exige justificação em ADR.
 import eslint from '@eslint/js';
+import nextPlugin from '@next/eslint-plugin-next';
+import jsxA11y from 'eslint-plugin-jsx-a11y';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['dist/', 'node_modules/', 'coverage/', '.agent/proposals/'] },
+  {
+    ignores: [
+      'dist/',
+      'node_modules/',
+      'coverage/',
+      '.agent/proposals/',
+      '.next/',
+      'next-env.d.ts',
+    ],
+  },
   {
     // Comentários eslint-disable no código são ignorados: desligar uma regra
     // passa por esta config (protegida) e por um ADR, nunca por um comentário
@@ -29,6 +42,22 @@ export default tseslint.config(
       // Promessas esquecidas são a classe de bug mais comum em código gerado.
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
+    },
+  },
+  {
+    // UI (WI-0002). Regra 12: a11y verificada pela máquina (jsx-a11y). AC5: nenhum
+    // texto visível escrito nos componentes; vem tudo de src/i18n/messages/.
+    files: ['src/**/*.tsx'],
+    extends: [
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
+      reactHooks.configs.flat.recommended,
+      jsxA11y.flatConfigs.recommended,
+      nextPlugin.configs['core-web-vitals'],
+    ],
+    settings: { react: { version: 'detect' } },
+    rules: {
+      'react/jsx-no-literals': ['error', { noStrings: true, ignoreProps: true }],
     },
   },
   {

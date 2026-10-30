@@ -2,6 +2,8 @@ node_modules/
 dist/
 coverage/
 package-lock.json
+.next/
+next-env.d.ts
 
 # Gerados por scripts/protected-paths.mjs sync
 .agent/templates/claude-settings.json

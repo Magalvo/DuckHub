@@ -12,6 +12,7 @@
 /tsconfig.json            @OWNER
 /eslint.config.js         @OWNER
 /vitest.config.ts         @OWNER
+/playwright.config.ts     @OWNER
 /lefthook.yml             @OWNER
 /.prettierrc.json         @OWNER
 /.prettierignore          @OWNER

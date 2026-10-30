@@ -1,0 +1,22 @@
+# PostgreSQL local (WI-0002). Só para desenvolvimento: `make db-up` / `make db-down`.
+# Credenciais de dev com valores por omissão, sobreponíveis num .env local
+# (fora do git). A porta só fica aberta em 127.0.0.1.
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-duckhub}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-duckhub_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-duckhub}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}']
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+volumes:
+  db-data:
