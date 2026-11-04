@@ -2,7 +2,7 @@
 // A página /privacy (en.privacy.items) lista estas colunas: mudar uma obriga a
 // mudar a outra. Tudo o que pertence a um utilizador referencia users.id com
 // ON DELETE CASCADE, para o apagamento de conta não deixar restos (AC7).
-import { index, integer, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { index, integer, jsonb, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -23,3 +23,15 @@ export const sessions = pgTable(
   },
   (t) => [index('sessions_user_id_idx').on(t.userId)]
 );
+
+/**
+ * Passaporte (WI-0005, ADR 0008): o snapshot da última sincronização. O JSONB
+ * valida-se com Zod ao ler (src/passport/store.ts), nunca se confia nele.
+ */
+export const passports = pgTable('passports', {
+  userId: uuid('user_id')
+    .primaryKey()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  snapshot: jsonb('snapshot').notNull(),
+  syncedAt: timestamp('synced_at', { withTimezone: true, mode: 'date' }).notNull(),
+});

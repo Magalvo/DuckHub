@@ -47,6 +47,8 @@ export interface AuthDeps {
   exchangeCode: (code: string) => Promise<{ ok: true; accessToken: string } | { ok: false }>;
   /** Perfil do utilizador, via cliente do WI-0003. */
   fetchProfile: (accessToken: string) => Promise<Result<Profile>>;
+  /** Chamado no callback depois de criar o utilizador; uma falha não impede o login. */
+  syncPassport: (input: { accessToken: string; userId: string; profile: Profile }) => Promise<void>;
   store: SessionStore;
 }
 
@@ -167,6 +169,12 @@ export async function handleCallback(req: Request, deps: AuthDeps): Promise<Resp
   if (!config.allowedCampusIds.includes(primaryCampus.id)) return fail('campus');
 
   const { userId } = await store.upsertUser({ intraId, login, campusId: primaryCampus.id });
+  try {
+    // WI-0005: o único momento com token. Uma falha não impede o login.
+    await deps.syncPassport({ accessToken: token.accessToken, userId, profile: profile.value });
+  } catch {
+    // O Passaporte fica com o snapshot anterior.
+  }
   const session = deps.randomToken();
   await store.createSession({
     idHash: hashToken(session),

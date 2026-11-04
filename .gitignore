@@ -7,6 +7,10 @@ coverage/
 next-env.d.ts
 *.tsbuildinfo
 
+# e2e (ADR 0008): distDir próprio e BD PGlite recriada pelo seed
+.next-e2e/
+.e2e/
+
 # Saída do Playwright (ADR 0005)
 test-results/
 playwright-report/

@@ -17,10 +17,27 @@ export const en = {
     },
   },
   home: {
-    eyebrow: '42 Portugal',
-    title: 'Welcome to the pond',
-    body: 'Your Passport, built from the 42 Intra with zero setup, is on its way.',
     signOut: 'Sign out',
+  },
+  // Passaporte (WI-0005). Os valores (login, campus, nível…) vêm do snapshot.
+  passport: {
+    title: 'Your Passport',
+    photoAlt: 'Your 42 profile photo',
+    alumni: 'Alumni',
+    reduced: 'Piscine Passport: the full Passport unlocks when you start the Common Core.',
+    detailsLabel: 'Passport details',
+    campus: 'Campus',
+    piscine: 'Piscine',
+    coalition: 'Coalition',
+    noCoalition: 'No coalition',
+    level: 'Level',
+    projects: 'Projects',
+    noProjects: 'No projects yet.',
+    mark: 'Mark',
+    states: { done: 'Validated', failed: 'Failed', inProgress: 'In progress' },
+    syncedAt: 'Last synced',
+    timeZone: 'Lisbon time',
+    notSynced: "Your Passport hasn't been synced yet. It syncs every time you sign in.",
   },
   // Os nomes dos campus acompanham ALLOWED_CAMPUS_IDS (ADR 0007).
   login: {
@@ -38,7 +55,7 @@ export const en = {
   privacy: {
     title: 'Privacy',
     intro:
-      'Duck Hub keeps only what it needs to let you sign in. Your 42 access tokens are used once during sign-in and never stored.',
+      'Duck Hub keeps only what it needs to let you sign in and to show your Passport. Your 42 access token is used only during sign-in, to read your profile, and is never stored.',
     itemsLabel: 'What we keep and why',
     items: [
       { data: 'Your 42 user ID', purpose: 'To recognise your account when you sign in again.' },
@@ -47,6 +64,18 @@ export const en = {
       {
         data: 'A hash of your session token and its expiry date',
         purpose: 'To keep you signed in. Sessions expire after 30 days without use.',
+      },
+      {
+        data: 'Your Passport: profile photo link, campus name, Piscine month and year, Alumni status, coalition name and colour, cursus names and levels',
+        purpose: 'To show your Passport without asking the 42 API on every visit.',
+      },
+      {
+        data: 'Your projects: name, status, final mark and whether they were validated',
+        purpose: 'To show your progress on your Passport.',
+      },
+      {
+        data: 'When your Passport was last synced',
+        purpose: 'To show how recent your Passport is. It syncs every time you sign in.',
       },
     ],
     deletion: 'You can delete your account at any time. This removes everything listed above.',

@@ -1,7 +1,7 @@
 ---
 id: WI-0005
 title: Passaporte do próprio utilizador
-status: draft
+status: in-progress
 track: WT-0002
 owner: Magalvo
 acceptance:
@@ -25,26 +25,148 @@ percurso na 42 sem ter preenchido nada.
 
 ## Proposta
 
-Página do Passaporte que lê os dados guardados na última sincronização. A
-sincronização corre no login e usa o cliente do WI-0003. Layout inspirado no
-cabeçalho do dashboard _minimal_, com números em JetBrains Mono, a cor da
-coalition como acento e o roxo Synth-Purple na distinção Alumni
-(`docs/canonical/design.md`). Os projetos usam a tradução do WI-0006, quando
-existir.
+Página do Passaporte em `/`, que lê o snapshot guardado na última
+sincronização. Layout inspirado no cabeçalho do dashboard _minimal_, com
+números em JetBrains Mono e o roxo Synth-Purple na distinção Alumni
+(`docs/canonical/design.md`). Decisões do humano (2026-11-04), a registar num
+ADR novo no mesmo branch:
+
+- **Snapshot JSONB.** Tabela `passports` (`user_id` com `ON DELETE CASCADE`,
+  `snapshot` JSONB, `synced_at`). O snapshot valida-se com Zod ao ler.
+- **Sincronização no callback do login**, o único momento com token:
+  `AuthDeps` ganha `syncPassport`. Se falhar, o login conclui-se na mesma e o
+  Passaporte mostra o snapshot anterior, com a data dele. Nunca se guarda um
+  snapshot parcial. Sem snapshot, a página diz que ainda não sincronizou.
+- **Cor da coalition só decorativa** (borda, barra, glow). O texto usa sempre
+  os tokens do tema. Sem coalition, o acento é o Cyber-Teal `#00BABC`. Com
+  várias coalitions, usa-se a primeira que a API devolve.
+- **Data da sincronização** em `Europe/Lisbon`, formato `AAAA-MM-DD HH:mm`.
+- **Nível** com duas casas decimais, **truncado** e não arredondado: 5.179
+  mostra 5.17, para nunca mostrar um nível que ainda não se atingiu.
+- **Cursus principal:** `42cursus`. Sem ele, o Passaporte é reduzido e o
+  cursus mostrado é o primeiro cujo slug contém `piscine`.
+- **Estado dos projetos:** concluído = `finished` e `validated? = true`;
+  falhado = `finished` e `validated? = false`; em curso = tudo o resto.
+- **Nomes dos projetos originais.** A tradução "mundo real" (WI-0006) entra
+  depois, sem mudar este contrato.
+- **E2e com sessão em PGlite.** Antes de o Playwright arrancar a app, o seed
+  do contrato (`tests/acceptance/e2e/seed.mjs`) cria uma BD PGlite em disco
+  com utilizadores, sessões e Passaportes sintéticos. A app usa-a com
+  `DATABASE_URL=pglite:<pasta>`, aceite só fora de produção.
+
+## Interface
+
+Fixada pelos testes de aceitação.
+
+```ts
+// src/passport/passport.ts — funções puras
+import type { Coalition, Profile, ProjectUser } from '../intra/client.js';
+
+export const DEFAULT_ACCENT = '#00BABC'; // Cyber-Teal (AC4)
+
+/** O que se guarda em passports.snapshot (JSONB). */
+export interface PassportSnapshot {
+  login: string;
+  imageUrl: string | null;
+  campus: string;
+  piscine: { month: string; year: number };
+  isAlumni: boolean;
+  coalition: { name: string; color: string } | null;
+  cursus: { slug: string; name: string; level: number }[];
+  projects: {
+    slug: string;
+    name: string;
+    status: string;
+    finalMark: number | null;
+    validated: boolean | null;
+  }[];
+}
+
+export type ProjectState = 'done' | 'failed' | 'in-progress';
+
+/** O que a página mostra. */
+export interface PassportView {
+  login: string;
+  imageUrl: string | null;
+  campus: string;
+  piscine: { month: string; year: number };
+  isAlumni: boolean;
+  coalitionName: string | null;
+  accentColor: string; // cor da coalition ou DEFAULT_ACCENT
+  reduced: boolean; // sem 42cursus (AC3)
+  mainCursus: { name: string; level: string } | null; // level: "5.17"
+  projects: { slug: string; name: string; state: ProjectState; finalMark: number | null }[];
+  syncedAt: string; // "AAAA-MM-DD HH:mm", Europe/Lisbon
+}
+
+export function buildSnapshot(
+  profile: Profile,
+  coalitions: Coalition[],
+  projects: ProjectUser[]
+): PassportSnapshot;
+export function passportView(snapshot: PassportSnapshot, syncedAt: number): PassportView;
+```
+
+```ts
+// src/passport/sync.ts
+export interface PassportStore {
+  save(userId: string, snapshot: PassportSnapshot, syncedAt: number): Promise<void>;
+  load(userId: string): Promise<{ snapshot: PassportSnapshot; syncedAt: number } | null>;
+}
+
+/** Nunca lança. Se algum pedido falhar, não guarda nada. */
+export function createPassportSync(deps: {
+  client: (accessToken: string) => Pick<IntraClient, 'coalitions' | 'projectsUsers'>;
+  store: PassportStore;
+  clock: { now(): number };
+}): AuthDeps['syncPassport'];
+```
+
+```ts
+// src/auth/handlers.ts — AuthDeps ganha:
+/** Chamado no callback depois de criar o utilizador; uma falha não impede o login. */
+syncPassport: (input: { accessToken: string; userId: string; profile: Profile }) => Promise<void>;
+```
+
+**Base de dados** (o seed do e2e escreve-a diretamente):
+
+- `passports(user_id uuid PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+snapshot jsonb NOT NULL, synced_at timestamptz NOT NULL)`;
+- `sessions.id_hash` é o SHA-256 do token do cookie, em hexadecimal.
+
+**Página `/`** (com sessão), todo o texto em `src/i18n/messages/en.ts`:
+
+- `<section aria-labelledby=…>` com a variável CSS `--accent` igual a
+  `accentColor`;
+- o login como título (`heading`), a foto com `alt` = `en.passport.photoAlt`,
+  o campus, a Piscine (`month` e `year`), a coalition e o nível;
+- `en.passport.alumni` só para Alumni; `en.passport.reduced` só no Passaporte
+  reduzido;
+- a lista de projetos (`list` > `listitem`), cada um com o nome, o rótulo do
+  estado (`en.passport.states.done | failed | inProgress`) e, se concluído, a
+  nota final;
+- `en.passport.syncedAt` seguido da data;
+- sem snapshot: `en.passport.notSynced`.
 
 ## Fora de âmbito
 
 Ver o Passaporte de outras pessoas, partilha pública ou para recrutadores
 (quando vier: visível à comunidade por omissão, link público opt-in, ADR
 0003), radar de skills, badges, lanyard, `blackholed_at`, logtime, edição
-manual de dados, sincronização em background.
+manual de dados, sincronização em background, tradução "mundo real" (WI-0006).
 
 ## Notas para o agente
 
 - Regras duras 9 a 12. A distinção Alumni vem só de `alumni?`: não há
   autodeclaração.
-- A cor da coalition vem da API e pode ter contraste insuficiente sobre o
-  fundo escuro. Se falhar o AA, usa-a só em elementos não textuais ou ajusta
-  a luminosidade. Não ignores o contraste.
-- Depende de WI-0003 e WI-0004. Integra o WI-0006 se estiver pronto; senão,
-  mostra os nomes originais.
+- **A `/privacy` tem de listar o que o snapshot guarda** (ADR 0007).
+- **Propostas a guardrails:** `playwright.config.ts` (o `webServer` corre o seed
+  antes da app, numa porta própria, com `DATABASE_URL=pglite:…` e variáveis de
+  ambiente sintéticas), `.gitignore` (a pasta da BD do e2e),
+  `eslint.config.js` (o `seed.mjs` do contrato entra no bloco dos scripts de
+  Node, sem type-checking) e o que mais for preciso no `package.json`.
+- O contrato do WI-0004 ganha uma linha (`syncPassport` no-op no `setup()`):
+  é o humano que a faz.
+- Confirmar com uma chamada real o slug `42cursus`, o slug do cursus da
+  Piscine e a ordem das coalitions quando há mais do que uma.
+- Depende de WI-0003 e WI-0004.

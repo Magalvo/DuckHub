@@ -21,7 +21,7 @@ describe('readServerConfig', () => {
         allowedCampusIds: [9001, 9002],
         secureCookies: false,
       },
-      databaseUrl: env.DATABASE_URL,
+      database: { kind: 'postgres', url: env.DATABASE_URL },
     });
     const https = readServerConfig({ ...env, APP_URL: 'https://duckhub.example/' });
     expect(https.auth.redirectUri).toBe('https://duckhub.example/auth/callback');
@@ -37,6 +37,16 @@ describe('readServerConfig', () => {
   ])('%s → ConfigError que nomeia a variável', (_case, bad, name) => {
     expect(() => readServerConfig(bad)).toThrow(ConfigError);
     expect(() => readServerConfig(bad)).toThrow(name);
+  });
+
+  it('DATABASE_URL=pglite:<pasta> dá PGlite fora de produção e erro em produção', () => {
+    const pglite = { ...env, DATABASE_URL: 'pglite:.e2e/db' };
+    expect(readServerConfig(pglite).database).toEqual({ kind: 'pglite', dir: '.e2e/db' });
+    expect(readServerConfig({ ...pglite, NODE_ENV: 'development' }).database.kind).toBe('pglite');
+    expect(() => readServerConfig({ ...pglite, NODE_ENV: 'production' })).toThrow(
+      'not allowed in production'
+    );
+    expect(() => readServerConfig({ ...env, DATABASE_URL: 'pglite:' })).toThrow('DATABASE_URL');
   });
 
   it('a mensagem de erro nunca contém valores, nem o client secret', () => {

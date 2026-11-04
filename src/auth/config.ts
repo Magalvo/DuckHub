@@ -16,11 +16,17 @@ const envSchema = z.object({
     .regex(/^\s*\d+\s*(,\s*\d+\s*)*$/)
     .transform((s) => s.split(',').map(Number)),
   DATABASE_URL: z.string().min(1),
+  NODE_ENV: z.string().optional(),
 });
+
+const PGLITE = 'pglite:';
+
+/** PostgreSQL real, ou PGlite em disco (só fora de produção: e2e, ADR 0008). */
+export type DatabaseConfig = { kind: 'postgres'; url: string } | { kind: 'pglite'; dir: string };
 
 export interface ServerConfig {
   auth: AuthConfig;
-  databaseUrl: string;
+  database: DatabaseConfig;
 }
 
 export class ConfigError extends Error {
@@ -34,6 +40,15 @@ export function readServerConfig(env: Readonly<Record<string, string | undefined
     throw new ConfigError(`Missing or invalid environment variables: ${names.join(', ')}`);
   }
   const { data } = parsed;
+  let database: DatabaseConfig = { kind: 'postgres', url: data.DATABASE_URL };
+  if (data.DATABASE_URL.startsWith(PGLITE)) {
+    if (data.NODE_ENV === 'production') {
+      throw new ConfigError('DATABASE_URL=pglite: is not allowed in production');
+    }
+    const dir = data.DATABASE_URL.slice(PGLITE.length);
+    if (dir === '') throw new ConfigError('Missing or invalid environment variables: DATABASE_URL');
+    database = { kind: 'pglite', dir };
+  }
   const appUrl = new URL(data.APP_URL);
   return {
     auth: {
@@ -43,6 +58,6 @@ export function readServerConfig(env: Readonly<Record<string, string | undefined
       allowedCampusIds: data.ALLOWED_CAMPUS_IDS,
       secureCookies: appUrl.protocol === 'https:',
     },
-    databaseUrl: data.DATABASE_URL,
+    database,
   };
 }
