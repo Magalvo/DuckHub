@@ -151,12 +151,24 @@ decididas pelo humano.
     com EACCES nos stubs `/dev/null` do `bwrap` (`.zshrc`, `.vscode`…).
     A correção está proposta em `.agent/proposals/.prettierignore`, que também
     resolve o pendente 6.
+11. **Chamadas reais à API (2026-11-04, WI-0003):** confirmado pelo humano
+    com um token _client credentials_, vendo só tipos e formatos, sem guardar
+    respostas. `/v2/users/:login` traz os mesmos campos que o `/v2/me`:
+    - `image.link` e `pool_year` são strings, `alumni?` é boolean e há um
+      `campus_users` com `is_primary: true`;
+    - `/v2/projects/:id` traz `project_sessions` embutidas, com `difficulty`
+      numérica, tal como o projeto;
+    - as cores das coalitions vêm em `#RRGGBB`, às vezes em minúsculas. Há
+      alunos sem coalition (lista vazia), e várias cores são escuras demais
+      para texto sobre o fundo (WI-0005);
+    - **IDs de campus:** Lisboa = 38, Porto = 58. São configuração do WI-0004,
+      nunca código.
 
 ## Em aberto
 
-1. **Confirmar com chamadas reais à API** os campos obrigatórios dos schemas,
-   os IDs de campus de Lisboa e Porto e o slug `42cursus`. Os exemplos da
-   apidoc são antigos. Feito no WI-0003 e no WI-0004.
+1. **Confirmar o slug `42cursus`** com uma chamada real, quando o WI-0005
+   escolher o cursus principal. Os campos dos schemas e os IDs de campus já
+   estão confirmados (ponto 11 acima).
 2. **Alumni e OAuth:** confirmar com uma conta Alumni real que o login
    continua a funcionar e qual é o campus principal.
 3. **Fórmula do XP ganho:** confirmar o arredondamento e a regra de bónus

@@ -1,0 +1,129 @@
+// Fronteira com a API da 42: schemas Zod das respostas e conversão para os
+// tipos de domínio. Nada daqui confia no formato do que vem da rede.
+import { z } from 'zod';
+
+export interface Profile {
+  id: number;
+  login: string;
+  imageUrl: string | null;
+  primaryCampus: { id: number; name: string };
+  piscine: { month: string; year: number }; // month como vem da API ("september")
+  isAlumni: boolean;
+  cursus: { id: number; slug: string; name: string; level: number }[];
+}
+export interface Coalition {
+  id: number;
+  name: string;
+  slug: string;
+  color: string;
+}
+export interface ProjectUser {
+  projectId: number;
+  name: string;
+  slug: string;
+  status: string; // como vem da API ("finished", "in_progress", ...)
+  finalMark: number | null;
+  validated: boolean | null;
+}
+
+const id = z.number().int().positive();
+
+export const profileSchema = z
+  .object({
+    id,
+    login: z.string().min(1),
+    image: z.object({ link: z.string().nullable() }).nullable().optional(),
+    pool_month: z.string().min(1),
+    pool_year: z.string().regex(/^\d{4}$/),
+    'alumni?': z.boolean(),
+    campus: z.array(z.object({ id, name: z.string() })),
+    campus_users: z.array(z.object({ campus_id: id, is_primary: z.boolean() })),
+    cursus_users: z.array(
+      z.object({
+        level: z.number().nonnegative(),
+        cursus: z.object({ id, name: z.string(), slug: z.string() }),
+      })
+    ),
+  })
+  .transform((me, ctx): Profile => {
+    const primaryId = me.campus_users.find((cu) => cu.is_primary)?.campus_id;
+    const primary = me.campus.find((c) => c.id === primaryId);
+    if (primary === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['campus_users'] });
+      return z.NEVER;
+    }
+    return {
+      id: me.id,
+      login: me.login,
+      imageUrl: me.image?.link ?? null,
+      primaryCampus: { id: primary.id, name: primary.name },
+      piscine: { month: me.pool_month, year: Number(me.pool_year) },
+      isAlumni: me['alumni?'],
+      cursus: me.cursus_users.map((cu) => ({
+        id: cu.cursus.id,
+        slug: cu.cursus.slug,
+        name: cu.cursus.name,
+        level: cu.level,
+      })),
+    };
+  });
+
+export const coalitionSchema = z
+  .object({
+    id,
+    name: z.string(),
+    slug: z.string(),
+    color: z.string().regex(/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i),
+  })
+  .transform(({ id, name, slug, color }): Coalition => ({ id, name, slug, color }));
+
+export const projectUserSchema = z
+  .object({
+    final_mark: z.number().nullable(),
+    status: z.string(),
+    'validated?': z.boolean().nullable(),
+    project: z.object({ id, name: z.string(), slug: z.string() }),
+  })
+  .transform((pu): ProjectUser => ({
+    projectId: pu.project.id,
+    name: pu.project.name,
+    slug: pu.project.slug,
+    status: pu.status,
+    finalMark: pu.final_mark,
+    validated: pu['validated?'],
+  }));
+
+const xp = z.number().int().nonnegative();
+
+export const projectSchema = z.object({
+  difficulty: xp,
+  project_sessions: z.array(
+    z.object({
+      campus_id: id.nullable(),
+      cursus_id: id.nullable(),
+      difficulty: xp.nullable(),
+    })
+  ),
+});
+
+/**
+ * XP de um projeto (AC7): a difficulty da project_session do mesmo campus e
+ * cursus, quando existe e não é nula; senão, a difficulty do projeto.
+ */
+export function xpFor(
+  project: z.infer<typeof projectSchema>,
+  ctx: { campusId: number; cursusId: number }
+): number {
+  const session = project.project_sessions.find(
+    (s) => s.campus_id === ctx.campusId && s.cursus_id === ctx.cursusId && s.difficulty !== null
+  );
+  return session?.difficulty ?? project.difficulty;
+}
+
+/**
+ * Issues de validação sem valores: só o caminho e o código. As mensagens do Zod
+ * podem ecoar o que veio na resposta (AC9).
+ */
+export function describeIssues(error: z.ZodError): string[] {
+  return error.issues.map((i) => `${i.path.join('.') || '(raiz)'}: ${i.code}`);
+}
