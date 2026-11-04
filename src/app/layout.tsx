@@ -4,9 +4,9 @@ import './globals.css';
 
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
-import { AppShell } from '../components/app-shell.js';
-import { messages } from '../i18n/messages.js';
-import { cssVariables } from '../theme/tokens.js';
+import { AppShell } from '../components/app-shell';
+import { messages } from '../i18n/messages';
+import { cssVariables } from '../theme/tokens';
 
 export const metadata: Metadata = {
   title: messages.app.name,

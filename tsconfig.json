@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
 
     /* Camada 1: modo máximo de rigor. NÃO relaxar sem ADR. */
@@ -34,6 +34,7 @@
   "include": [
     "next-env.d.ts",
     "next.config.ts",
+    "drizzle.config.ts",
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests/**/*.ts",
