@@ -6,7 +6,7 @@
 
 .PHONY: help setup check format format-check typecheck lint test test-unit \
         test-acceptance test-properties test-e2e validate-specs verify-protected \
-        test-guards dev db-up db-down diff-budget onboard-status apply-proposals sync-protected \
+        test-guards dev db-up db-down db-generate db-migrate diff-budget onboard-status apply-proposals sync-protected \
         new-item new-track new-adr
 
 help: ## Lista os comandos disponíveis
@@ -24,6 +24,13 @@ db-up: ## Sobe o PostgreSQL local (Docker Compose)
 
 db-down: ## Pára o PostgreSQL local (os dados ficam no volume)
 	docker compose down
+
+db-generate: ## Gera a migração SQL a partir de src/db/schema.ts (drizzle-kit, ADR 0007)
+	npx drizzle-kit generate
+	npx prettier --write drizzle --log-level warn
+
+db-migrate: ## Aplica as migrações em drizzle/ à DATABASE_URL (precisa de make db-up e do .env)
+	npx drizzle-kit migrate
 
 onboard-status: ## O que falta configurar (o agente usa isto na skill de onboarding)
 	@node scripts/onboarding-status.mjs

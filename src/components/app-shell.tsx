@@ -1,8 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation.js';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { messages } from '../i18n/messages.js';
+import { messages } from '../i18n/messages';
 
 type NavKey = keyof typeof messages.shell.items;
 

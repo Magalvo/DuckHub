@@ -5,8 +5,8 @@
 // corpo das respostas chegam a mensagens de erro ou logs (AC9).
 import type { z } from 'zod';
 
-import { nextLink, retryAfterMs } from './http.js';
-import type { Clock, RateLimiter } from './rate-limiter.js';
+import { nextLink, retryAfterMs } from './http';
+import type { Clock, RateLimiter } from './rate-limiter';
 import {
   coalitionSchema,
   describeIssues,
@@ -17,11 +17,11 @@ import {
   type Coalition,
   type Profile,
   type ProjectUser,
-} from './schemas.js';
+} from './schemas';
 
-export { createRateLimiter } from './rate-limiter.js';
-export type { Clock, RateLimiter } from './rate-limiter.js';
-export type { Coalition, Profile, ProjectUser } from './schemas.js';
+export { createRateLimiter } from './rate-limiter';
+export type { Clock, RateLimiter } from './rate-limiter';
+export type { Coalition, Profile, ProjectUser } from './schemas';
 
 export type IntraFetch = (
   url: string,

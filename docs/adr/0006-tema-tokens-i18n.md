@@ -43,3 +43,14 @@ a segunda rota tem de resolver o `next/link`: ou `moduleResolution: Bundler` no 
 (proposta a um guardrail, com ADR), ou um wrapper tipado.
 
 Obrigatório: um novo par texto/superfície entra em `textOn` (`tokens.ts`), nunca direto no CSS.
+
+## Resolvido (WI-0004, 2026-11-04)
+
+O ponto 6 resolve-se com `module: ESNext` + `moduleResolution: Bundler` (ADR 0007), e o `next/link`
+compila. **Com Bundler, o Turbopack deixa de resolver `./x.js` para `./x.ts`** (o `tsc` aceita, o
+`next dev` falha com "Can't resolve"). Por isso, em `src/` os imports relativos são **sem
+extensão** (`'./handlers'`), e os do Next também (`'next/link'`, `'next/server'`,
+`'next/navigation'`). Os testes mantêm o `.js`, porque o Vitest resolve-o. As rotas internas
+podem usar `next/link`. Exceção: links para route handlers que
+redirecionam para fora, como `/auth/login`, ficam `<a>`, porque o prefetch do `next/link` iniciaria
+o fluxo OAuth. A shell continua com `<a>` até um WI lhe mexer.
