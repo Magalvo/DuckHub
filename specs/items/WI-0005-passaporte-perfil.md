@@ -43,8 +43,13 @@ ADR novo no mesmo branch:
 - **Data da sincronização** em `Europe/Lisbon`, formato `AAAA-MM-DD HH:mm`.
 - **Nível** com duas casas decimais, **truncado** e não arredondado: 5.179
   mostra 5.17, para nunca mostrar um nível que ainda não se atingiu.
-- **Cursus principal:** `42cursus`. Sem ele, o Passaporte é reduzido e o
-  cursus mostrado é o primeiro cujo slug contém `piscine`.
+- **Cursus principal:** `42cursus` (igualdade exata). Sem ele, o Passaporte
+  é reduzido e o cursus mostrado é `c-piscine`; sem esse, o primeiro cujo
+  slug contém `piscine`. Slugs confirmados com uma chamada real
+  (2026-11-05): `42cursus` (id 21) e `c-piscine` (id 9). Há mais de 20 cursus
+  com `piscine` no slug (`discovery-piscine-*`, `piscine-embedded`,
+  `java-piscine`, `piscine-c`, …) e um `42cursus-warmup-sp`, que não conta
+  como 42cursus.
 - **Estado dos projetos:** concluído = `finished` e `validated? = true`;
   falhado = `finished` e `validated? = false`; em curso = tudo o resto.
 - **Nomes dos projetos originais.** A tradução "mundo real" (WI-0006) entra
@@ -167,6 +172,7 @@ manual de dados, sincronização em background, tradução "mundo real" (WI-0006
   Node, sem type-checking) e o que mais for preciso no `package.json`.
 - O contrato do WI-0004 ganha uma linha (`syncPassport` no-op no `setup()`):
   é o humano que a faz.
-- Confirmar com uma chamada real o slug `42cursus`, o slug do cursus da
-  Piscine e a ordem das coalitions quando há mais do que uma.
+- Slugs `42cursus` e `c-piscine` confirmados com uma chamada real
+  (2026-11-05). Continua por confirmar a ordem das coalitions quando há mais
+  do que uma.
 - Depende de WI-0003 e WI-0004.

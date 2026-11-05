@@ -41,7 +41,11 @@ export interface PassportView {
   syncedAt: string; // "AAAA-MM-DD HH:mm", Europe/Lisbon
 }
 
+// Slugs confirmados com uma chamada real (2026-11-05): 42cursus (id 21) e
+// c-piscine (id 9). Há mais de 20 cursus com "piscine" no slug e um
+// "42cursus-warmup-sp", por isso o 42cursus compara-se por igualdade exata.
 const MAIN_CURSUS = '42cursus';
+const PISCINE_CURSUS = 'c-piscine';
 const TIME_ZONE = 'Europe/Lisbon';
 
 export function buildSnapshot(
@@ -106,7 +110,10 @@ export function formatSyncedAt(at: number): string {
 
 export function passportView(snapshot: PassportSnapshot, syncedAt: number): PassportView {
   const main = snapshot.cursus.find((c) => c.slug === MAIN_CURSUS);
-  const shown = main ?? snapshot.cursus.find((c) => c.slug.includes('piscine'));
+  const shown =
+    main ??
+    snapshot.cursus.find((c) => c.slug === PISCINE_CURSUS) ??
+    snapshot.cursus.find((c) => c.slug.includes('piscine'));
   return {
     login: snapshot.login,
     imageUrl: snapshot.imageUrl,

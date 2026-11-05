@@ -32,8 +32,12 @@ Passaporte precisa de sessão, sem login real nem rede.
 5. **Nível truncado a duas casas**, nunca arredondado: 5.179 mostra 5.17. A implementação
    arredonda primeiro a 6 casas e corta a string, porque `Math.floor(x * 100)` falha com floats
    (0.29 daria 0.28). Há um teste de propriedades que o verifica.
-6. **Cursus principal:** `42cursus`. Sem ele, o Passaporte é reduzido e mostra o primeiro cursus
-   cujo slug contém `piscine`. Estados: concluído = `finished` e `validated? = true`; falhado =
+6. **Cursus principal:** `42cursus`, por igualdade exata. Sem ele, o Passaporte é reduzido e
+   mostra `c-piscine`; sem esse, o primeiro cursus cujo slug contém `piscine`. A escolha é
+   determinística, seja qual for a ordem em que a API devolve os cursus. Slugs confirmados com
+   uma chamada real (2026-11-05): `42cursus` (id 21) e `c-piscine` (id 9). Há mais de 20 cursus
+   com `piscine` no slug (`discovery-piscine-*`, `piscine-embedded`, `java-piscine`,
+   `piscine-c`, …) e um `42cursus-warmup-sp`, que não conta como 42cursus. Estados: concluído = `finished` e `validated? = true`; falhado =
    `finished` e `validated? = false`; em curso = tudo o resto.
 7. **A página volta a verificar a sessão** (além do proxy): o `userId` vem sempre do cookie de
    sessão do próprio pedido (AC7).
@@ -71,5 +75,5 @@ Obrigatório:
 
 ## Em aberto
 
-Confirmar com uma chamada real o slug `42cursus`, o slug do cursus da Piscine e a ordem das
-coalitions quando há mais do que uma (ADR 0003, "Em aberto" 1).
+Confirmar com uma chamada real a ordem das coalitions quando há mais do que uma. Os slugs
+`42cursus` e `c-piscine` já estão confirmados (2026-11-05; ADR 0003, "Em aberto" 1).
