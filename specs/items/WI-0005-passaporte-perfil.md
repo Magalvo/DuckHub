@@ -1,7 +1,7 @@
 ---
 id: WI-0005
 title: Passaporte do próprio utilizador
-status: in-progress
+status: done
 track: WT-0002
 owner: Magalvo
 acceptance:
