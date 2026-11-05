@@ -15,7 +15,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
   if (isPublicPath(request.nextUrl.pathname)) return NextResponse.next();
   if (!request.cookies.has(SESSION_COOKIE)) return toLogin(request);
 
-  const deps = authDeps();
+  const deps = await authDeps();
   const session = await resolveSession(request, deps);
   if (session === null) {
     const response = toLogin(request);

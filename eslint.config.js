@@ -15,6 +15,9 @@ export default tseslint.config(
       'coverage/',
       '.agent/proposals/',
       '.next/',
+      // distDir e BD do e2e (ADR 0008)
+      '.next-e2e/',
+      '.e2e/',
       'next-env.d.ts',
     ],
   },
@@ -61,8 +64,9 @@ export default tseslint.config(
     },
   },
   {
-    // Scripts de tooling (Node puro, sem type-checking de projeto)
-    files: ['scripts/**/*.mjs', '.claude/hooks/**/*.mjs'],
+    // Scripts de Node puro, sem type-checking de projeto: tooling e o seed do
+    // e2e (tests/acceptance/e2e/seed.mjs, WI-0005).
+    files: ['scripts/**/*.mjs', '.claude/hooks/**/*.mjs', 'tests/**/*.mjs'],
     extends: [tseslint.configs.disableTypeChecked],
     languageOptions: {
       globals: { process: 'readonly', console: 'readonly', URL: 'readonly' },

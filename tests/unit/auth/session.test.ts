@@ -34,6 +34,7 @@ function setup(expiresAt: number) {
     randomToken: () => 'aleatorio',
     exchangeCode: () => Promise.resolve({ ok: false }),
     fetchProfile: () => Promise.resolve({ ok: false, error: { kind: 'network' } }),
+    syncPassport: () => Promise.resolve(),
     store: {
       upsertUser: () => Promise.resolve({ userId: 'user-1' }),
       createSession: () => Promise.resolve(),

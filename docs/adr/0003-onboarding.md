@@ -163,12 +163,16 @@ decididas pelo humano.
       para texto sobre o fundo (WI-0005);
     - **IDs de campus:** Lisboa = 38, Porto = 58. São configuração do WI-0004,
       nunca código.
+12. **Slugs dos cursus (2026-11-05, WI-0005):** confirmados com uma chamada
+    real a `/v2/cursus`: `42cursus` (id 21) e `c-piscine` (id 9). Há mais de
+    20 cursus com `piscine` no slug e um `42cursus-warmup-sp`, por isso o
+    Passaporte escolhe por igualdade exata (ADR 0008).
 
 ## Em aberto
 
-1. **Confirmar o slug `42cursus`** com uma chamada real, quando o WI-0005
-   escolher o cursus principal. Os campos dos schemas e os IDs de campus já
-   estão confirmados (ponto 11 acima).
+1. **Ordem das coalitions:** confirmar com uma conta que tenha mais do que
+   uma coalition qual é a "principal". O Passaporte usa a primeira que a API
+   devolve (ADR 0008).
 2. **Alumni e OAuth:** confirmar com uma conta Alumni real que o login
    continua a funcionar e qual é o campus principal.
 3. **Fórmula do XP ganho:** confirmar o arredondamento e a regra de bónus
@@ -177,3 +181,6 @@ decididas pelo humano.
 5. **Alojamento** e base de dados gerida.
 6. **Permissões do Codex:** traduzir `.agent/permissions.json` para o formato
    do Codex, com a documentação oficial à frente.
+7. **Retenção de contas inativas (RGPD):** quem nunca volta fica com a linha
+   em `users` e o Passaporte para sempre. Decidir um prazo (por exemplo,
+   apagar contas sem login há 12 meses) antes do lançamento público.

@@ -1,0 +1,100 @@
+{
+  "users": [
+    {
+      "key": "pato",
+      "intraId": 90001,
+      "login": "pato-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-pato-q7Zk2mW9xPa4LrT8vBn3",
+      "syncedAt": "2026-07-15T13:05:00Z",
+      "snapshot": {
+        "login": "pato-teste",
+        "imageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'/%3E",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "september", "year": 2023 },
+        "isAlumni": false,
+        "coalition": { "name": "Os Patos", "color": "#0E12B5" },
+        "cursus": [
+          { "slug": "c-piscine", "name": "C Piscine", "level": 8.42 },
+          { "slug": "42cursus", "name": "42cursus", "level": 5.179 }
+        ],
+        "projects": [
+          {
+            "slug": "projeto-concluido",
+            "name": "Projeto Concluído",
+            "status": "finished",
+            "finalMark": 115,
+            "validated": true
+          },
+          {
+            "slug": "projeto-falhado",
+            "name": "Projeto Falhado",
+            "status": "finished",
+            "finalMark": 42,
+            "validated": false
+          },
+          {
+            "slug": "projeto-em-curso",
+            "name": "Projeto Em Curso",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      }
+    },
+    {
+      "key": "marreco",
+      "intraId": 90002,
+      "login": "marreco-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-marreco-Hd8sPq2LmZx5Vb1Nc7",
+      "syncedAt": "2026-11-04T14:30:00Z",
+      "snapshot": {
+        "login": "marreco-teste",
+        "imageUrl": null,
+        "campus": "Campus Sintético",
+        "piscine": { "month": "february", "year": 2026 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "c-piscine", "name": "C Piscine", "level": 8.42 }],
+        "projects": [
+          {
+            "slug": "piscine-sintetica-00",
+            "name": "Piscine Sintética 00",
+            "status": "finished",
+            "finalMark": 100,
+            "validated": true
+          }
+        ]
+      }
+    },
+    {
+      "key": "cisne",
+      "intraId": 90003,
+      "login": "cisne-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-cisne-Wr4tYu6IoPa9SdF2gH",
+      "syncedAt": "2026-11-04T14:30:00Z",
+      "snapshot": {
+        "login": "cisne-teste",
+        "imageUrl": null,
+        "campus": "Campus Sintético",
+        "piscine": { "month": "march", "year": 2019 },
+        "isAlumni": true,
+        "coalition": { "name": "Os Gansos", "color": "#FF6000" },
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 21 }],
+        "projects": []
+      }
+    },
+    {
+      "key": "ganso",
+      "intraId": 90004,
+      "login": "ganso-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-ganso-Jk3lZx8CvBn0Mq5We1",
+      "syncedAt": null,
+      "snapshot": null
+    }
+  ]
+}

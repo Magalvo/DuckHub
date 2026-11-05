@@ -5,6 +5,10 @@ package-lock.json
 .next/
 next-env.d.ts
 
+# e2e (ADR 0008): distDir próprio e BD PGlite recriada pelo seed
+.next-e2e/
+.e2e/
+
 # Gerados por scripts/protected-paths.mjs sync
 .agent/templates/claude-settings.json
 .agent/templates/CODEOWNERS

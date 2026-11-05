@@ -1,5 +1,6 @@
-// Store Drizzle contra PostgreSQL real em memória (PGlite), com as mesmas
-// migrações SQL de drizzle/ que correm em produção (ADR 0007). Dados inventados.
+// Stores Drizzle contra PostgreSQL real em memória (PGlite), com as mesmas
+// migrações SQL de drizzle/ que correm em produção (ADR 0007 e 0008). Dados
+// inventados.
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
@@ -7,6 +8,9 @@ import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 
 import type { SessionStore } from '../../src/auth/handlers.js';
 import { createDrizzleStore } from '../../src/db/store.js';
+import type { PassportSnapshot } from '../../src/passport/passport.js';
+import { createDrizzlePassportStore } from '../../src/passport/store.js';
+import type { PassportStore } from '../../src/passport/sync.js';
 
 // Bem no futuro (2096): o createSession limpa contra o now() real da BD.
 const NOW = 4_000_000_000_000;
@@ -16,6 +20,20 @@ const marreco = { intraId: 90002, login: 'marreco-teste', campusId: 9002 };
 
 let client: PGlite;
 let store: SessionStore;
+let passports: PassportStore;
+
+const snapshot = (login: string): PassportSnapshot => ({
+  login,
+  imageUrl: 'https://cdn.example.test/foto.jpg',
+  campus: 'Campus Sintético',
+  piscine: { month: 'september', year: 2023 },
+  isAlumni: false,
+  coalition: { name: 'Os Patos', color: '#0E12B5' },
+  cursus: [{ slug: '42cursus', name: '42cursus', level: 5.17 }],
+  projects: [
+    { slug: 'projeto-1', name: 'Projeto 1', status: 'finished', finalMark: 100, validated: true },
+  ],
+});
 
 // Arrancar o PGlite custa segundos: uma instância por ficheiro, limpa entre testes.
 beforeAll(async () => {
@@ -23,6 +41,7 @@ beforeAll(async () => {
   const db = drizzle(client);
   await migrate(db, { migrationsFolder: 'drizzle' });
   store = createDrizzleStore(db);
+  passports = createDrizzlePassportStore(db);
 });
 
 beforeEach(async () => {
@@ -38,10 +57,19 @@ async function allTables(): Promise<string[]> {
   return rows.map((r) => r.table_name);
 }
 
-/** Linhas de uma tabela em que algum valor é um dos procurados. */
+/**
+ * Um valor de uma linha menciona um dos procurados: igual, se for escalar, ou
+ * como string JSON lá dentro, se for JSONB (p. ex. o login no snapshot).
+ */
+const mentions = (value: unknown, needles: readonly string[]): boolean =>
+  typeof value === 'object' && value !== null && !(value instanceof Date)
+    ? needles.some((n) => JSON.stringify(value).includes(JSON.stringify(n)))
+    : needles.includes(String(value));
+
+/** Linhas de uma tabela em que algum valor menciona um dos procurados. */
 async function rowsMentioning(table: string, needles: readonly string[]): Promise<unknown[]> {
   const { rows } = await client.query<Record<string, unknown>>(`SELECT * FROM "${table}"`);
-  return rows.filter((row) => Object.values(row).some((v) => needles.includes(String(v))));
+  return rows.filter((row) => Object.values(row).some((v) => mentions(v, needles)));
 }
 
 describe('createDrizzleStore (PGlite)', () => {
@@ -76,11 +104,13 @@ describe('createDrizzleStore (PGlite)', () => {
         expiresAt: NOW + DAY,
       });
     }
+    await passports.save(gone.userId, snapshot(pato.login), NOW);
+    await passports.save(kept.userId, snapshot(marreco.login), NOW);
 
     await store.deleteUser(gone.userId);
 
     const tables = await allTables();
-    expect(tables).toEqual(expect.arrayContaining(['users', 'sessions']));
+    expect(tables).toEqual(expect.arrayContaining(['users', 'sessions', 'passports']));
     const goneIds = [gone.userId, String(pato.intraId), pato.login, 'hash-0', 'hash-1'];
     for (const table of tables) {
       expect({ table, rows: await rowsMentioning(table, goneIds) }).toEqual({ table, rows: [] });
@@ -91,6 +121,7 @@ describe('createDrizzleStore (PGlite)', () => {
       expiresAt: NOW + DAY,
     });
     expect(await rowsMentioning('users', [kept.userId])).toHaveLength(1);
+    expect(await passports.load(kept.userId)).not.toBeNull();
   });
 
   it('criar uma sessão apaga as sessões já expiradas, de qualquer utilizador', async () => {
@@ -111,5 +142,34 @@ describe('createDrizzleStore (PGlite)', () => {
     const { userId } = await store.upsertUser(pato);
     await store.deleteUser(userId);
     await expect(store.deleteUser(userId)).resolves.toBeUndefined();
+  });
+});
+
+describe('createDrizzlePassportStore (PGlite)', () => {
+  it('guarda e lê o snapshot; guardar de novo substitui-o', async () => {
+    const { userId } = await store.upsertUser(pato);
+    expect(await passports.load(userId)).toBeNull();
+    await passports.save(userId, snapshot(pato.login), NOW);
+    expect(await passports.load(userId)).toEqual({ snapshot: snapshot(pato.login), syncedAt: NOW });
+
+    const newer = { ...snapshot(pato.login), isAlumni: true };
+    await passports.save(userId, newer, NOW + DAY);
+    expect(await passports.load(userId)).toEqual({ snapshot: newer, syncedAt: NOW + DAY });
+    const { rows } = await client.query('SELECT user_id FROM passports');
+    expect(rows).toHaveLength(1);
+  });
+
+  it.each([
+    ['sem login', { ...snapshot(pato.login), login: undefined }],
+    ['cor que não é hex', { ...snapshot(pato.login), coalition: { name: 'X', color: 'red;x' } }],
+    ['foto com outro protocolo', { ...snapshot(pato.login), imageUrl: 'javascript:alert(1)' }],
+    ['não é um objeto', 'texto'],
+  ])('um snapshot inválido (%s) lê-se como null', async (_case, invalid) => {
+    const { userId } = await store.upsertUser(pato);
+    await client.query(
+      'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
+      [userId, JSON.stringify(invalid)]
+    );
+    expect(await passports.load(userId)).toBeNull();
   });
 });

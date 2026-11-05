@@ -119,6 +119,8 @@ function setup(options: Options = {}) {
           ? (options.profile ?? { ok: true, value: profile(9001, piscineOnly) })
           : { ok: false, error: { kind: 'http', status: 401 } }
       ),
+    // WI-0005: a sincronização do Passaporte tem contrato próprio.
+    syncPassport: () => Promise.resolve(),
     store: mem.store,
   };
   return {

@@ -58,3 +58,8 @@ correr o check.
 
 Proibido: `retries` acima de 0, `test.only` no contrato, e desligar regras do
 axe nos testes de aceitação sem um ADR que o justifique.
+
+## Alterado (WI-0005, 2026-11-04)
+
+O ponto 3 foi substituído pelo ADR 0008: o `webServer` corre o seed do contrato e o `next dev` na
+porta 3100, com uma BD PGlite sintética e um `distDir` próprio, e nunca reaproveita um servidor.
