@@ -39,7 +39,7 @@ async function openAs(
 
 const passport = (page: Page) => page.locator('main section').first();
 
-test('AC1: mostra login, foto, campus, Piscine, coalition e nível', async ({
+test('AC1: mostra login, avatar, campus, Piscine, coalition e nível', async ({
   context,
   page,
   baseURL,

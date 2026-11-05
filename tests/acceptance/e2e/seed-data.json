@@ -38,6 +38,13 @@
             "status": "in_progress",
             "finalMark": null,
             "validated": null
+          },
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "finished",
+            "finalMark": 101,
+            "validated": true
           }
         ]
       }
