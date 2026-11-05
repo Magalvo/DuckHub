@@ -1,7 +1,8 @@
 // Passaporte (WI-0005). A cor da coalition (--accent) só entra em elementos não
 // textuais (barra, borda, glow): o texto usa sempre os tokens do tema, porque a
-// cor vem da API e pode não ter contraste (ADR 0008). Números em JetBrains Mono.
-import Image from 'next/image';
+// cor vem da API e pode não ter contraste (ADR 0008). A exceção é o avatar
+// (WI-0008): as iniciais são preto ou branco puro, o de mais contraste com o
+// fundo, o que garante sempre pelo menos 4.5:1. Números em JetBrains Mono.
 import type { CSSProperties, ReactNode } from 'react';
 
 import { messages } from '../i18n/messages';
@@ -58,21 +59,16 @@ export function Passport({ view }: { readonly view: PassportView }) {
       >
         <div aria-hidden="true" className="h-1.5 bg-(--accent)" />
         <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center">
-          {view.imageUrl === null ? (
-            <div
-              aria-hidden="true"
-              className="size-24 shrink-0 rounded-full border-2 border-(--accent) bg-surface-3"
-            />
-          ) : (
-            <Image
-              src={view.imageUrl}
-              alt={passport.photoAlt}
-              width={96}
-              height={96}
-              unoptimized
-              className="size-24 shrink-0 rounded-full border-2 border-(--accent) object-cover"
-            />
-          )}
+          <div
+            role="img"
+            aria-label={passport.photoAlt}
+            style={{ backgroundColor: view.accentColor, color: view.avatarText }}
+            className="flex size-24 shrink-0 items-center justify-center rounded-full"
+          >
+            <span aria-hidden="true" className="font-mono text-3xl font-extrabold">
+              {view.initials}
+            </span>
+          </div>
           <div>
             <h1 id="passport-title" className="font-mono text-3xl font-extrabold tracking-tight">
               {view.login}

@@ -9,17 +9,11 @@ import { passports } from '../db/schema';
 import type { PassportSnapshot } from './passport';
 import type { PassportStore } from './sync';
 
-/** A foto só pode ser https (CDN da 42) ou uma imagem inline. */
-const imageUrl = z
-  .string()
-  .refine((s) => URL.canParse(s) && ['https:', 'data:'].includes(new URL(s).protocol));
-
 /** A cor entra numa variável CSS: só hex, nada que se possa injetar. */
 const hexColor = z.string().regex(/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i);
 
 const snapshotSchema: z.ZodType<PassportSnapshot> = z.object({
   login: z.string().min(1),
-  imageUrl: imageUrl.nullable(),
   campus: z.string(),
   piscine: z.object({ month: z.string(), year: z.number().int() }),
   isAlumni: z.boolean(),

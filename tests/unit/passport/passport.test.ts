@@ -11,7 +11,6 @@ const warmup = { slug: '42cursus-warmup-sp', name: 'Warmup Sintético', level: 1
 function snapshot(cursus: PassportSnapshot['cursus']): PassportSnapshot {
   return {
     login: 'pato-teste',
-    imageUrl: null,
     campus: 'Campus Sintético',
     piscine: { month: 'september', year: 2023 },
     isAlumni: false,

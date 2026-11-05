@@ -63,11 +63,12 @@ const SUMMER = Date.UTC(2026, 6, 15, 13, 5);
 const WINTER = Date.UTC(2026, 10, 4, 14, 30);
 
 describe('WI-0005 — snapshot e vista do Passaporte', () => {
-  it('AC1: mostra login, foto, campus, Piscine, coalition e nível com 2 casas', () => {
+  // WI-0008: a foto da 42 deixou de ser acessível; o avatar com iniciais tem
+  // contrato próprio (wi-0008-avatar.acceptance.test.ts).
+  it('AC1: mostra login, campus, Piscine, coalition e nível com 2 casas', () => {
     const view = passportView(buildSnapshot(profile(), coalitions, projects), WINTER);
     expect(view).toMatchObject({
       login: 'pato-teste',
-      imageUrl: 'https://cdn.example.test/pato-teste.jpg',
       campus: 'Campus Sintético',
       piscine: { month: 'september', year: 2023 },
       coalitionName: 'Os Patos',

@@ -3,13 +3,14 @@
 // decide o que a página mostra. Nada de presença no campus, logtime nem
 // blackholed_at (regra 9, AC8).
 import type { Coalition, Profile, ProjectUser } from '../intra/client';
+import { avatarColors, initialsFromLogin } from './avatar';
 
 export const DEFAULT_ACCENT = '#00BABC'; // Cyber-Teal (AC4)
 
 /** O que se guarda em passports.snapshot (JSONB). */
+// A foto da 42 não se guarda nem se mostra (WI-0008): a CDN responde 403.
 export interface PassportSnapshot {
   login: string;
-  imageUrl: string | null;
   campus: string;
   piscine: { month: string; year: number };
   isAlumni: boolean;
@@ -29,7 +30,8 @@ export type ProjectState = 'done' | 'failed' | 'in-progress';
 /** O que a página mostra. */
 export interface PassportView {
   login: string;
-  imageUrl: string | null;
+  initials: string; // do login, no avatar (WI-0008)
+  avatarText: '#000000' | '#FFFFFF'; // a de mais contraste com accentColor
   campus: string;
   piscine: { month: string; year: number };
   isAlumni: boolean;
@@ -57,7 +59,6 @@ export function buildSnapshot(
   const [coalition] = coalitions;
   return {
     login: profile.login,
-    imageUrl: profile.imageUrl,
     campus: profile.primaryCampus.name,
     piscine: { month: profile.piscine.month, year: profile.piscine.year },
     isAlumni: profile.isAlumni,
@@ -114,14 +115,16 @@ export function passportView(snapshot: PassportSnapshot, syncedAt: number): Pass
     main ??
     snapshot.cursus.find((c) => c.slug === PISCINE_CURSUS) ??
     snapshot.cursus.find((c) => c.slug.includes('piscine'));
+  const accentColor = snapshot.coalition?.color ?? DEFAULT_ACCENT;
   return {
     login: snapshot.login,
-    imageUrl: snapshot.imageUrl,
+    initials: initialsFromLogin(snapshot.login),
+    avatarText: avatarColors(accentColor).text,
     campus: snapshot.campus,
     piscine: snapshot.piscine,
     isAlumni: snapshot.isAlumni,
     coalitionName: snapshot.coalition?.name ?? null,
-    accentColor: snapshot.coalition?.color ?? DEFAULT_ACCENT,
+    accentColor,
     reduced: main === undefined,
     mainCursus: shown === undefined ? null : { name: shown.name, level: formatLevel(shown.level) },
     projects: snapshot.projects.map((p) => ({
