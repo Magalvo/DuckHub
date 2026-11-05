@@ -1,10 +1,15 @@
 // Stores Drizzle contra PostgreSQL real em memória (PGlite), com as mesmas
 // migrações SQL de drizzle/ que correm em produção (ADR 0007 e 0008). Dados
 // inventados.
+import { copyFile, mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { PGlite } from '@electric-sql/pglite';
 import { drizzle } from 'drizzle-orm/pglite';
 import { migrate } from 'drizzle-orm/pglite/migrator';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { z } from 'zod';
 
 import type { SessionStore } from '../../src/auth/handlers.js';
 import { createDrizzleStore } from '../../src/db/store.js';
@@ -24,7 +29,6 @@ let passports: PassportStore;
 
 const snapshot = (login: string): PassportSnapshot => ({
   login,
-  imageUrl: 'https://cdn.example.test/foto.jpg',
   campus: 'Campus Sintético',
   piscine: { month: 'september', year: 2023 },
   isAlumni: false,
@@ -162,7 +166,6 @@ describe('createDrizzlePassportStore (PGlite)', () => {
   it.each([
     ['sem login', { ...snapshot(pato.login), login: undefined }],
     ['cor que não é hex', { ...snapshot(pato.login), coalition: { name: 'X', color: 'red;x' } }],
-    ['foto com outro protocolo', { ...snapshot(pato.login), imageUrl: 'javascript:alert(1)' }],
     ['não é um objeto', 'texto'],
   ])('um snapshot inválido (%s) lê-se como null', async (_case, invalid) => {
     const { userId } = await store.upsertUser(pato);
@@ -171,5 +174,75 @@ describe('createDrizzlePassportStore (PGlite)', () => {
       [userId, JSON.stringify(invalid)]
     );
     expect(await passports.load(userId)).toBeNull();
+  });
+
+  it('um snapshot antigo com imageUrl lê-se sem ele (WI-0008)', async () => {
+    const { userId } = await store.upsertUser(pato);
+    const old = { ...snapshot(pato.login), imageUrl: 'https://cdn.example.test/foto.jpg' };
+    await client.query(
+      'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
+      [userId, JSON.stringify(old)]
+    );
+    const loaded = await passports.load(userId);
+    expect(loaded?.snapshot).toEqual(snapshot(pato.login));
+    expect(loaded?.snapshot).not.toHaveProperty('imageUrl');
+  });
+});
+
+const journalSchema = z
+  .object({ entries: z.array(z.object({ tag: z.string() }).passthrough()) })
+  .passthrough();
+
+/** Cópia de drizzle/ só com as migrações até `lastTag`, inclusive. */
+async function migrationsUpTo(lastTag: string): Promise<string> {
+  const dir = await mkdtemp(join(tmpdir(), 'duckhub-migrations-'));
+  await mkdir(join(dir, 'meta'));
+  const journal = journalSchema.parse(
+    JSON.parse(await readFile('drizzle/meta/_journal.json', 'utf8'))
+  );
+  const end = journal.entries.findIndex((e) => e.tag === lastTag);
+  expect(end).toBeGreaterThanOrEqual(0);
+  const entries = journal.entries.slice(0, end + 1);
+  for (const { tag } of entries) {
+    await copyFile(join('drizzle', `${tag}.sql`), join(dir, `${tag}.sql`));
+  }
+  await writeFile(join(dir, 'meta', '_journal.json'), JSON.stringify({ ...journal, entries }));
+  return dir;
+}
+
+describe('migração 0002_passports_drop_image_url (PGlite)', () => {
+  it('tira o imageUrl dos snapshots já guardados e deixa o resto igual', async () => {
+    const old = new PGlite();
+    const db = drizzle(old);
+    const partial = await migrationsUpTo('0001_passports');
+    try {
+      await migrate(db, { migrationsFolder: partial });
+    } finally {
+      await rm(partial, { recursive: true, force: true });
+    }
+    const users = createDrizzleStore(db);
+    const a = await users.upsertUser(pato);
+    const b = await users.upsertUser(marreco);
+    const withPhoto = { ...snapshot(pato.login), imageUrl: 'https://cdn.example.test/foto.jpg' };
+    const withoutPhoto = snapshot(marreco.login);
+    for (const [userId, value] of [
+      [a.userId, withPhoto],
+      [b.userId, withoutPhoto],
+    ] as const) {
+      await old.query(
+        'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
+        [userId, JSON.stringify(value)]
+      );
+    }
+
+    await migrate(db, { migrationsFolder: 'drizzle' });
+
+    const { rows } = await old.query<{ user_id: string; snapshot: unknown }>(
+      'SELECT user_id, snapshot FROM passports'
+    );
+    expect(rows).toHaveLength(2);
+    expect(rows.find((r) => r.user_id === a.userId)?.snapshot).toEqual(snapshot(pato.login));
+    expect(rows.find((r) => r.user_id === b.userId)?.snapshot).toEqual(withoutPhoto);
+    await old.close();
   });
 });

@@ -9,7 +9,6 @@
       "syncedAt": "2026-07-15T13:05:00Z",
       "snapshot": {
         "login": "pato-teste",
-        "imageUrl": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'/%3E",
         "campus": "Campus Sintético",
         "piscine": { "month": "september", "year": 2023 },
         "isAlumni": false,
@@ -52,7 +51,6 @@
       "syncedAt": "2026-11-04T14:30:00Z",
       "snapshot": {
         "login": "marreco-teste",
-        "imageUrl": null,
         "campus": "Campus Sintético",
         "piscine": { "month": "february", "year": 2026 },
         "isAlumni": false,
@@ -78,7 +76,6 @@
       "syncedAt": "2026-11-04T14:30:00Z",
       "snapshot": {
         "login": "cisne-teste",
-        "imageUrl": null,
         "campus": "Campus Sintético",
         "piscine": { "month": "march", "year": 2019 },
         "isAlumni": true,

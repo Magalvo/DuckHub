@@ -22,7 +22,7 @@ export const en = {
   // Passaporte (WI-0005). Os valores (login, campus, nível…) vêm do snapshot.
   passport: {
     title: 'Your Passport',
-    photoAlt: 'Your 42 profile photo',
+    photoAlt: 'Your initials',
     alumni: 'Alumni',
     reduced: 'Piscine Passport: the full Passport unlocks when you start the Common Core.',
     detailsLabel: 'Passport details',
@@ -66,7 +66,7 @@ export const en = {
         purpose: 'To keep you signed in. Sessions expire after 30 days without use.',
       },
       {
-        data: 'Your Passport: profile photo link, campus name, Piscine month and year, Alumni status, coalition name and colour, cursus names and levels',
+        data: 'Your Passport: campus name, Piscine month and year, Alumni status, coalition name and colour, cursus names and levels',
         purpose: 'To show your Passport without asking the 42 API on every visit.',
       },
       {

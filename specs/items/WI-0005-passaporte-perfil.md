@@ -23,6 +23,11 @@ acceptance:
 É o coração do primeiro incremento. Depois do login, o aluno tem de ver o seu
 percurso na 42 sem ter preenchido nada.
 
+> **Nota (2026-11-05):** a foto da 42 foi substituída por um avatar com as
+> iniciais do login e o `imageUrl` saiu do snapshot e da vista (WI-0008,
+> ADR 0008 ponto 8): a CDN da 42 passou a responder 403. Onde abaixo se fala
+> da foto, vale o WI-0008.
+
 ## Proposta
 
 Página do Passaporte em `/`, que lê o snapshot guardado na última

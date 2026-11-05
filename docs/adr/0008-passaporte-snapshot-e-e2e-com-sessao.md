@@ -16,8 +16,8 @@ Passaporte precisa de sessão, sem login real nem rede.
 
 1. **Snapshot JSONB.** Tabela `passports` (`user_id` PK com `ON DELETE CASCADE`, `snapshot` jsonb,
    `synced_at`). Guarda-se só o que a página mostra (`buildSnapshot`). Ao ler, o snapshot passa
-   por Zod (`src/passport/store.ts`): a cor só pode ser hex, porque entra numa variável CSS, e a
-   foto só pode ser `https:` ou `data:`. Um snapshot inválido lê-se como "ainda não sincronizado",
+   por Zod (`src/passport/store.ts`): a cor só pode ser hex, porque entra numa variável CSS. Um
+   snapshot inválido lê-se como "ainda não sincronizado",
    e o conteúdo inválido não se regista em lado nenhum.
 2. **Sincronização no callback, sem bloquear o login.** `AuthDeps.syncPassport` corre depois do
    `upsertUser` e o callback espera por ela, para o primeiro acesso já mostrar o Passaporte.
@@ -41,8 +41,18 @@ Passaporte precisa de sessão, sem login real nem rede.
    `finished` e `validated? = false`; em curso = tudo o resto.
 7. **A página volta a verificar a sessão** (além do proxy): o `userId` vem sempre do cookie de
    sessão do próprio pedido (AC7).
-8. **Foto com `next/image` `unoptimized`:** o browser vai buscá-la diretamente à CDN da 42, sem
-   passar pelo servidor e sem allowlist de hosts.
+8. **Avatar com iniciais, sem foto (WI-0008, 2026-11-05).** A primeira versão mostrava a foto da
+   42 com `next/image` `unoptimized`. As fotos deixaram de ser acessíveis fora da Intra: todas as
+   versões em `cdn.intra.42.fr` respondem 403, com ou sem referer (verificado pelo humano a
+   2026-11-05), e o Passaporte mostrava uma imagem partida. Agora é um círculo com as iniciais do
+   login (1.ª letra e a 1.ª depois do hífen: `pato-teste` → `PT`), com `role="img"` e nome
+   acessível. O fundo é a cor de destaque e as letras são `#000000` ou `#FFFFFF` puros, o de mais
+   contraste: para qualquer cor, um dos dois dá pelo menos 4.58:1 (com o preto do tema, não). É a
+   única exceção ao ponto 3, porque o contraste fica garantido por construção. **O URL da foto
+   saiu do snapshot** (regra 9: se não se mostra, não se guarda) e a migração
+   `0002_passports_drop_image_url` tira-o dos snapshots já guardados. O cliente do WI-0003
+   continua a ler `image.link`, mas o valor nunca se guarda. Se a 42 voltar a abrir a CDN, a foto
+   volta noutro WI.
 9. **E2e com sessão em PGlite.** O `webServer` do Playwright corre primeiro o seed do contrato
    (`tests/acceptance/e2e/seed.mjs`), que recria uma BD PGlite em disco (`.e2e/db`) com
    utilizadores, sessões e Passaportes sintéticos, e depois o `next dev` na **porta 3100**, com
