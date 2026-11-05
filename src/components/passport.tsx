@@ -7,6 +7,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { messages } from '../i18n/messages';
 import type { PassportView, ProjectState } from '../passport/passport';
+import { realWorldFor } from '../passport/real-world';
 
 const { passport } = messages;
 
@@ -120,12 +121,19 @@ export function Passport({ view }: { readonly view: PassportView }) {
           <ul className="mt-4 flex flex-col gap-2">
             {view.projects.map((p) => {
               const style = stateStyle[p.state];
+              // Tradução "mundo real" pelo slug (WI-0006); sem ela, só o nome.
+              const realWorld = realWorldFor(p.slug);
               return (
                 <li
                   key={p.slug}
                   className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-md border border-hairline bg-surface-2 px-4 py-3"
                 >
-                  <span className="flex-1 font-medium">{p.name}</span>
+                  <span className="flex flex-1 flex-col">
+                    <span className="font-medium">{p.name}</span>
+                    {realWorld !== null && (
+                      <span className="text-sm text-text-muted">{realWorld.title}</span>
+                    )}
+                  </span>
                   <span className={`flex items-center gap-1.5 text-sm ${style.className}`}>
                     <Icon d={style.icon} />
                     {stateLabel[p.state]}
@@ -135,6 +143,14 @@ export function Passport({ view }: { readonly view: PassportView }) {
                       <span className="text-text-muted">{passport.mark}</span>
                       <span className="font-mono font-semibold">{p.finalMark}</span>
                     </span>
+                  )}
+                  {realWorld !== null && (
+                    <details className="basis-full text-sm">
+                      <summary className="w-fit cursor-pointer rounded-sm text-text-muted hover:text-text">
+                        {passport.aboutProject}
+                      </summary>
+                      <p className="mt-2">{realWorld.description}</p>
+                    </details>
                   )}
                 </li>
               );

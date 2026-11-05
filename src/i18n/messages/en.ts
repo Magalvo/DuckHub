@@ -33,6 +33,7 @@ export const en = {
     level: 'Level',
     projects: 'Projects',
     noProjects: 'No projects yet.',
+    aboutProject: 'What this project involves', // WI-0006
     mark: 'Mark',
     states: { done: 'Validated', failed: 'Failed', inProgress: 'In progress' },
     syncedAt: 'Last synced',

@@ -1,0 +1,113 @@
+[
+  {
+    "slugs": ["42cursus-libft"],
+    "title": "C standard library reimplementation",
+    "description": "Rebuilt a subset of the C standard library (string, memory and linked-list functions) as a reusable static library, without external dependencies."
+  },
+  {
+    "slugs": ["42cursus-ft_printf"],
+    "title": "Formatted output with variadic functions in C",
+    "description": "Reimplemented printf from scratch with variadic arguments, handling conversions for characters, strings, integers, pointers and hexadecimal."
+  },
+  {
+    "slugs": ["42cursus-get_next_line"],
+    "title": "Buffered line reader in C",
+    "description": "Reads any file descriptor one line at a time, with static state, a configurable buffer size and careful memory management."
+  },
+  {
+    "slugs": ["born2beroot"],
+    "title": "Linux server setup and hardening",
+    "description": "Installed and configured a Debian or Rocky Linux virtual machine with encrypted LVM partitions, SSH, a firewall, a strict password policy, sudo logging and a monitoring script."
+  },
+  {
+    "slugs": ["42cursus-push_swap"],
+    "title": "Sorting algorithm optimisation",
+    "description": "Sorts integers using two stacks and a limited set of operations, minimising the number of moves. Focused on algorithmic complexity."
+  },
+  {
+    "slugs": ["pipex"],
+    "title": "Unix pipes and process management",
+    "description": "Reproduces shell pipelines in C with fork, execve, pipe and dup2, including file redirections and error handling."
+  },
+  {
+    "slugs": ["minitalk"],
+    "title": "Inter-process communication with signals",
+    "description": "Client–server messaging in C that sends data bit by bit using only UNIX signals."
+  },
+  {
+    "slugs": ["so_long"],
+    "title": "2D game with a graphics library",
+    "description": "A small tile-based 2D game in C using the MiniLibX graphics library: map parsing and validation, rendering and keyboard events."
+  },
+  {
+    "slugs": ["42cursus-fdf"],
+    "title": "3D wireframe renderer",
+    "description": "Renders a height map as an isometric 3D wireframe in C, with projection maths and a graphics library."
+  },
+  {
+    "slugs": ["42cursus-fract-ol"],
+    "title": "Interactive fractal explorer",
+    "description": "Renders the Mandelbrot and Julia sets in C with zoom and colour, using complex-number maths and a graphics library."
+  },
+  {
+    "slugs": ["42cursus-philosophers"],
+    "title": "Concurrency with threads and mutexes",
+    "description": "Solves the dining philosophers problem in C with POSIX threads and mutexes, avoiding deadlocks and data races."
+  },
+  {
+    "slugs": ["42cursus-minishell"],
+    "title": "Unix shell in C",
+    "description": "A Bash-like command-line interpreter in C: parsing with quotes and environment variables, pipes, redirections, heredocs, built-in commands and signal handling. Team project."
+  },
+  {
+    "slugs": ["netpractice"],
+    "title": "TCP/IP networking fundamentals",
+    "description": "Configured small networks by solving exercises on IP addressing, subnet masks and routing."
+  },
+  {
+    "slugs": ["42cursus-cub3d", "cub3d"],
+    "title": "Raycasting 3D engine",
+    "description": "A first-person 3D maze in C using raycasting, in the style of Wolfenstein 3D, with textured walls and map parsing."
+  },
+  {
+    "slugs": ["42cursus-minirt", "minirt"],
+    "title": "Ray tracer",
+    "description": "A ray tracer in C that renders scenes of spheres, planes and cylinders with lights, shadows and a camera, described in a scene file."
+  },
+  {
+    "slugs": [
+      "cpp-module-00",
+      "cpp-module-01",
+      "cpp-module-02",
+      "cpp-module-03",
+      "cpp-module-04",
+      "cpp-module-05",
+      "cpp-module-06",
+      "cpp-module-07",
+      "cpp-module-08",
+      "cpp-module-09"
+    ],
+    "title": "Object-oriented programming in C++",
+    "description": "Ten modules introducing C++98: classes, memory, operator overloading, inheritance and polymorphism, exceptions, casts, templates and the STL."
+  },
+  {
+    "slugs": ["inception"],
+    "title": "Containerised infrastructure with Docker",
+    "description": "A small infrastructure built with Docker Compose from custom Dockerfiles: NGINX with TLS, WordPress with PHP-FPM and MariaDB, each in its own container."
+  },
+  {
+    "slugs": ["webserv"],
+    "title": "HTTP server in C++",
+    "description": "An HTTP/1.1 web server in C++ with non-blocking I/O, a configuration file, static files, uploads and CGI. Team project."
+  },
+  {
+    "slugs": ["ft_irc"],
+    "title": "IRC server in C++",
+    "description": "An IRC server in C++ that handles many clients with non-blocking sockets and poll, with channels, operators and the core IRC commands. Team project."
+  },
+  {
+    "slugs": ["ft_transcendence"],
+    "title": "Full-stack web application",
+    "description": "A team-built web application for real-time online Pong, with user accounts, authentication, live multiplayer and chat."
+  }
+]
