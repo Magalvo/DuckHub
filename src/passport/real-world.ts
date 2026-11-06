@@ -55,3 +55,6 @@ const bySlug = new Map<string, RealWorld>(
 export function realWorldFor(slug: string): RealWorld | null {
   return bySlug.get(slug) ?? null;
 }
+
+/** Todos os slugs da tabela, pela ordem do ficheiro: os projetos do Common Core (WI-0007). */
+export const realWorldSlugs: readonly string[] = [...bySlug.keys()];

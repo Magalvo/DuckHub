@@ -9,19 +9,21 @@ import { nextLink, retryAfterMs } from './http';
 import type { Clock, RateLimiter } from './rate-limiter';
 import {
   coalitionSchema,
+  cursusProjectSchema,
   describeIssues,
   profileSchema,
   projectSchema,
   projectUserSchema,
   xpFor,
   type Coalition,
+  type CursusProject,
   type Profile,
   type ProjectUser,
 } from './schemas';
 
 export { createRateLimiter } from './rate-limiter';
 export type { Clock, RateLimiter } from './rate-limiter';
-export type { Coalition, Profile, ProjectUser } from './schemas';
+export type { Coalition, CursusProject, Profile, ProjectUser } from './schemas';
 
 export type IntraFetch = (
   url: string,
@@ -36,6 +38,15 @@ export interface IntraClient {
     projectId: number,
     ctx: { campusId: number; cursusId: number }
   ): Promise<Result<number>>;
+  /**
+   * Projetos de um cursus filtrados por slug (WI-0007), com o XP pela regra de
+   * projectXp: a sessão do campus e cursus, senão o do projeto.
+   */
+  cursusProjects(
+    cursusId: number,
+    slugs: readonly string[],
+    ctx: { campusId: number }
+  ): Promise<Result<CursusProject[]>>;
 }
 
 export type Result<T> = { ok: true; value: T } | { ok: false; error: IntraError };
@@ -133,10 +144,12 @@ export function createIntraClient(deps: {
 
   async function getList<T>(
     path: string,
-    item: z.ZodType<T, z.ZodTypeDef, unknown>
+    item: z.ZodType<T, z.ZodTypeDef, unknown>,
+    /** Parâmetros antes do page[size], já codificados e terminados em "&". */
+    query = ''
   ): Promise<Result<T[]>> {
     const items: T[] = [];
-    let url: string | null = `${ORIGIN}${path}?page[size]=100`;
+    let url: string | null = `${ORIGIN}${path}?${query}page[size]=100`;
     for (let pages = 0; url !== null; pages += 1) {
       if (pages === MAX_PAGES) return invalid(['link: too_many_pages']);
       // O token só vai para a API da 42, mesmo que o Link aponte para outro lado.
@@ -160,6 +173,24 @@ export function createIntraClient(deps: {
     async projectXp(projectId, ctx) {
       const project = await getOne(`/v2/projects/${String(projectId)}`, projectSchema);
       return project.ok ? { ok: true, value: xpFor(project.value, ctx) } : project;
+    },
+    async cursusProjects(cursusId, slugs, ctx) {
+      const filter = `filter[slug]=${slugs.map(encodeURIComponent).join(',')}&`;
+      const projects = await getList(
+        `/v2/cursus/${String(cursusId)}/projects`,
+        cursusProjectSchema,
+        filter
+      );
+      if (!projects.ok) return projects;
+      return {
+        ok: true,
+        value: projects.value.map((p): CursusProject => ({
+          projectId: p.id,
+          slug: p.slug,
+          name: p.name,
+          xp: xpFor(p, { campusId: ctx.campusId, cursusId }),
+        })),
+      };
     },
   };
 }

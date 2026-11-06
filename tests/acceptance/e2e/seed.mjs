@@ -43,4 +43,12 @@ for (const user of seed.users) {
   }
 }
 
+// Cache de XP da calculadora (WI-0007), fresca: a app não chama a 42 real.
+for (const p of seed.projectXp) {
+  await client.query(
+    'INSERT INTO project_xp (campus_id, slug, project_id, name, xp, fetched_at) VALUES ($1, $2, $3, $4, $5, now())',
+    [p.campusId, p.slug, p.projectId, p.name, p.xp]
+  );
+}
+
 await client.close();
