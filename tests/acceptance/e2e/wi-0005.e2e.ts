@@ -12,6 +12,16 @@ import seed from './seed-data.json' with { type: 'json' };
 
 type Key = 'pato' | 'marreco' | 'cisne' | 'ganso';
 
+// O teste de teclado (AC9) guarda a lista dos elementos focáveis numa variável
+// da página, sem mexer no HTML: marcar os elementos com atributos antes de o
+// React hidratar dava um aviso de hydration mismatch intermitente, que mudava
+// a saída do make check de corrida para corrida.
+declare global {
+  interface Window {
+    duckHubFocusable?: HTMLElement[];
+  }
+}
+
 function token(key: Key): string {
   const user = seed.users.find((u) => u.key === key);
   if (user === undefined) throw new Error(`seed sem utilizador ${key}`);
@@ -164,22 +174,24 @@ test('AC9: todos os controlos do Passaporte se alcançam só com o teclado', asy
 }) => {
   await openAs('pato', context, page, baseURL);
   const total = await page.evaluate(() => {
-    const focusable = document.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    focusable.forEach((el, i) => {
-      el.dataset.kb = String(i);
-    });
+    const focusable = [
+      ...document.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      ),
+    ];
+    window.duckHubFocusable = focusable;
     return focusable.length;
   });
   expect(total).toBeGreaterThan(0);
-  const reached = new Set<string>();
+  const reached = new Set<number>();
   for (let i = 0; i < total + 3; i += 1) {
     await page.keyboard.press('Tab');
-    const kb = await page.evaluate(
-      () => (document.activeElement as HTMLElement | null)?.dataset.kb ?? null
-    );
-    if (kb !== null) reached.add(kb);
+    const index = await page.evaluate(() => {
+      const active = document.activeElement;
+      const list = window.duckHubFocusable ?? [];
+      return active instanceof HTMLElement ? list.indexOf(active) : -1;
+    });
+    if (index !== -1) reached.add(index);
   }
   expect(reached.size).toBe(total);
 });
