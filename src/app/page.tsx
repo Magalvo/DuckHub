@@ -2,6 +2,7 @@
 // verificar-se aqui, além do proxy (AC7): o userId vem sempre do cookie de
 // sessão do pedido, nunca de um parâmetro ou header que se possa forjar.
 import { headers } from 'next/headers';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 import { getSession } from '../auth/handlers';
@@ -20,10 +21,23 @@ export default async function HomePage() {
   );
   if (session === null) redirect('/login');
 
-  const saved = await (await passportStore()).load(session.userId);
+  const store = await passportStore();
+  const [saved, hidden] = await Promise.all([
+    store.load(session.userId),
+    store.isHidden(session.userId),
+  ]);
 
   return (
     <div className="mx-auto max-w-[1680px] px-4 py-10 md:px-8">
+      {hidden && (
+        // WI-0009: o aviso num elemento próprio, a ligação para /account ao lado.
+        <p className="mb-6 flex flex-wrap gap-x-2 rounded-md border border-hairline bg-surface-1 px-4 py-3">
+          <span className="text-text-muted">{passport.hiddenNotice}</span>
+          <Link href="/account" className="text-primary underline underline-offset-4">
+            {passport.hiddenLink}
+          </Link>
+        </p>
+      )}
       {saved === null ? (
         <section aria-labelledby="passport-title">
           <h1 id="passport-title" className="text-3xl font-extrabold tracking-tight">

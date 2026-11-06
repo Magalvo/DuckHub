@@ -3,6 +3,7 @@
 // mudar a outra. Tudo o que pertence a um utilizador referencia users.id com
 // ON DELETE CASCADE, para o apagamento de conta não deixar restos (AC7).
 import {
+  boolean,
   index,
   integer,
   jsonb,
@@ -18,6 +19,8 @@ export const users = pgTable('users', {
   intraId: integer('intra_id').notNull().unique(),
   login: text('login').notNull(),
   campusId: integer('campus_id').notNull(),
+  /** Passaporte escondido da comunidade (WI-0009, ADR 0010). Visível por omissão. */
+  passportHidden: boolean('passport_hidden').notNull().default(false),
 });
 
 export const sessions = pgTable(

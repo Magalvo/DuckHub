@@ -16,6 +16,7 @@ import { createDrizzleStore } from '../../src/db/store.js';
 import type { PassportSnapshot } from '../../src/passport/passport.js';
 import { createDrizzlePassportStore } from '../../src/passport/store.js';
 import type { PassportStore } from '../../src/passport/sync.js';
+import type { PassportVisibilityStore } from '../../src/passport/visibility.js';
 
 // Bem no futuro (2096): o createSession limpa contra o now() real da BD.
 const NOW = 4_000_000_000_000;
@@ -25,7 +26,7 @@ const marreco = { intraId: 90002, login: 'marreco-teste', campusId: 9002 };
 
 let client: PGlite;
 let store: SessionStore;
-let passports: PassportStore;
+let passports: PassportStore & PassportVisibilityStore;
 
 const snapshot = (login: string): PassportSnapshot => ({
   login,
@@ -189,6 +190,76 @@ describe('createDrizzlePassportStore (PGlite)', () => {
   });
 });
 
+describe('visibilidade do Passaporte (PGlite, WI-0009)', () => {
+  it('um utilizador novo começa visível; esconder e mostrar fica guardado', async () => {
+    const { userId } = await store.upsertUser(pato);
+    expect(await passports.isHidden(userId)).toBe(false);
+    await passports.setHidden(userId, true);
+    expect(await passports.isHidden(userId)).toBe(true);
+    // Um novo login (upsertUser) não desfaz a escolha.
+    await store.upsertUser(pato);
+    expect(await passports.isHidden(userId)).toBe(true);
+    await passports.setHidden(userId, false);
+    expect(await passports.isHidden(userId)).toBe(false);
+  });
+
+  it('esconder um não mexe nos outros', async () => {
+    const a = await store.upsertUser(pato);
+    const b = await store.upsertUser(marreco);
+    await passports.setHidden(a.userId, true);
+    expect(await passports.isHidden(b.userId)).toBe(false);
+  });
+
+  it('loadPublic devolve o Passaporte pelo login, com o estado de esconder', async () => {
+    const { userId } = await store.upsertUser(pato);
+    await passports.save(userId, snapshot(pato.login), NOW);
+    expect(await passports.loadPublic(pato.login)).toEqual({
+      userId,
+      hidden: false,
+      snapshot: snapshot(pato.login),
+      syncedAt: NOW,
+    });
+    await passports.setHidden(userId, true);
+    expect((await passports.loadPublic(pato.login))?.hidden).toBe(true);
+  });
+
+  it.each([
+    ['login que não existe', 'login-que-nao-existe'],
+    ['login com maiúsculas (sem redirecionar)', 'Pato-Teste'],
+  ])('loadPublic: %s dá null', async (_case, login) => {
+    const { userId } = await store.upsertUser(pato);
+    await passports.save(userId, snapshot(pato.login), NOW);
+    expect(await passports.loadPublic(login)).toBeNull();
+  });
+
+  it('loadPublic: conta sem Passaporte sincronizado dá null', async () => {
+    await store.upsertUser(pato);
+    expect(await passports.loadPublic(pato.login)).toBeNull();
+  });
+
+  it('loadPublic: snapshot inválido dá null', async () => {
+    const { userId } = await store.upsertUser(pato);
+    await client.query(
+      'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
+      [userId, JSON.stringify({ login: pato.login })]
+    );
+    expect(await passports.loadPublic(pato.login)).toBeNull();
+  });
+
+  it('loadPublic: com logins repetidos vale o que sincronizou por último', async () => {
+    // O login não é único na BD (só o intra_id): duas contas com o mesmo login.
+    const older = await store.upsertUser(pato);
+    const newer = await store.upsertUser({ ...pato, intraId: 90099 });
+    await passports.save(newer.userId, { ...snapshot(pato.login), isAlumni: true }, NOW + DAY);
+    await passports.save(older.userId, snapshot(pato.login), NOW);
+    expect((await passports.loadPublic(pato.login))?.userId).toBe(newer.userId);
+
+    // Se o mais antigo voltar a sincronizar, passa a ser ele.
+    await passports.save(older.userId, snapshot(pato.login), NOW + 2 * DAY);
+    expect((await passports.loadPublic(pato.login))?.userId).toBe(older.userId);
+  });
+});
+
 const journalSchema = z
   .object({ entries: z.array(z.object({ tag: z.string() }).passthrough()) })
   .passthrough();
@@ -227,9 +298,18 @@ describe('migração 0002_passports_drop_image_url (PGlite)', () => {
       } finally {
         await rm(partial, { recursive: true, force: true });
       }
-      const users = createDrizzleStore(db);
-      const a = await users.upsertUser(pato);
-      const b = await users.upsertUser(marreco);
+      // SQL direto: o store de hoje escreve colunas que ainda não existem na 0001.
+      const insertUser = async (u: typeof pato): Promise<string> => {
+        const { rows } = await old.query<{ id: string }>(
+          'INSERT INTO users (intra_id, login, campus_id) VALUES ($1, $2, $3) RETURNING id',
+          [u.intraId, u.login, u.campusId]
+        );
+        const [row] = rows;
+        if (row === undefined) throw new Error('INSERT users sem linha');
+        return row.id;
+      };
+      const a = { userId: await insertUser(pato) };
+      const b = { userId: await insertUser(marreco) };
       const withPhoto = { ...snapshot(pato.login), imageUrl: 'https://cdn.example.test/foto.jpg' };
       const withoutPhoto = snapshot(marreco.login);
       for (const [userId, value] of [

@@ -112,7 +112,7 @@ function sameString(a: string, b: string): boolean {
  * Defesa contra CSRF nos POST, além do SameSite=Lax: um Origin presente tem de
  * ser o da app. Sem Origin (clientes que não o enviam) decide o SameSite.
  */
-function crossOrigin(req: Request, config: AuthConfig): boolean {
+export function crossOrigin(req: Request, config: AuthConfig): boolean {
   const origin = req.headers.get('origin');
   return origin !== null && origin !== new URL(config.redirectUri).origin;
 }

@@ -1,7 +1,7 @@
 ---
 id: WI-0009
 title: Passaporte público e opção de o esconder
-status: draft
+status: done
 track: WT-0003
 owner: Magalvo
 acceptance:
@@ -33,6 +33,48 @@ community"), guardada na BD, esconde o Passaporte de todos menos do próprio.
 Escondido e inexistente respondem da mesma forma, para não revelar quem
 existe.
 
+Decisões do humano (2026-11-06):
+
+- **O teu próprio `/u/<login>` mostra a vista pública**, com a nota
+  `en.publicPassport.ownPreview` ("é assim que a comunidade te vê"), mesmo
+  que estejas escondido. O teu Passaporte completo continua em `/`.
+- **Escondido:** em `/` aparece o aviso `en.passport.hiddenNotice`, com uma
+  ligação para `/account`, onde está o botão para voltar a mostrar.
+- **Textos:** rascunho do agente, revisto pelo humano. O contrato só fixa as
+  chaves.
+
+## Interface
+
+```ts
+// src/passport/public.ts — função pura
+import type { PassportView } from './passport.js';
+
+/** O que a comunidade vê: sem syncedAt e só com os projetos validados. */
+export type PublicPassportView = Omit<PassportView, 'syncedAt' | 'projects'> & {
+  projects: (PassportView['projects'][number] & { state: 'done' })[];
+};
+
+export function publicPassportView(view: PassportView): PublicPassportView;
+```
+
+**Base de dados** (o seed do e2e escreve-a diretamente):
+`users.passport_hidden boolean NOT NULL DEFAULT false`.
+
+**Rotas e páginas**, todo o texto em `src/i18n/messages/en.ts`:
+
+- `GET /u/<login>` (protegida pelo proxy): o Passaporte público, com
+  `heading` = login e o avatar com nome acessível
+  `en.publicPassport.photoAlt`. Inexistente, sem Passaporte ou escondido
+  (para outra pessoa): **404**, com `en.publicPassport.notFound`, sempre
+  igual.
+- `POST /account/visibility` (route handler), com o campo `hidden` =
+  `"true"` ou `"false"`: muda a definição e responde 303 para `/account`. Exige
+  sessão e recusa um `Origin` de outro site (403), como o WI-0004.
+- `/account`: o estado (`en.account.visibility.visibleState` ou
+  `hiddenState`) e um botão `en.account.visibility.hide` ou `show`, num
+  formulário POST para `/account/visibility`.
+- `/privacy`: o texto `en.privacy.visibility`.
+
 ## Fora de âmbito
 
 Link público para recrutadores (sem sessão), esconder campos à escolha,
@@ -45,4 +87,5 @@ bloquear pessoas específicas, diretório (WI-0010).
 - A filtragem do que é público faz-se no servidor: o que não se mostra não vai
   no HTML (AC2).
 - Regras duras 9 e 12. A `/privacy` e a `/account` mudam (nova definição).
-- **Em aberto (humano):** o texto da `/privacy` sobre a visibilidade.
+- O seed do e2e ganha duas pessoas: `garca` (escondida) e `cegonha` (para o
+  teste do botão, sem interferir com os outros testes). É contrato.
