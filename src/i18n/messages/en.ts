@@ -40,6 +40,24 @@ export const en = {
     timeZone: 'Lisbon time',
     notSynced: "Your Passport hasn't been synced yet. It syncs every time you sign in.",
   },
+  // Calculadora de XP (WI-0007, ADR 0009). Sem estimativa de nível (AC6).
+  calculator: {
+    title: 'XP Calculator',
+    intro: 'See how much XP a Common Core project gives for a given mark.',
+    project: 'Project',
+    mark: 'Mark (0–125)',
+    submit: 'Calculate',
+    gained: 'XP gained',
+    source: 'XP values from the 42 API, updated',
+    currentLevel: 'Your current level',
+    unavailable: 'The XP Calculator unlocks when you start the Common Core.',
+    noData: "We couldn't load project XP from the 42 API. Please try again later.",
+    errors: {
+      notInteger: 'The mark must be a whole number.',
+      outOfRange: 'The mark must be between 0 and 125.',
+      unknownProject: 'Choose a project from the list.',
+    },
+  },
   // Os nomes dos campus acompanham ALLOWED_CAMPUS_IDS (ADR 0007).
   login: {
     title: 'Sign in',

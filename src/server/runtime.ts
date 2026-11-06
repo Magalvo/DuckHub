@@ -10,9 +10,12 @@ import { randomBytes } from 'node:crypto';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
 
+import { createAppToken } from '../auth/app-token';
 import { readServerConfig, type DatabaseConfig } from '../auth/config';
 import type { AuthDeps } from '../auth/handlers';
 import { createCodeExchange } from '../auth/token-exchange';
+import { createProjectXpCache, fetchFromApi, type ProjectXpCache } from '../calculator/cache';
+import { createDrizzleProjectXpStore } from '../calculator/store';
 import { createDrizzleStore, type Db } from '../db/store';
 import {
   createIntraClient,
@@ -22,6 +25,7 @@ import {
   type RateLimiter,
 } from '../intra/client';
 import { createPassportSync, withDeadline, type PassportStore } from '../passport/sync';
+import { realWorldSlugs } from '../passport/real-world';
 import { createDrizzlePassportStore } from '../passport/store';
 
 /** Um pedido à 42 que não responde em 10 s conta como falha de rede. */
@@ -40,9 +44,16 @@ const fetchWithTimeout = (url: string, init: RequestInit): Promise<Response> =>
 
 const intraFetch: IntraFetch = fetchWithTimeout;
 
+/** O que a calculadora (WI-0007) precisa do servidor. */
+export interface CalculatorDeps {
+  cache: ProjectXpCache;
+  campusOf(userId: string): Promise<number | null>;
+}
+
 interface App {
   auth: AuthDeps;
   passports: PassportStore;
+  calculator: CalculatorDeps;
 }
 
 interface Shared {
@@ -54,6 +65,8 @@ const shared: Shared = ((globalThis as { __duckHub?: Shared }).__duckHub ??= {})
 
 /** Teto à sincronização do Passaporte no login (ADR 0008). */
 const SYNC_DEADLINE_MS = 10_000;
+/** Teto à atualização da cache de XP antes de responder (ADR 0009). */
+const XP_REFRESH_DEADLINE_MS = 10_000;
 
 /** O rate limiter da aplicação para a API da 42: um por processo. */
 export function intraLimiter(): RateLimiter {
@@ -84,8 +97,26 @@ async function createApp(): Promise<App> {
   const client = (token: string) =>
     createIntraClient({ token, fetch: intraFetch, clock: systemClock, limiter });
   const passports = createDrizzlePassportStore(db);
+  const projectXp = createDrizzleProjectXpStore(db);
+  // Token da aplicação (client credentials): só em memória, dentro desta app.
+  const appToken = createAppToken({
+    config: config.auth,
+    fetch: fetchWithTimeout,
+    limiter,
+    clock: systemClock,
+  });
   return {
     passports,
+    calculator: {
+      campusOf: (userId) => projectXp.campusOf(userId),
+      cache: createProjectXpCache({
+        store: projectXp,
+        fetchProjects: fetchFromApi({ appToken, client, slugs: realWorldSlugs }),
+        clock: systemClock,
+        slugs: realWorldSlugs,
+        deadlineMs: XP_REFRESH_DEADLINE_MS,
+      }),
+    },
     auth: {
       config: config.auth,
       clock: systemClock,
@@ -119,3 +150,6 @@ export const authDeps = async (): Promise<AuthDeps> => (await app()).auth;
 
 /** O store dos Passaportes, sobre a mesma BD. */
 export const passportStore = async (): Promise<PassportStore> => (await app()).passports;
+
+/** A cache de XP e o campus do utilizador, para a calculadora (WI-0007). */
+export const calculatorDeps = async (): Promise<CalculatorDeps> => (await app()).calculator;

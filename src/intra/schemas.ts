@@ -106,6 +106,20 @@ export const projectSchema = z.object({
   ),
 });
 
+/** Um projeto de um cursus (WI-0007), com o XP já escolhido por xpFor. */
+export interface CursusProject {
+  projectId: number;
+  slug: string;
+  name: string;
+  xp: number;
+}
+
+export const cursusProjectSchema = projectSchema.extend({
+  id,
+  name: z.string().min(1),
+  slug: z.string().min(1),
+});
+
 /**
  * XP de um projeto (AC7): a difficulty da project_session do mesmo campus e
  * cursus, quando existe e não é nula; senão, a difficulty do projeto.
