@@ -39,6 +39,16 @@ export const en = {
     syncedAt: 'Last synced',
     timeZone: 'Lisbon time',
     notSynced: "Your Passport hasn't been synced yet. It syncs every time you sign in.",
+    hiddenNotice: 'Your Passport is hidden from the community.', // WI-0009
+    hiddenLink: 'Change this in your account',
+  },
+  // Passaporte de outra pessoa (WI-0009, ADR 0010): só a vista pública.
+  publicPassport: {
+    photoAlt: 'Member initials',
+    ownPreview: 'This is how the community sees your Passport.',
+    notFoundTitle: 'Passport not found',
+    notFound: "This Passport doesn't exist or isn't available.",
+    backHome: 'Back to your Passport',
   },
   // Calculadora de XP (WI-0007, ADR 0009). Sem estimativa de nível (AC6).
   calculator: {
@@ -96,12 +106,28 @@ export const en = {
         data: 'When your Passport was last synced',
         purpose: 'To show how recent your Passport is. It syncs every time you sign in.',
       },
+      {
+        data: 'Whether you hid your Passport from the community',
+        purpose: 'To show your Passport to other members, or keep it to yourself.',
+      },
     ],
+    // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
+    visibility:
+      'By default, your Passport is visible to other signed-in Duck Hub members. They see your login, campus, Piscine, coalition, Alumni status, level and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
     deletion: 'You can delete your account at any time. This removes everything listed above.',
     accountLink: 'Delete your account',
   },
   account: {
-    title: 'Delete your account',
+    title: 'Your account',
+    // WI-0009: esconder ou mostrar o Passaporte à comunidade.
+    visibility: {
+      title: 'Passport visibility',
+      visibleState: 'Your Passport is visible to the Duck Hub community.',
+      hiddenState: 'Your Passport is hidden from the community. Only you can see it.',
+      hide: 'Hide my Passport from the community',
+      show: 'Show my Passport to the community',
+    },
+    deleteTitle: 'Delete your account',
     body: 'This signs you out and permanently removes everything Duck Hub keeps about you:',
     note: 'Your 42 Intra account is not affected.',
     confirm: 'Yes, delete my account',

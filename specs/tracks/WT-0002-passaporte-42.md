@@ -1,7 +1,7 @@
 ---
 id: WT-0002
 title: Passaporte 42
-status: draft
+status: done
 owner: Magalvo
 ---
 

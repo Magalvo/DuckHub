@@ -15,7 +15,8 @@ export default function PrivacyPage() {
           </div>
         ))}
       </dl>
-      <p className="mt-8 text-text-muted">{privacy.deletion}</p>
+      <p className="mt-8 text-text-muted">{privacy.visibility}</p>
+      <p className="mt-4 text-text-muted">{privacy.deletion}</p>
       <p className="mt-2">
         <a href="/account" className="text-primary underline underline-offset-4">
           {privacy.accountLink}

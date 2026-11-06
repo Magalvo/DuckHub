@@ -48,7 +48,18 @@ function Detail({ label, children }: { readonly label: string; readonly children
   );
 }
 
-export function Passport({ view }: { readonly view: PassportView }) {
+/**
+ * O corpo do Passaporte: cabeçalho, detalhes e projetos. Serve as duas vistas,
+ * a do próprio e a pública (WI-0009): o que se mostra é o que vem na vista,
+ * já filtrada no servidor. A data de sync fica de fora: só o próprio a vê.
+ */
+export function PassportBody({
+  view,
+  photoAlt,
+}: {
+  readonly view: Omit<PassportView, 'syncedAt'>;
+  readonly photoAlt: string;
+}) {
   const accent: CSSProperties & { '--accent': string } = { '--accent': view.accentColor };
 
   return (
@@ -62,7 +73,7 @@ export function Passport({ view }: { readonly view: PassportView }) {
         <div className="flex flex-col gap-6 p-6 sm:flex-row sm:items-center">
           <div
             role="img"
-            aria-label={passport.photoAlt}
+            aria-label={photoAlt}
             style={{ backgroundColor: view.accentColor, color: view.avatarText }}
             className="flex size-24 shrink-0 items-center justify-center rounded-full"
           >
@@ -158,7 +169,15 @@ export function Passport({ view }: { readonly view: PassportView }) {
           </ul>
         )}
       </section>
+    </>
+  );
+}
 
+/** O Passaporte do próprio (WI-0005), com a data da última sincronização. */
+export function Passport({ view }: { readonly view: PassportView }) {
+  return (
+    <>
+      <PassportBody view={view} photoAlt={passport.photoAlt} />
       <p className="mt-8 flex flex-wrap gap-x-2 text-sm text-text-muted">
         <span>{passport.syncedAt}</span>
         <span className="font-mono text-text">{view.syncedAt}</span>

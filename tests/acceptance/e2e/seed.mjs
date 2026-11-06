@@ -26,8 +26,8 @@ await migrate(drizzle(client), { migrationsFolder: 'drizzle' });
 
 for (const user of seed.users) {
   const { rows } = await client.query(
-    'INSERT INTO users (intra_id, login, campus_id) VALUES ($1, $2, $3) RETURNING id',
-    [user.intraId, user.login, user.campusId]
+    'INSERT INTO users (intra_id, login, campus_id, passport_hidden) VALUES ($1, $2, $3, $4) RETURNING id',
+    [user.intraId, user.login, user.campusId, user.passportHidden === true]
   );
   const userId = rows[0].id;
   const idHash = createHash('sha256').update(user.sessionToken).digest('hex');

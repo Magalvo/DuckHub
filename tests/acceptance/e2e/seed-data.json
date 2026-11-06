@@ -109,6 +109,49 @@
       "sessionToken": "e2e-sessao-ganso-Jk3lZx8CvBn0Mq5We1",
       "syncedAt": null,
       "snapshot": null
+    },
+    {
+      "key": "garca",
+      "intraId": 90005,
+      "login": "garca-teste",
+      "campusId": 9001,
+      "passportHidden": true,
+      "sessionToken": "e2e-sessao-garca-Pz7Qw2Lx9Vb4Nm6Kj1",
+      "syncedAt": "2026-11-04T14:30:00Z",
+      "snapshot": {
+        "login": "garca-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "july", "year": 2022 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.5 }],
+        "projects": [
+          {
+            "slug": "projeto-da-garca",
+            "name": "Projeto da Garça",
+            "status": "finished",
+            "finalMark": 100,
+            "validated": true
+          }
+        ]
+      }
+    },
+    {
+      "key": "cegonha",
+      "intraId": 90006,
+      "login": "cegonha-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-cegonha-Rt5Yu8Io2Pa6Sd9Fg3",
+      "syncedAt": "2026-11-04T14:30:00Z",
+      "snapshot": {
+        "login": "cegonha-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "august", "year": 2021 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 7.25 }],
+        "projects": []
+      }
     }
   ]
 }

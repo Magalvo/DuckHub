@@ -27,6 +27,7 @@ import {
 import { createPassportSync, withDeadline, type PassportStore } from '../passport/sync';
 import { realWorldSlugs } from '../passport/real-world';
 import { createDrizzlePassportStore } from '../passport/store';
+import type { PassportVisibilityStore } from '../passport/visibility';
 
 /** Um pedido à 42 que não responde em 10 s conta como falha de rede. */
 const FETCH_TIMEOUT_MS = 10_000;
@@ -52,7 +53,7 @@ export interface CalculatorDeps {
 
 interface App {
   auth: AuthDeps;
-  passports: PassportStore;
+  passports: PassportStore & PassportVisibilityStore;
   calculator: CalculatorDeps;
 }
 
@@ -148,8 +149,9 @@ function app(): Promise<App> {
 /** Dependências reais da autenticação. Rejeita com ConfigError se faltar ambiente. */
 export const authDeps = async (): Promise<AuthDeps> => (await app()).auth;
 
-/** O store dos Passaportes, sobre a mesma BD. */
-export const passportStore = async (): Promise<PassportStore> => (await app()).passports;
+/** O store dos Passaportes e da sua visibilidade (WI-0009), sobre a mesma BD. */
+export const passportStore = async (): Promise<PassportStore & PassportVisibilityStore> =>
+  (await app()).passports;
 
 /** A cache de XP e o campus do utilizador, para a calculadora (WI-0007). */
 export const calculatorDeps = async (): Promise<CalculatorDeps> => (await app()).calculator;
