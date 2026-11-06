@@ -1,4 +1,14 @@
 {
+  "projectXp": [
+    { "campusId": 9001, "slug": "42cursus-libft", "projectId": 1314, "name": "Libft", "xp": 462 },
+    {
+      "campusId": 9001,
+      "slug": "42cursus-minishell",
+      "projectId": 1331,
+      "name": "minishell",
+      "xp": 2814
+    }
+  ],
   "users": [
     {
       "key": "pato",

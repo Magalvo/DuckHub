@@ -7,15 +7,21 @@ import { messages } from '../i18n/messages';
 type NavKey = keyof typeof messages.shell.items;
 
 type NavItem =
-  | { readonly kind: 'link'; readonly key: NavKey; readonly href: '/'; readonly icon: string }
+  | {
+      readonly kind: 'link';
+      readonly key: NavKey;
+      readonly href: '/' | '/calculator';
+      readonly icon: string;
+    }
   | { readonly kind: 'soon'; readonly key: NavKey; readonly icon: string };
 
 const navItems: readonly NavItem[] = [
   { kind: 'link', key: 'home', href: '/', icon: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z' },
   { kind: 'soon', key: 'passport', icon: 'M4 5h16v14H4zM8 9.5h4M8 13h8M8 16h5' },
   {
-    kind: 'soon',
+    kind: 'link',
     key: 'xpCalculator',
+    href: '/calculator',
     icon: 'M6 3h12v18H6zM9 7h6M9 11h1M14 11h1M9 15h1M14 15h1',
   },
 ];
