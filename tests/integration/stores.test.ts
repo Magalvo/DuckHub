@@ -210,39 +210,48 @@ async function migrationsUpTo(lastTag: string): Promise<string> {
   return dir;
 }
 
+// Arranca um PGlite próprio e corre as migrações duas vezes, dentro do teste:
+// sob carga (make check com o e2e, test-guards, CI) passa dos 5 s por omissão
+// do Vitest, e um timeout intermitente muda a falha de corrida para corrida.
+const MIGRATION_TEST_TIMEOUT_MS = 30_000;
+
 describe('migração 0002_passports_drop_image_url (PGlite)', () => {
-  it('tira o imageUrl dos snapshots já guardados e deixa o resto igual', async () => {
-    const old = new PGlite();
-    const db = drizzle(old);
-    const partial = await migrationsUpTo('0001_passports');
-    try {
-      await migrate(db, { migrationsFolder: partial });
-    } finally {
-      await rm(partial, { recursive: true, force: true });
-    }
-    const users = createDrizzleStore(db);
-    const a = await users.upsertUser(pato);
-    const b = await users.upsertUser(marreco);
-    const withPhoto = { ...snapshot(pato.login), imageUrl: 'https://cdn.example.test/foto.jpg' };
-    const withoutPhoto = snapshot(marreco.login);
-    for (const [userId, value] of [
-      [a.userId, withPhoto],
-      [b.userId, withoutPhoto],
-    ] as const) {
-      await old.query(
-        'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
-        [userId, JSON.stringify(value)]
+  it(
+    'tira o imageUrl dos snapshots já guardados e deixa o resto igual',
+    async () => {
+      const old = new PGlite();
+      const db = drizzle(old);
+      const partial = await migrationsUpTo('0001_passports');
+      try {
+        await migrate(db, { migrationsFolder: partial });
+      } finally {
+        await rm(partial, { recursive: true, force: true });
+      }
+      const users = createDrizzleStore(db);
+      const a = await users.upsertUser(pato);
+      const b = await users.upsertUser(marreco);
+      const withPhoto = { ...snapshot(pato.login), imageUrl: 'https://cdn.example.test/foto.jpg' };
+      const withoutPhoto = snapshot(marreco.login);
+      for (const [userId, value] of [
+        [a.userId, withPhoto],
+        [b.userId, withoutPhoto],
+      ] as const) {
+        await old.query(
+          'INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, now())',
+          [userId, JSON.stringify(value)]
+        );
+      }
+
+      await migrate(db, { migrationsFolder: 'drizzle' });
+
+      const { rows } = await old.query<{ user_id: string; snapshot: unknown }>(
+        'SELECT user_id, snapshot FROM passports'
       );
-    }
-
-    await migrate(db, { migrationsFolder: 'drizzle' });
-
-    const { rows } = await old.query<{ user_id: string; snapshot: unknown }>(
-      'SELECT user_id, snapshot FROM passports'
-    );
-    expect(rows).toHaveLength(2);
-    expect(rows.find((r) => r.user_id === a.userId)?.snapshot).toEqual(snapshot(pato.login));
-    expect(rows.find((r) => r.user_id === b.userId)?.snapshot).toEqual(withoutPhoto);
-    await old.close();
-  });
+      expect(rows).toHaveLength(2);
+      expect(rows.find((r) => r.user_id === a.userId)?.snapshot).toEqual(snapshot(pato.login));
+      expect(rows.find((r) => r.user_id === b.userId)?.snapshot).toEqual(withoutPhoto);
+      await old.close();
+    },
+    MIGRATION_TEST_TIMEOUT_MS
+  );
 });
