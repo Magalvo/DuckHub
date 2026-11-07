@@ -3,7 +3,7 @@
 import { z } from 'zod';
 
 import { findBadge } from '../badges/badges';
-import type { PondEvent } from './events';
+import type { PondRow } from './store';
 
 export const PAGE_SIZE = 20;
 /** Um evento mais antigo do que isto não aparece e apaga-se (AC6). */
@@ -23,6 +23,10 @@ const pageSchema = z
 export interface PondSearchParams {
   page?: string | string[] | undefined;
 }
+
+/** O endereço de uma página do feed: `/pond` na primeira. */
+export const pondHref = (page: number): string =>
+  page > 1 ? `/pond?page=${String(page)}` : '/pond';
 
 export function parsePondPage(params: PondSearchParams): number {
   const parsed = pageSchema.safeParse(params.page);
@@ -56,15 +60,12 @@ export interface PondItem {
   login: string;
   day: string;
   event: PondEventView;
+  /** Rubber Ducks (WI-0013): a contagem, se quem vê já deu, e se o evento é seu. */
+  ducks: { count: number; given: boolean; own: boolean };
 }
 
 /** O que o feed mostra de um evento; uma badge que já não está no catálogo não aparece. */
-export function pondItem(row: {
-  id: number;
-  login: string;
-  event: PondEvent;
-  createdAt: number;
-}): PondItem | null {
+export function pondItem(row: PondRow): PondItem | null {
   const { event } = row;
   let view: PondEventView;
   switch (event.kind) {
@@ -81,5 +82,16 @@ export function pondItem(row: {
       break;
     }
   }
-  return { id: row.id, login: row.login, day: formatDay(row.createdAt), event: view };
+  return {
+    id: row.id,
+    login: row.login,
+    day: formatDay(row.createdAt),
+    event: view,
+    ducks: { count: row.ducks, given: row.ducked, own: row.own },
+  };
+}
+
+/** "1 Rubber Duck", "0 Rubber Ducks", "2 Rubber Ducks": um espaço entre o número e a palavra. */
+export function duckCount(count: number, words: { countOne: string; countMany: string }): string {
+  return `${String(count)} ${count === 1 ? words.countOne : words.countMany}`;
 }

@@ -88,3 +88,27 @@ export const pondEvents = pgTable(
     index('pond_events_user_id_idx').on(t.userId),
   ]
 );
+
+/**
+ * Rubber Ducks (WI-0013, ADR 0014): quem deu um Duck a que evento. A chave
+ * primária garante um Duck por pessoa por evento (AC2); as duas cascatas levam
+ * os Ducks quando o evento expira ou quando alguém apaga a conta (AC5). O
+ * índice de user_id serve a cascata do apagamento de conta; a chave primária
+ * serve a contagem por evento.
+ */
+export const rubberDucks = pgTable(
+  'rubber_ducks',
+  {
+    eventId: bigint('event_id', { mode: 'number' })
+      .notNull()
+      .references(() => pondEvents.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+  },
+  (t) => [
+    primaryKey({ columns: [t.eventId, t.userId] }),
+    index('rubber_ducks_user_id_idx').on(t.userId),
+  ]
+);

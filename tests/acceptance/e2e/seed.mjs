@@ -84,16 +84,26 @@ for (let i = 1; i <= fillers.count; i += 1) {
 // a retenção de 90 dias conta a partir do relógio real. Pela ordem do ficheiro,
 // para os eventos com a mesma idade ficarem com ids crescentes.
 async function pondEvent(userId, minutesAgo, event) {
-  await client.query(
-    'INSERT INTO pond_events (user_id, event, created_at) VALUES ($1, $2::jsonb, now() - make_interval(mins => $3))',
+  const { rows } = await client.query(
+    'INSERT INTO pond_events (user_id, event, created_at) VALUES ($1, $2::jsonb, now() - make_interval(mins => $3)) RETURNING id',
     [userId, JSON.stringify(event), minutesAgo]
   );
+  return rows[0].id;
 }
 
 for (const e of seed.pondEvents) {
   const userId = userIds.get(e.user);
   if (userId === undefined) throw new Error(`seed: pondEvents sem o utilizador ${e.user}`);
-  await pondEvent(userId, e.minutesAgo, e.event);
+  const eventId = await pondEvent(userId, e.minutesAgo, e.event);
+  // Rubber Ducks (WI-0013): as keys de quem deu um Duck a este evento.
+  for (const giver of e.ducks ?? []) {
+    const giverId = userIds.get(giver);
+    if (giverId === undefined) throw new Error(`seed: ducks sem o utilizador ${giver}`);
+    await client.query('INSERT INTO rubber_ducks (event_id, user_id) VALUES ($1, $2)', [
+      eventId,
+      giverId,
+    ]);
+  }
 }
 
 // Um evento por pinguim: o pinguim-01 é o mais recente (1 minuto), o

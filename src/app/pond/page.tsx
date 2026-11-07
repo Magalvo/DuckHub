@@ -7,12 +7,17 @@ import { redirect } from 'next/navigation';
 
 import { getSession } from '../../auth/handlers';
 import { messages } from '../../i18n/messages';
-import { parsePondPage, pondItem, type PondItem, type PondSearchParams } from '../../pond/feed';
+import {
+  duckCount,
+  parsePondPage,
+  pondHref,
+  pondItem,
+  type PondItem,
+  type PondSearchParams,
+} from '../../pond/feed';
 import { authDeps, pondStore } from '../../server/runtime';
 
 const { pond: t, passport } = messages;
-
-const pageHref = (page: number): string => (page > 1 ? `/pond?page=${String(page)}` : '/pond');
 
 /**
  * A frase depois do login e a nota, como texto. O espaço à cabeça separa as
@@ -32,7 +37,37 @@ function sentence(event: PondItem['event']): { text: string; mark: string | null
   }
 }
 
-function PondEntry({ item }: { readonly item: PondItem }) {
+/**
+ * Rubber Ducks (WI-0013, ADR 0014): a contagem e, nos eventos dos outros, um
+ * formulário POST (funciona sem JavaScript). O nome do botão é fixo; o estado
+ * vai no aria-pressed e o botão dá ou retira consoante o estado.
+ */
+function Ducks({ item, page }: { readonly item: PondItem; readonly page: number }) {
+  const { count, given, own } = item.ducks;
+  return (
+    <>
+      <span className="font-mono text-sm">{duckCount(count, t.ducks)}</span>
+      {!own && (
+        <form method="post" action="/pond/ducks">
+          <input type="hidden" name="event" value={String(item.id)} />
+          <input type="hidden" name="duck" value={given ? 'take' : 'give'} />
+          <input type="hidden" name="page" value={String(page)} />
+          <button
+            type="submit"
+            aria-pressed={given}
+            className={`rounded-md px-3 py-1 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${
+              given ? 'bg-duck text-void' : 'border border-hairline bg-surface-2 text-text'
+            }`}
+          >
+            {t.ducks.button}
+          </button>
+        </form>
+      )}
+    </>
+  );
+}
+
+function PondEntry({ item, page }: { readonly item: PondItem; readonly page: number }) {
   const { text, mark } = sentence(item.event);
   return (
     <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 rounded-md border border-hairline bg-surface-1 px-4 py-3">
@@ -48,11 +83,11 @@ function PondEntry({ item }: { readonly item: PondItem }) {
           <span className="rounded-sm bg-surface-3 px-1.5 font-mono text-sm">{mark}</span>
         )}
       </p>
-      {/* Ações por evento (WI-0013) entram aqui, ao lado da data. */}
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="flex shrink-0 flex-wrap items-center gap-3">
         <time dateTime={item.day} className="font-mono text-sm text-text-muted">
           {item.day}
         </time>
+        <Ducks item={item} page={page} />
       </div>
     </li>
   );
@@ -84,7 +119,7 @@ export default async function PondPage({
 
       <ul aria-label={t.listLabel} className="mt-8 flex flex-col gap-2">
         {items.map((item) => (
-          <PondEntry key={item.id} item={item} />
+          <PondEntry key={item.id} item={item} page={page} />
         ))}
       </ul>
       {items.length === 0 && <p className="mt-4 text-text-muted">{t.empty}</p>}
@@ -92,12 +127,12 @@ export default async function PondPage({
       {(page > 1 || result.hasNext) && (
         <nav aria-label={t.pagination} className="mt-8 flex gap-4">
           {page > 1 && (
-            <Link href={pageHref(page - 1)} className="text-primary underline underline-offset-4">
+            <Link href={pondHref(page - 1)} className="text-primary underline underline-offset-4">
               {t.previous}
             </Link>
           )}
           {result.hasNext && (
-            <Link href={pageHref(page + 1)} className="text-primary underline underline-offset-4">
+            <Link href={pondHref(page + 1)} className="text-primary underline underline-offset-4">
               {t.next}
             </Link>
           )}

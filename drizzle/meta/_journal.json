@@ -43,6 +43,13 @@
       "when": 1794060131058,
       "tag": "0005_pond_events",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794063313906,
+      "tag": "0006_rubber_ducks",
+      "breakpoints": true
     }
   ]
 }

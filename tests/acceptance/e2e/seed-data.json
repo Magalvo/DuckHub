@@ -26,14 +26,20 @@
         "slug": "projeto-concluido",
         "name": "Projeto Concluído",
         "finalMark": 115
-      }
+      },
+      "ducks": ["cisne", "pombo"]
     },
     {
       "user": "pato",
       "minutesAgo": 120,
       "event": { "kind": "badge", "badgeId": "first-validation" }
     },
-    { "user": "cisne", "minutesAgo": 180, "event": { "kind": "badge", "badgeId": "alumni" } },
+    {
+      "user": "cisne",
+      "minutesAgo": 180,
+      "event": { "kind": "badge", "badgeId": "alumni" },
+      "ducks": ["garca"]
+    },
     { "user": "pombo", "minutesAgo": 200, "event": { "kind": "level-up", "level": 2 } },
     {
       "user": "garca",
@@ -43,12 +49,14 @@
         "slug": "projeto-da-garca",
         "name": "Projeto da Garça",
         "finalMark": 100
-      }
+      },
+      "ducks": ["marreco"]
     },
     {
       "user": "marreco",
       "minutesAgo": 144000,
-      "event": { "kind": "badge", "badgeId": "first-validation" }
+      "event": { "kind": "badge", "badgeId": "first-validation" },
+      "ducks": ["pato"]
     }
   ],
   "users": [

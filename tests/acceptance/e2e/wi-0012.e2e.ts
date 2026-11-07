@@ -175,11 +175,12 @@ test('AC8: os controlos do feed alcançam-se só com o teclado', async ({
 }) => {
   await signInAs('pato', context, baseURL);
   await page.goto('/pond?page=2');
+  // Os <input type="hidden"> dos formulários (WI-0013) nunca recebem foco.
   // A lista fica numa variável da página: não se mexe no HTML (ver wi-0005.e2e.ts).
   const total = await page.evaluate(() => {
     const focusable = [
       ...document.querySelectorAll<HTMLElement>(
-        'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"]), summary'
+        'a[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), select, textarea, [tabindex]:not([tabindex="-1"]), summary'
       ),
     ];
     window.duckHubFocusable = focusable;
