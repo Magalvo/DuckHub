@@ -2,8 +2,12 @@
 // dados da API (regra 11). buildSnapshot decide o que se guarda; passportView
 // decide o que a página mostra. Nada de presença no campus, logtime nem
 // blackholed_at (regra 9, AC8).
+import { earnedBadges, type Badge } from '../badges/badges';
 import type { Coalition, Profile, ProjectUser } from '../intra/client';
 import { avatarColors, initialsFromLogin } from './avatar';
+import { formatLevel, projectState, type ProjectState } from './rules';
+
+export { formatLevel, projectState, shownLevel, type ProjectState } from './rules';
 
 export const DEFAULT_ACCENT = '#00BABC'; // Cyber-Teal (AC4)
 
@@ -25,8 +29,6 @@ export interface PassportSnapshot {
   }[];
 }
 
-export type ProjectState = 'done' | 'failed' | 'in-progress';
-
 /** O que a página mostra. */
 export interface PassportView {
   login: string;
@@ -40,6 +42,7 @@ export interface PassportView {
   reduced: boolean; // sem 42cursus (AC3)
   mainCursus: { name: string; level: string } | null; // level: "5.17"
   projects: { slug: string; name: string; state: ProjectState; finalMark: number | null }[];
+  badges: Badge[]; // WI-0011: as conquistadas, pela ordem do catálogo
   syncedAt: string; // "AAAA-MM-DD HH:mm", Europe/Lisbon
 }
 
@@ -72,24 +75,6 @@ export function buildSnapshot(
       validated,
     })),
   };
-}
-
-/**
- * Nível com duas casas, truncado: nunca mostra um nível que ainda não se
- * atingiu. `Math.floor(x * 100)` falharia com floats (0.29 * 100 = 28.99…):
- * arredonda-se primeiro a 6 casas, muito abaixo da precisão da API, e corta-se
- * a string.
- */
-export function formatLevel(level: number): string {
-  const [int = '0', frac = ''] = level.toFixed(6).split('.');
-  return `${int}.${frac.slice(0, 2)}`;
-}
-
-export function projectState(p: { status: string; validated: boolean | null }): ProjectState {
-  if (p.status !== 'finished') return 'in-progress';
-  if (p.validated === true) return 'done';
-  if (p.validated === false) return 'failed';
-  return 'in-progress';
 }
 
 const lisbon = new Intl.DateTimeFormat('en-GB', {
@@ -133,6 +118,7 @@ export function passportView(snapshot: PassportSnapshot, syncedAt: number): Pass
       state: projectState(p),
       finalMark: p.finalMark,
     })),
+    badges: earnedBadges(snapshot),
     syncedAt: formatSyncedAt(syncedAt),
   };
 }

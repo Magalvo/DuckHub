@@ -31,5 +31,6 @@ export function publicPassportView(view: PassportView): PublicPassportView {
     reduced: view.reduced,
     mainCursus: view.mainCursus,
     projects: view.projects.filter(isDone),
+    badges: view.badges, // WI-0011: positivas por construção (ADR 0011)
   };
 }

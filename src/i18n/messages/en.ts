@@ -42,6 +42,10 @@ export const en = {
     hiddenNotice: 'Your Passport is hidden from the community.', // WI-0009
     hiddenLink: 'Change this in your account',
   },
+  // Conquistas (WI-0011). Os nomes e descrições das badges vêm de src/badges/catalog.json.
+  badges: {
+    title: 'Badges',
+  },
   // Passaporte de outra pessoa (WI-0009, ADR 0010): só a vista pública.
   publicPassport: {
     photoAlt: 'Member initials',
@@ -113,7 +117,7 @@ export const en = {
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
     visibility:
-      'By default, your Passport is visible to other signed-in Duck Hub members. They see your login, campus, Piscine, coalition, Alumni status, level and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
+      'By default, your Passport is visible to other signed-in Duck Hub members. They see your login, campus, Piscine, coalition, Alumni status, level, badges and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
     deletion: 'You can delete your account at any time. This removes everything listed above.',
     accountLink: 'Delete your account',
   },

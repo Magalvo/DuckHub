@@ -3,7 +3,8 @@
 import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
-import { passportView, type PassportSnapshot } from '../../src/passport/passport.js';
+import { earnedBadges } from '../../src/badges/badges.js';
+import { passportView, projectState, type PassportSnapshot } from '../../src/passport/passport.js';
 import { publicPassportView } from '../../src/passport/public.js';
 
 const project = fc.record({
@@ -20,7 +21,14 @@ const snapshot: fc.Arbitrary<PassportSnapshot> = fc.record({
   piscine: fc.record({ month: fc.constant('july'), year: fc.integer({ min: 2013, max: 2030 }) }),
   isAlumni: fc.boolean(),
   coalition: fc.option(fc.record({ name: fc.constant('Os Patos'), color: fc.constant('#0E12B5') })),
-  cursus: fc.constant([{ slug: '42cursus', name: '42cursus', level: 4.2 }]),
+  cursus: fc.array(
+    fc.record({
+      slug: fc.constantFrom('42cursus', 'c-piscine'),
+      name: fc.constant('Cursus'),
+      level: fc.double({ min: 0, max: 30, noNaN: true }),
+    }),
+    { maxLength: 2 }
+  ),
   projects: fc.array(project, { maxLength: 12 }),
 });
 
@@ -42,6 +50,33 @@ describe('publicPassportView', () => {
     fc.assert(
       fc.property(snapshot, syncedAt, (s, at) => {
         expect(publicPassportView(passportView(s, at))).not.toHaveProperty('syncedAt');
+      })
+    );
+  });
+
+  it('as badges da vista pública são as da vista do próprio (WI-0011)', () => {
+    fc.assert(
+      fc.property(snapshot, syncedAt, (s, at) => {
+        const own = passportView(s, at);
+        expect(publicPassportView(own).badges).toEqual(own.badges);
+      })
+    );
+  });
+});
+
+describe('earnedBadges (WI-0011, AC4)', () => {
+  it('acrescentar ou tirar projetos falhados ou em curso nunca muda as badges', () => {
+    const notDone = project.filter((p) => projectState(p) !== 'done');
+    fc.assert(
+      fc.property(snapshot, fc.array(notDone, { maxLength: 6 }), fc.nat(), (s, extra, seed) => {
+        const kept = s.projects.filter((p) => projectState(p) === 'done');
+        const withExtra = [...s.projects];
+        for (const [i, p] of extra.entries()) {
+          withExtra.splice((seed + i) % (withExtra.length + 1), 0, p);
+        }
+        const base = earnedBadges(s);
+        expect(earnedBadges({ ...s, projects: kept })).toEqual(base);
+        expect(earnedBadges({ ...s, projects: withExtra })).toEqual(base);
       })
     );
   });
