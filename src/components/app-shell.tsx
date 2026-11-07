@@ -10,7 +10,7 @@ type NavItem =
   | {
       readonly kind: 'link';
       readonly key: NavKey;
-      readonly href: '/' | '/community' | '/calculator';
+      readonly href: '/' | '/community' | '/pond' | '/calculator';
       readonly icon: string;
     }
   | { readonly kind: 'soon'; readonly key: NavKey; readonly icon: string };
@@ -23,6 +23,12 @@ const navItems: readonly NavItem[] = [
     key: 'community',
     href: '/community',
     icon: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.5a6.5 6.5 0 0 1 3.5 5.5',
+  },
+  {
+    kind: 'link',
+    key: 'pond',
+    href: '/pond',
+    icon: 'M3 16c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M7 11.5a3 3 0 1 1 4.5-2.6L14 8.5l-1.6 2.3A5 5 0 0 1 7 11.5z',
   },
   {
     kind: 'link',

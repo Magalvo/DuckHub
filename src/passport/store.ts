@@ -1,11 +1,13 @@
 // PassportStore sobre Drizzle (WI-0005, ADR 0008). O snapshot JSONB valida-se
 // com Zod ao ler: um snapshot inválido conta como "ainda não sincronizado" e o
 // próximo login reescreve-o. O conteúdo inválido não se regista em lado nenhum.
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, lt, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import type { Db } from '../db/store';
-import { passports, users } from '../db/schema';
+import { passports, pondEvents, users } from '../db/schema';
+import { diffEvents } from '../pond/events';
+import { RETENTION_DAYS } from '../pond/feed';
 import type { PassportSnapshot } from './passport';
 import type { PassportStore } from './sync';
 import type { PassportVisibilityStore } from './visibility';
@@ -36,12 +38,34 @@ export const snapshotSchema: z.ZodType<PassportSnapshot> = z.object({
 
 export function createDrizzlePassportStore(db: Db): PassportStore & PassportVisibilityStore {
   return {
+    /**
+     * WI-0012 (ADR 0013): numa só transação, lê o snapshot anterior com FOR
+     * UPDATE (dois logins em simultâneo esperam um pelo outro e o segundo já
+     * vê o snapshot novo), grava o novo, insere os eventos da diferença e apaga
+     * os eventos expirados. Uma falha não deixa eventos sem snapshot.
+     */
     async save(userId, snapshot, syncedAt) {
       const values = { snapshot, syncedAt: new Date(syncedAt) };
-      await db
-        .insert(passports)
-        .values({ userId, ...values })
-        .onConflictDoUpdate({ target: passports.userId, set: values });
+      await db.transaction(async (tx) => {
+        const [row] = await tx
+          .select({ snapshot: passports.snapshot })
+          .from(passports)
+          .where(eq(passports.userId, userId))
+          .for('update');
+        // Um snapshot anterior inválido conta como primeira sincronização.
+        const previous = row === undefined ? null : snapshotSchema.safeParse(row.snapshot);
+        const events = diffEvents(previous?.success === true ? previous.data : null, snapshot);
+        await tx
+          .insert(passports)
+          .values({ userId, ...values })
+          .onConflictDoUpdate({ target: passports.userId, set: values });
+        if (events.length > 0) {
+          await tx.insert(pondEvents).values(events.map((event) => ({ userId, event })));
+        }
+        await tx
+          .delete(pondEvents)
+          .where(lt(pondEvents.createdAt, sql`now() - make_interval(days => ${RETENTION_DAYS})`));
+      });
     },
     async load(userId) {
       const [row] = await db

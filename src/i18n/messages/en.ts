@@ -14,6 +14,7 @@ export const en = {
       home: 'Home',
       passport: 'Passport',
       community: 'Community', // WI-0010
+      pond: 'Duck Pond', // WI-0012
       xpCalculator: 'XP Calculator',
     },
   },
@@ -54,6 +55,21 @@ export const en = {
     listLabel: 'Members',
     level: 'Level',
     empty: 'No members match your search.',
+    pagination: 'Pages',
+    previous: 'Previous page',
+    next: 'Next page',
+  },
+  // Duck Pond (WI-0012, ADR 0013). A nota usa passport.mark; o nome da badge vem do catálogo.
+  pond: {
+    title: 'Duck Pond',
+    intro: 'What the community has achieved lately.',
+    listLabel: 'Recent achievements',
+    events: {
+      projectValidated: 'validated',
+      levelUp: 'reached level',
+      badge: 'earned the badge',
+    },
+    empty: 'Nothing in the pond yet.',
     pagination: 'Pages',
     previous: 'Previous page',
     next: 'Next page',
@@ -130,10 +146,15 @@ export const en = {
         data: 'Whether you hid your Passport from the community',
         purpose: 'To show your Passport to other members, or keep it to yourself.',
       },
+      {
+        data: 'Your Duck Pond events: projects you validated (name and mark), new levels and new badges, with the date',
+        purpose:
+          'To show your achievements in the Duck Pond feed. Events are deleted after 90 days.',
+      },
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
     visibility:
-      'By default, your Passport is visible to other signed-in Duck Hub members, on your Passport page and in the community directory. They see your login, campus, Piscine, coalition, Alumni status, level, badges and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
+      'By default, your Passport is visible to other signed-in Duck Hub members, on your Passport page, in the community directory and in the Duck Pond feed. They see your login, campus, Piscine, coalition, Alumni status, level, badges and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account; this also hides your Duck Pond events, including past ones.',
     deletion: 'You can delete your account at any time. This removes everything listed above.',
     accountLink: 'Delete your account',
   },
