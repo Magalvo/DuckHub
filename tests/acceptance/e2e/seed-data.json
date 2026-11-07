@@ -17,6 +17,40 @@
     "campusName": "Campus Sintético B",
     "level": 2.5
   },
+  "pondEvents": [
+    {
+      "user": "pato",
+      "minutesAgo": 120,
+      "event": {
+        "kind": "project-validated",
+        "slug": "projeto-concluido",
+        "name": "Projeto Concluído",
+        "finalMark": 115
+      }
+    },
+    {
+      "user": "pato",
+      "minutesAgo": 120,
+      "event": { "kind": "badge", "badgeId": "first-validation" }
+    },
+    { "user": "cisne", "minutesAgo": 180, "event": { "kind": "badge", "badgeId": "alumni" } },
+    { "user": "pombo", "minutesAgo": 200, "event": { "kind": "level-up", "level": 2 } },
+    {
+      "user": "garca",
+      "minutesAgo": 60,
+      "event": {
+        "kind": "project-validated",
+        "slug": "projeto-da-garca",
+        "name": "Projeto da Garça",
+        "finalMark": 100
+      }
+    },
+    {
+      "user": "marreco",
+      "minutesAgo": 144000,
+      "event": { "kind": "badge", "badgeId": "first-validation" }
+    }
+  ],
   "users": [
     {
       "key": "pato",

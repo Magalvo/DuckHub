@@ -28,6 +28,7 @@ import {
 import { createPassportSync, withDeadline, type PassportStore } from '../passport/sync';
 import { realWorldSlugs } from '../passport/real-world';
 import { createDrizzlePassportStore } from '../passport/store';
+import { createDrizzlePondStore, type PondStore } from '../pond/store';
 import type { PassportVisibilityStore } from '../passport/visibility';
 
 /** Um pedido à 42 que não responde em 10 s conta como falha de rede. */
@@ -57,6 +58,7 @@ interface App {
   passports: PassportStore & PassportVisibilityStore;
   calculator: CalculatorDeps;
   directory: DirectoryStore;
+  pond: PondStore;
 }
 
 interface Shared {
@@ -111,6 +113,7 @@ async function createApp(): Promise<App> {
   return {
     passports,
     directory: createDrizzleDirectoryStore(db),
+    pond: createDrizzlePondStore(db),
     calculator: {
       campusOf: (userId) => projectXp.campusOf(userId),
       cache: createProjectXpCache({
@@ -158,6 +161,9 @@ export const passportStore = async (): Promise<PassportStore & PassportVisibilit
 
 /** O diretório da comunidade (WI-0010), sobre a mesma BD. */
 export const directoryStore = async (): Promise<DirectoryStore> => (await app()).directory;
+
+/** O feed do Duck Pond (WI-0012), sobre a mesma BD. */
+export const pondStore = async (): Promise<PondStore> => (await app()).pond;
 
 /** A cache de XP e o campus do utilizador, para a calculadora (WI-0007). */
 export const calculatorDeps = async (): Promise<CalculatorDeps> => (await app()).calculator;

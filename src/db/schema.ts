@@ -3,6 +3,7 @@
 // mudar a outra. Tudo o que pertence a um utilizador referencia users.id com
 // ON DELETE CASCADE, para o apagamento de conta não deixar restos (AC7).
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -64,4 +65,26 @@ export const projectXp = pgTable(
     fetchedAt: timestamp('fetched_at', { withTimezone: true, mode: 'date' }).notNull(),
   },
   (t) => [primaryKey({ columns: [t.campusId, t.slug] })]
+);
+
+/**
+ * Duck Pond (WI-0012, ADR 0013): os eventos das sincronizações, um PondEvent
+ * por linha. O JSONB valida-se com Zod ao ler (src/pond/store.ts). Apagam-se ao
+ * fim de 90 dias; o índice (created_at, id) serve a ordem do feed e esse
+ * DELETE, o de user_id a cascata e os eventos do próprio.
+ */
+export const pondEvents = pgTable(
+  'pond_events',
+  {
+    id: bigint('id', { mode: 'number' }).primaryKey().generatedAlwaysAsIdentity(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    event: jsonb('event').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+  },
+  (t) => [
+    index('pond_events_created_at_idx').on(t.createdAt, t.id),
+    index('pond_events_user_id_idx').on(t.userId),
+  ]
 );

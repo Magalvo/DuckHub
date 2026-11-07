@@ -77,3 +77,12 @@ export function earnedBadges(snapshot: PassportSnapshot): Badge[] {
     .filter((badge) => earns(badge.rule, snapshot))
     .map(({ id, name, description }) => ({ id, name, description }));
 }
+
+/**
+ * Uma badge do catálogo pelo id, com a regra, ou null se já não existir. O feed
+ * (WI-0012) tira daqui o nome e sabe se uma badge é de nível, sem duplicar o
+ * catálogo.
+ */
+export function findBadge(id: string): (Badge & { rule: BadgeRule }) | null {
+  return catalog.find((badge) => badge.id === id) ?? null;
+}
