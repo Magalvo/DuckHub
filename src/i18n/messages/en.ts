@@ -185,6 +185,18 @@ export const en = {
     confirm: 'Yes, delete my account',
     cancel: 'Keep my account',
   },
+  // WI-0014: o porquê de cada sugestão de equipa (ADR 0015).
+  tavern: {
+    reasons: {
+      'shared-hours': 'You work at the same times of day',
+      'same-start': 'You both want to start at the same time',
+      'same-grade-goal': 'You aim for the same grade',
+      'same-pace': 'You work at the same pace',
+      'same-style': 'You like to split the work the same way',
+      'same-setting': 'You both prefer the same place to work',
+      'complementary-roles': 'One of you likes to lead, the other to follow',
+    },
+  },
 } as const;
 
 export type Messages = typeof en;
