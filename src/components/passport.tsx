@@ -9,7 +9,10 @@ import { messages } from '../i18n/messages';
 import type { PassportView, ProjectState } from '../passport/passport';
 import { realWorldFor } from '../passport/real-world';
 
-const { passport } = messages;
+const { passport, badges } = messages;
+
+// Ícone comum a todas as badges (WI-0011): uma medalha, decorativa.
+const BADGE_ICON = 'M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12zM8.5 14 7 21l5-3 5 3-1.5-7';
 
 const stateLabel: Record<ProjectState, string> = {
   done: passport.states.done,
@@ -121,6 +124,33 @@ export function PassportBody({
           <p className="border-t border-hairline px-6 py-4 text-text-muted">{passport.reduced}</p>
         )}
       </section>
+
+      {view.badges.length > 0 && (
+        // WI-0011: etiqueta em maiúsculas monoespaçadas (design.md), com os tokens do
+        // tema e nunca a cor da coalition. Sem badges, a secção não aparece.
+        <section aria-labelledby="badges-title" className="mt-8">
+          <h2 id="badges-title" className="text-xl font-bold">
+            {badges.title}
+          </h2>
+          <ul
+            aria-labelledby="badges-title"
+            className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+          >
+            {view.badges.map((b) => (
+              <li
+                key={b.id}
+                className="flex flex-col gap-1.5 rounded-md border border-hairline bg-surface-2 px-4 py-3"
+              >
+                <span className="flex w-fit items-center gap-1.5 rounded-sm border border-primary px-2 py-0.5 font-mono text-xs font-semibold tracking-[0.05em] text-primary uppercase">
+                  <Icon d={BADGE_ICON} />
+                  {b.name}
+                </span>
+                <span className="text-sm text-text-muted">{b.description}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section aria-labelledby="projects-title" className="mt-8">
         <h2 id="projects-title" className="text-xl font-bold">

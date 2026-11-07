@@ -152,6 +152,31 @@
         "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 7.25 }],
         "projects": []
       }
+    },
+    {
+      "key": "pombo",
+      "intraId": 90007,
+      "login": "pombo-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-pombo-Mv3Kc8Xz1Qw7Er5Ty2",
+      "syncedAt": "2026-11-04T14:30:00Z",
+      "snapshot": {
+        "login": "pombo-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2025 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 2.1 }],
+        "projects": [
+          {
+            "slug": "projeto-do-pombo",
+            "name": "Projeto do Pombo",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      }
     }
   ]
 }

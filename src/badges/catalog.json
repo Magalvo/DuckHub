@@ -1,0 +1,44 @@
+[
+  {
+    "id": "first-validation",
+    "name": "First validation",
+    "description": "Validated a first project.",
+    "rule": { "kind": "validated-count", "min": 1 }
+  },
+  {
+    "id": "max-mark",
+    "name": "Outstanding",
+    "description": "Validated a project with the maximum mark of 125.",
+    "rule": { "kind": "max-mark" }
+  },
+  {
+    "id": "level-5",
+    "name": "Level 5",
+    "description": "Reached level 5 in the 42cursus.",
+    "rule": { "kind": "level", "min": 5 }
+  },
+  {
+    "id": "level-10",
+    "name": "Level 10",
+    "description": "Reached level 10 in the 42cursus.",
+    "rule": { "kind": "level", "min": 10 }
+  },
+  {
+    "id": "level-15",
+    "name": "Level 15",
+    "description": "Reached level 15 in the 42cursus.",
+    "rule": { "kind": "level", "min": 15 }
+  },
+  {
+    "id": "level-21",
+    "name": "Level 21",
+    "description": "Reached level 21 in the 42cursus.",
+    "rule": { "kind": "level", "min": 21 }
+  },
+  {
+    "id": "alumni",
+    "name": "42 Alumni",
+    "description": "Recognised as a 42 Alumni.",
+    "rule": { "kind": "alumni" }
+  }
+]
