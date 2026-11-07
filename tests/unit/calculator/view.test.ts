@@ -25,7 +25,14 @@ const piscine = {
   syncedAt: 0,
 };
 const projects: CachedProjectXp[] = [
-  { slug: 'projeto-a', projectId: 7001, name: 'Projeto A', xp: 2814, fetchedAt: FETCHED },
+  {
+    slug: 'projeto-a',
+    projectId: 7001,
+    name: 'Projeto A',
+    xp: 2814,
+    solo: true,
+    fetchedAt: FETCHED,
+  },
 ];
 
 describe('isAvailable', () => {

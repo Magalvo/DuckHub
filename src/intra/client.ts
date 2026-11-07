@@ -14,6 +14,7 @@ import {
   profileSchema,
   projectSchema,
   projectUserSchema,
+  soloFor,
   xpFor,
   type Coalition,
   type CursusProject,
@@ -189,6 +190,7 @@ export function createIntraClient(deps: {
           slug: p.slug,
           name: p.name,
           xp: xpFor(p, { campusId: ctx.campusId, cursusId }),
+          solo: soloFor(p, { campusId: ctx.campusId, cursusId }),
         })),
       };
     },

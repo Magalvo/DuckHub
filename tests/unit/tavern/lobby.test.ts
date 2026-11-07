@@ -1,0 +1,176 @@
+// POST /tavern/lobby (WI-0017): a ordem das respostas e quem pode entrar,
+// para lá do contrato e2e. Stores em memória; dados inventados.
+import { describe, expect, it } from 'vitest';
+
+import { hashToken, SESSION_COOKIE, type AuthDeps } from '../../../src/auth/handlers.js';
+import { handleLobby, matchLabel, type LobbyProject } from '../../../src/tavern/lobby.js';
+
+const ORIGIN = 'http://localhost:3000';
+const TOKEN = 'token-sintetico-lobby';
+const NOW = 1_800_000_000_000;
+const ME = 'user-1';
+const MINISHELL = '42cursus-minishell';
+
+function setup(init: { hidden?: boolean; projects?: LobbyProject[] } = {}) {
+  const entries = new Set<string>();
+  const calls: string[] = [];
+  const auth: AuthDeps = {
+    config: {
+      clientId: 'id',
+      clientSecret: 'segredo',
+      redirectUri: `${ORIGIN}/auth/callback`,
+      allowedCampusIds: [9001],
+      secureCookies: false,
+    },
+    clock: { now: () => NOW },
+    randomToken: () => 'aleatorio',
+    exchangeCode: () => Promise.resolve({ ok: false }),
+    fetchProfile: () => Promise.resolve({ ok: false, error: { kind: 'network' } }),
+    syncPassport: () => Promise.resolve(),
+    store: {
+      upsertUser: () => Promise.resolve({ userId: ME }),
+      createSession: () => Promise.resolve(),
+      findSession: (h) =>
+        Promise.resolve(h === hashToken(TOKEN) ? { userId: ME, expiresAt: NOW + 1 } : null),
+      renewSession: () => Promise.resolve(),
+      deleteSession: () => Promise.resolve(),
+      deleteUser: () => Promise.resolve(),
+    },
+  };
+  const deps = {
+    auth,
+    isHidden: () => {
+      calls.push('isHidden');
+      return Promise.resolve(init.hidden ?? false);
+    },
+    projectsOf: () => {
+      calls.push('projectsOf');
+      return Promise.resolve(
+        init.projects ?? [{ slug: MINISHELL, name: 'minishell', suggested: false }]
+      );
+    },
+    store: {
+      join: (userId: string, slug: string) => {
+        entries.add(`${userId}:${slug}`);
+        return Promise.resolve();
+      },
+      leave: (userId: string, slug: string) => {
+        entries.delete(`${userId}:${slug}`);
+        return Promise.resolve();
+      },
+    },
+  };
+  return { deps, entries, calls };
+}
+
+function post(body: string, init: { origin?: string; token?: string | null } = {}): Request {
+  const headers = new Headers({ 'content-type': 'application/x-www-form-urlencoded' });
+  if (init.token !== null) headers.set('cookie', `${SESSION_COOKIE}=${init.token ?? TOKEN}`);
+  if (init.origin !== undefined) headers.set('origin', init.origin);
+  return new Request(`${ORIGIN}/tavern/lobby`, { method: 'POST', headers, body });
+}
+
+const location = (res: Response): string | null => res.headers.get('location');
+
+describe('handleLobby', () => {
+  it('entrar cria a entrada e responde 303 para o lobby', async () => {
+    const env = setup();
+    const res = await handleLobby(post(`intent=join&project=${MINISHELL}`), env.deps);
+    expect(res.status).toBe(303);
+    expect(location(res)).toBe(`/tavern/${MINISHELL}`);
+    expect(res.headers.get('cache-control')).toBe('no-store');
+    expect([...env.entries]).toEqual([`${ME}:${MINISHELL}`]);
+  });
+
+  it('sair apaga a entrada e responde 303 para /tavern, mesmo sem entrada', async () => {
+    const env = setup();
+    env.entries.add(`${ME}:${MINISHELL}`);
+    for (let i = 0; i < 2; i += 1) {
+      const res = await handleLobby(post(`intent=leave&project=${MINISHELL}`), env.deps);
+      expect(res.status).toBe(303);
+      expect(location(res)).toBe('/tavern');
+    }
+    expect(env.entries.size).toBe(0);
+  });
+
+  it('sair funciona sempre: não pergunta pelo Passaporte nem pelos projetos', async () => {
+    const env = setup({ hidden: true, projects: [] });
+    env.entries.add(`${ME}:webserv`);
+    const res = await handleLobby(post('intent=leave&project=webserv'), env.deps);
+    expect(location(res)).toBe('/tavern');
+    expect(env.entries.size).toBe(0);
+    expect(env.calls).toEqual([]);
+  });
+
+  it('com o Passaporte escondido não se entra', async () => {
+    const env = setup({ hidden: true });
+    const res = await handleLobby(post(`intent=join&project=${MINISHELL}`), env.deps);
+    expect(res.status).toBe(403);
+    expect(env.entries.size).toBe(0);
+  });
+
+  it('só se entra num projeto dos lobbyProjects da pessoa', async () => {
+    const env = setup();
+    const res = await handleLobby(post('intent=join&project=webserv'), env.deps);
+    expect(res.status).toBe(403);
+    expect(env.entries.size).toBe(0);
+  });
+
+  it('Origin de outro site dá 403 antes de tudo', async () => {
+    const env = setup();
+    for (const init of [
+      { origin: 'https://outro-site.example' },
+      { origin: 'https://outro-site.example', token: null },
+    ]) {
+      const res = await handleLobby(post(`intent=join&project=${MINISHELL}`, init), env.deps);
+      expect(res.status).toBe(403);
+    }
+    expect(env.entries.size).toBe(0);
+  });
+
+  it('sem sessão vai para o login', async () => {
+    const env = setup();
+    const res = await handleLobby(
+      post(`intent=join&project=${MINISHELL}`, { token: null }),
+      env.deps
+    );
+    expect(res.status).toBe(303);
+    expect(location(res)).toBe('/login');
+  });
+
+  it.each([
+    ['intent desconhecido', `intent=destroy&project=${MINISHELL}`],
+    ['sem intent', `project=${MINISHELL}`],
+    ['intent repetido', `intent=join&intent=join&project=${MINISHELL}`],
+    ['sem projeto', 'intent=join'],
+    ['projeto vazio', 'intent=leave&project='],
+    ['projeto repetido', `intent=leave&project=${MINISHELL}&project=webserv`],
+    ['projeto com caminho', 'intent=join&project=../account'],
+    ['projeto com maiúsculas', 'intent=leave&project=Minishell'],
+    ['projeto a começar por hífen', 'intent=leave&project=-minishell'],
+  ])('%s dá 400 sem tocar em nada', async (_case, body) => {
+    const env = setup();
+    env.entries.add(`${ME}:${MINISHELL}`);
+    const res = await handleLobby(post(body), env.deps);
+    expect(res.status).toBe(400);
+    expect([...env.entries]).toEqual([`${ME}:${MINISHELL}`]);
+    expect(env.calls).toEqual([]);
+  });
+
+  it('um corpo que não é formulário dá 400', async () => {
+    const env = setup();
+    const req = new Request(`${ORIGIN}/tavern/lobby`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', cookie: `${SESSION_COOKIE}=${TOKEN}` },
+      body: '{}',
+    });
+    expect((await handleLobby(req, env.deps)).status).toBe(400);
+  });
+});
+
+describe('matchLabel', () => {
+  it('mostra a pontuação inteira com a palavra', () => {
+    expect(matchLabel(78, 'match')).toBe('78% match');
+    expect(matchLabel(0, 'match')).toBe('0% match');
+  });
+});

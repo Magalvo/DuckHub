@@ -26,11 +26,12 @@ export function fetchFromApi(deps: {
       .client(token.token)
       .cursusProjects(MAIN_CURSUS_ID, deps.slugs, { campusId });
     if (!result.ok) return null;
-    return result.value.map(({ slug, projectId, name, xp }: CursusProject) => ({
+    return result.value.map(({ slug, projectId, name, xp, solo }: CursusProject) => ({
       slug,
       projectId,
       name,
       xp,
+      solo,
     }));
   };
 }
