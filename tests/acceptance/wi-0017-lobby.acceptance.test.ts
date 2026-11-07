@@ -5,6 +5,9 @@
 // (confirmado numa resposta real da API); quem não tem perfil de trabalho
 // entra na mesma; cada sugestão mostra a percentagem e as razões; as entradas
 // em projetos onde a pessoa já não está inscrita saem na sincronização.
+// WI-0018 (2026-11-07): os lobbies abrem-se a todos os projetos de grupo que a
+// pessoa ainda não validou, inscrita ou não (a API não expõe os pré-requisitos),
+// e a sincronização só tira a pessoa de um lobby quando ela valida o projeto.
 // Revê antes do commit: depois de entrar, isto é o contrato. As regras puras,
 // o solo da API e os efeitos na BD (PGlite com as migrações); o resto está em
 // e2e/wi-0017.e2e.ts. Dados inventados.
@@ -18,12 +21,12 @@ import type { PassportSnapshot } from '../../src/passport/passport.js';
 import { createDrizzlePassportStore } from '../../src/passport/store.js';
 import { LOBBY_STATUSES, LOBBY_TTL_DAYS, lobbyProjects } from '../../src/tavern/lobby.js';
 
-const project = (slug: string, status: string) => ({
+const project = (slug: string, status: string, validated: boolean | null = null) => ({
   slug,
   name: `Nome de ${slug}`,
   status,
   finalMark: null,
-  validated: null,
+  validated,
 });
 
 const snapshot = (projects: PassportSnapshot['projects']): PassportSnapshot => ({
@@ -36,12 +39,13 @@ const snapshot = (projects: PassportSnapshot['projects']): PassportSnapshot => (
   projects,
 });
 
-// O catálogo do campus (a cache do WI-0007), pela ordem do Common Core.
+// O catálogo do campus (a cache do WI-0007), pela ordem do Common Core. O
+// nome vem do catálogo (WI-0018: há lobbies de projetos fora do snapshot).
 const CATALOG = [
-  { slug: '42cursus-libft', solo: true },
-  { slug: '42cursus-minishell', solo: false },
-  { slug: '42cursus-cub3d', solo: false },
-  { slug: 'webserv', solo: false },
+  { slug: '42cursus-libft', name: 'Nome de 42cursus-libft', solo: true },
+  { slug: '42cursus-minishell', name: 'Nome de 42cursus-minishell', solo: false },
+  { slug: '42cursus-cub3d', name: 'Nome de 42cursus-cub3d', solo: false },
+  { slug: 'webserv', name: 'Nome de webserv', solo: false },
 ] as const;
 
 describe('WI-0017 — projetos de grupo onde a pessoa está inscrita', () => {
@@ -51,20 +55,33 @@ describe('WI-0017 — projetos de grupo onde a pessoa está inscrita', () => {
     );
   });
 
-  it('AC1: só projetos de grupo do catálogo, em que a API diz que está inscrita', () => {
+  it('WI-0018: todos os projetos de grupo do catálogo que a pessoa ainda não validou', () => {
     const got = lobbyProjects(
       snapshot([
         project('42cursus-libft', 'in_progress'), // a solo
         project('42cursus-minishell', 'in_progress'),
-        project('webserv', 'finished'), // já acabou
-        project('42cursus-cub3d', 'waiting_for_correction'), // não está à procura
+        project('webserv', 'finished', true), // já validou
         project('projeto-fora-do-catalogo', 'in_progress'), // sem session conhecida
       ]),
       CATALOG
     );
+    // O cub3d não está no snapshot: ainda não se inscreveu, mas o lobby está aberto.
     expect(got).toEqual([
       { slug: '42cursus-minishell', name: 'Nome de 42cursus-minishell', suggested: false },
+      { slug: '42cursus-cub3d', name: 'Nome de 42cursus-cub3d', suggested: false },
     ]);
+  });
+
+  it('WI-0018: um projeto acabado sem validar (falhado) continua com lobby', () => {
+    const got = lobbyProjects(
+      snapshot([
+        project('42cursus-minishell', 'finished', false),
+        project('42cursus-cub3d', 'finished', true),
+        project('webserv', 'finished', true),
+      ]),
+      CATALOG
+    );
+    expect(got.map((p) => p.slug)).toEqual(['42cursus-minishell']);
   });
 
   it('AC2: searching_a_group e creating_group vêm marcados como sugestão', () => {
@@ -184,31 +201,33 @@ describe('WI-0017 — entradas no lobby', () => {
     await expect(join(id, '42cursus-minishell')).rejects.toThrow();
   });
 
-  it('AC1: sincronizar tira a pessoa dos lobbies onde já não está inscrita', async () => {
+  it('WI-0018: sincronizar tira a pessoa só dos lobbies dos projetos que validou', async () => {
     const id = await user();
-    await passports.save(
-      id,
-      snapshot([
-        project('42cursus-minishell', 'in_progress'),
-        project('webserv', 'creating_group'),
-      ]),
-      NOW
-    );
+    await passports.save(id, snapshot([project('42cursus-minishell', 'in_progress')]), NOW);
     await join(id, '42cursus-minishell');
-    await join(id, 'webserv');
+    await join(id, 'webserv'); // ainda não se inscreveu
+    await join(id, '42cursus-cub3d');
 
+    // Inscrever-se, falhar ou sair do snapshot não tira ninguém do lobby.
     await passports.save(
       id,
       snapshot([
-        project('42cursus-minishell', 'finished'),
-        project('webserv', 'searching_a_group'),
+        project('webserv', 'creating_group'),
+        project('42cursus-cub3d', 'finished', false),
       ]),
       NOW + 1000
     );
-    expect(await lobbies(id)).toEqual(['webserv']);
+    expect(await lobbies(id)).toEqual(['42cursus-cub3d', '42cursus-minishell', 'webserv']);
 
-    await passports.save(id, snapshot([]), NOW + 2000);
-    expect(await lobbies(id)).toEqual([]);
+    await passports.save(
+      id,
+      snapshot([
+        project('webserv', 'finished', true),
+        project('42cursus-cub3d', 'finished', false),
+      ]),
+      NOW + 2000
+    );
+    expect(await lobbies(id)).toEqual(['42cursus-cub3d', '42cursus-minishell']);
   });
 
   it('AC1: a sincronização de uma pessoa não mexe nos lobbies das outras', async () => {
@@ -216,7 +235,7 @@ describe('WI-0017 — entradas no lobby', () => {
     const cisne = await user();
     await join(pato, '42cursus-minishell');
     await join(cisne, '42cursus-minishell');
-    await passports.save(pato, snapshot([]), NOW);
+    await passports.save(pato, snapshot([project('42cursus-minishell', 'finished', true)]), NOW);
     expect(await lobbies(pato)).toEqual([]);
     expect(await lobbies(cisne)).toEqual(['42cursus-minishell']);
   });

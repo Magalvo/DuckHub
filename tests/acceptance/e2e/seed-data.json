@@ -31,6 +31,14 @@
       "name": "minishell",
       "xp": 2814,
       "solo": false
+    },
+    {
+      "campusId": 9003,
+      "slug": "webserv",
+      "projectId": 1332,
+      "name": "webserv",
+      "xp": 21630,
+      "solo": false
     }
   ],
   "directoryFillers": {
