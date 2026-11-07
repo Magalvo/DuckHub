@@ -14,6 +14,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -112,3 +113,26 @@ export const rubberDucks = pgTable(
     index('rubber_ducks_user_id_idx').on(t.userId),
   ]
 );
+
+/**
+ * Perfil de trabalho do The Tavern (WI-0015): as respostas do questionário,
+ * uma linha por pessoa. Sem respostas não há linha. As colunas de texto
+ * validam-se com Zod ao ler (src/tavern/store.ts); NULL = sem resposta. Só o
+ * próprio vê as respostas.
+ */
+export const workProfiles = pgTable('work_profiles', {
+  userId: uuid('user_id')
+    .primaryKey()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  periods: text('periods')
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  start: text('start'),
+  gradeGoal: text('grade_goal'),
+  pace: text('pace'),
+  style: text('style'),
+  setting: text('setting'),
+  role: text('role'),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+});

@@ -50,6 +50,13 @@
       "when": 1794063313906,
       "tag": "0006_rubber_ducks",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794085548434,
+      "tag": "0007_work_profiles",
+      "breakpoints": true
     }
   ]
 }
