@@ -47,3 +47,7 @@ docs/design/
 .claude/loop.md
 .claude/scheduled_tasks.json
 .claude/settings.local.json
+
+# Worktrees locais do Claude Code: são cópias inteiras do repositório (com o
+# próprio material de referência) e não pertencem a este checkout.
+.claude/worktrees/
