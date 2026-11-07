@@ -44,7 +44,7 @@ export async function handleSetVisibility(
 }
 
 /** Os campos de texto do formulário; um corpo que não é formulário fica vazio. */
-async function formFields(req: Request): Promise<[string, string][]> {
+export async function formFields(req: Request): Promise<[string, string][]> {
   let data: FormData;
   try {
     data = await req.formData();

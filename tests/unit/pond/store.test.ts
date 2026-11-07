@@ -171,3 +171,118 @@ it('apagar a conta apaga os eventos da pessoa', async () => {
   await createDrizzleStore(db).deleteUser(pato);
   expect(await storedEvents()).toEqual([{ kind: 'level-up', level: 3 }]);
 });
+
+describe('Rubber Ducks', () => {
+  async function eventOf(userId: string, daysAgo = 0): Promise<number> {
+    await insertEvent(userId, { kind: 'level-up', level: 2 }, daysAgo);
+    const { rows } = await client.query<{ id: number | string }>(
+      'SELECT id FROM pond_events ORDER BY id DESC LIMIT 1'
+    );
+    const id = rows[0]?.id;
+    if (id === undefined) throw new Error('sem evento');
+    return Number(id);
+  }
+
+  async function duckCount(): Promise<number> {
+    const { rows } = await client.query<{ n: number }>(
+      'SELECT count(*)::int AS n FROM rubber_ducks'
+    );
+    return rows[0]?.n ?? 0;
+  }
+
+  it('o feed traz a contagem, o "já dei" e se o evento é do próprio', async () => {
+    const pato = await newUser(90001, 'pato-teste');
+    const cisne = await newUser(90002, 'cisne-teste');
+    const garca = await newUser(90003, 'garca-teste', true);
+    const event = await eventOf(pato);
+    const pond = createDrizzlePondStore(db);
+    // Quem se escondeu também dá Ducks, e contam.
+    await pond.giveDuck({ userId: cisne, eventId: event });
+    await pond.giveDuck({ userId: garca, eventId: event });
+
+    const [seen] = (await pond.listEvents({ viewerId: cisne, page: 1 })).events;
+    expect(seen).toMatchObject({ id: event, ducks: 2, ducked: true, own: false });
+    const [own] = (await pond.listEvents({ viewerId: pato, page: 1 })).events;
+    expect(own).toMatchObject({ ducks: 2, ducked: false, own: true });
+  });
+
+  it('dar duas vezes, mesmo em simultâneo, conta um; retirar sem ter dado não faz nada', async () => {
+    const pato = await newUser(90001, 'pato-teste');
+    const cisne = await newUser(90002, 'cisne-teste');
+    const eventId = await eventOf(pato);
+    const pond = createDrizzlePondStore(db);
+    await Promise.all([
+      pond.giveDuck({ userId: cisne, eventId }),
+      pond.giveDuck({ userId: cisne, eventId }),
+    ]);
+    await pond.giveDuck({ userId: cisne, eventId });
+    expect(await duckCount()).toBe(1);
+    await pond.takeDuck({ userId: cisne, eventId });
+    await pond.takeDuck({ userId: cisne, eventId });
+    expect(await duckCount()).toBe(0);
+  });
+
+  it('a BD recusa um segundo Duck da mesma pessoa, mesmo sem o código', async () => {
+    const pato = await newUser(90001, 'pato-teste');
+    const cisne = await newUser(90002, 'cisne-teste');
+    const eventId = await eventOf(pato);
+    const insert = 'INSERT INTO rubber_ducks (event_id, user_id) VALUES ($1, $2)';
+    await client.query(insert, [eventId, cisne]);
+    await expect(client.query(insert, [eventId, cisne])).rejects.toThrow();
+  });
+
+  it('dar um Duck a um evento que já não existe não insere nada', async () => {
+    const cisne = await newUser(90002, 'cisne-teste');
+    await createDrizzlePondStore(db).giveDuck({ userId: cisne, eventId: 987_654 });
+    expect(await duckCount()).toBe(0);
+  });
+
+  it('findVisibleEvent: o dono, ou null se expirou, não existe ou o dono se escondeu', async () => {
+    const pato = await newUser(90001, 'pato-teste');
+    const garca = await newUser(90003, 'garca-teste', true);
+    const fresh = await eventOf(pato);
+    const expired = await eventOf(pato, 91);
+    const hidden = await eventOf(garca);
+    const pond = createDrizzlePondStore(db);
+    expect(await pond.findVisibleEvent({ viewerId: pato, eventId: fresh })).toEqual({
+      ownerId: pato,
+    });
+    expect(await pond.findVisibleEvent({ viewerId: pato, eventId: expired })).toBeNull();
+    expect(await pond.findVisibleEvent({ viewerId: pato, eventId: 987_654 })).toBeNull();
+    expect(await pond.findVisibleEvent({ viewerId: pato, eventId: hidden })).toBeNull();
+    expect(await pond.findVisibleEvent({ viewerId: garca, eventId: hidden })).toEqual({
+      ownerId: garca,
+    });
+  });
+
+  it('apagar a conta leva os Ducks que deu e os dos seus eventos; expirar leva os do evento', async () => {
+    const pato = await newUser(90001, 'pato-teste');
+    const cisne = await newUser(90002, 'cisne-teste');
+    const pombo = await newUser(90004, 'pombo-teste');
+    const pond = createDrizzlePondStore(db);
+    const patoEvent = await eventOf(pato);
+    const cisneEvent = await eventOf(cisne);
+    const old = await eventOf(cisne, 91);
+    await pond.giveDuck({ userId: cisne, eventId: patoEvent });
+    await pond.giveDuck({ userId: pombo, eventId: patoEvent });
+    await pond.giveDuck({ userId: pato, eventId: cisneEvent });
+    await pond.giveDuck({ userId: pombo, eventId: cisneEvent });
+    await client.query('INSERT INTO rubber_ducks (event_id, user_id) VALUES ($1, $2)', [
+      old,
+      pombo,
+    ]);
+
+    await createDrizzleStore(db).deleteUser(pato);
+    const { rows } = await client.query<{ event_id: number | string; user_id: string }>(
+      'SELECT event_id, user_id FROM rubber_ducks ORDER BY event_id'
+    );
+    expect(rows.map((r) => [Number(r.event_id), r.user_id])).toEqual([
+      [cisneEvent, pombo],
+      [old, pombo],
+    ]);
+
+    // A sincronização apaga os eventos expirados, e com eles os seus Ducks.
+    await createDrizzlePassportStore(db).save(cisne, snapshot('cisne-teste'), NOW);
+    expect(await duckCount()).toBe(1);
+  });
+});

@@ -2,9 +2,16 @@
 // mostrado e o que se mostra de cada evento. Dados inventados.
 import { describe, expect, it } from 'vitest';
 
-import { formatDay, parsePondPage, pondItem } from '../../../src/pond/feed.js';
+import { duckCount, formatDay, parsePondPage, pondHref, pondItem } from '../../../src/pond/feed.js';
 
-const row = { id: 7, login: 'pato-teste', createdAt: Date.UTC(2026, 10, 5, 12, 0) };
+const row = {
+  id: 7,
+  login: 'pato-teste',
+  createdAt: Date.UTC(2026, 10, 5, 12, 0),
+  ducks: 2,
+  ducked: true,
+  own: false,
+};
 
 describe('parsePondPage', () => {
   it.each([undefined, 'abc', '0', '-1', '1.5', '1e2', '10001', '', ' 2'])(
@@ -42,6 +49,7 @@ describe('pondItem', () => {
       login: 'pato-teste',
       day: '2026-11-05',
       event: { kind: 'project-validated', name: 'Libft', finalMark: 100 },
+      ducks: { count: 2, given: true, own: false },
     });
   });
 
@@ -61,5 +69,23 @@ describe('pondItem', () => {
 
   it('uma badge que já não está no catálogo não aparece', () => {
     expect(pondItem({ ...row, event: { kind: 'badge', badgeId: 'retirada' } })).toBeNull();
+  });
+});
+
+describe('Rubber Ducks', () => {
+  const words = { countOne: 'Duck', countMany: 'Ducks' };
+
+  it.each([
+    [0, '0 Ducks'],
+    [1, '1 Duck'],
+    [2, '2 Ducks'],
+    [1000, '1000 Ducks'],
+  ])('%i → %j, com um espaço entre o número e a palavra', (n, text) => {
+    expect(duckCount(n, words)).toBe(text);
+  });
+
+  it('pondHref: /pond na primeira página', () => {
+    expect(pondHref(1)).toBe('/pond');
+    expect(pondHref(3)).toBe('/pond?page=3');
   });
 });

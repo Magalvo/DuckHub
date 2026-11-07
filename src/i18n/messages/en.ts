@@ -73,6 +73,12 @@ export const en = {
     pagination: 'Pages',
     previous: 'Previous page',
     next: 'Next page',
+    // Rubber Ducks (WI-0013, ADR 0014): só a contagem, nunca quem deu.
+    ducks: {
+      button: 'Give a Rubber Duck',
+      countOne: 'Rubber Duck',
+      countMany: 'Rubber Ducks',
+    },
   },
   // Conquistas (WI-0011). Os nomes e descrições das badges vêm de src/badges/catalog.json.
   badges: {
@@ -150,6 +156,11 @@ export const en = {
         data: 'Your Duck Pond events: projects you validated (name and mark), new levels and new badges, with the date',
         purpose:
           'To show your achievements in the Duck Pond feed. Events are deleted after 90 days.',
+      },
+      {
+        data: 'The Rubber Ducks you give: which Duck Pond event and when',
+        purpose:
+          'To count the Rubber Ducks on each event and to show you which ones you gave. Other members see only how many Ducks an event has, never who gave them. Your Ducks are deleted with the event.',
       },
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
