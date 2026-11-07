@@ -3,7 +3,13 @@
 import { describe, expect, it } from 'vitest';
 
 import { hashToken, SESSION_COOKIE, type AuthDeps } from '../../../src/auth/handlers.js';
-import { handleLobby, matchLabel, type LobbyProject } from '../../../src/tavern/lobby.js';
+import {
+  handleLobby,
+  lobbyProjects,
+  lookingLabel,
+  matchLabel,
+  type LobbyProject,
+} from '../../../src/tavern/lobby.js';
 
 const ORIGIN = 'http://localhost:3000';
 const TOKEN = 'token-sintetico-lobby';
@@ -172,5 +178,48 @@ describe('matchLabel', () => {
   it('mostra a pontuação inteira com a palavra', () => {
     expect(matchLabel(78, 'match')).toBe('78% match');
     expect(matchLabel(0, 'match')).toBe('0% match');
+  });
+});
+
+describe('lookingLabel (WI-0018)', () => {
+  it('singular só para 1', () => {
+    expect(lookingLabel(0, 'pessoa', 'pessoas')).toBe('0 pessoas');
+    expect(lookingLabel(1, 'pessoa', 'pessoas')).toBe('1 pessoa');
+    expect(lookingLabel(3, 'pessoa', 'pessoas')).toBe('3 pessoas');
+  });
+});
+
+describe('lobbyProjects (WI-0018)', () => {
+  const snap = (projects: { slug: string; status: string; validated: boolean | null }[]) => ({
+    login: 'pato-teste',
+    campus: 'Campus Sintético',
+    piscine: { month: 'september', year: 2023 },
+    isAlumni: false,
+    coalition: null,
+    cursus: [],
+    projects: projects.map((p) => ({ ...p, name: `snapshot ${p.slug}`, finalMark: null })),
+  });
+  const catalog = [
+    { slug: 'a', name: 'A', solo: false },
+    { slug: 'b', name: 'B', solo: false },
+  ];
+
+  it('o nome vem do catálogo; validated null ou false não fecha o lobby', () => {
+    expect(
+      lobbyProjects(
+        snap([
+          { slug: 'a', status: 'searching_a_group', validated: null },
+          { slug: 'b', status: 'finished', validated: false },
+        ]),
+        catalog
+      )
+    ).toEqual([
+      { slug: 'a', name: 'A', suggested: true },
+      { slug: 'b', name: 'B', suggested: false },
+    ]);
+  });
+
+  it('um snapshot vazio abre todos os projetos de grupo', () => {
+    expect(lobbyProjects(snap([]), catalog).map((p) => p.slug)).toEqual(['a', 'b']);
   });
 });

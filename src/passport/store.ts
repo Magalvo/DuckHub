@@ -1,14 +1,14 @@
 // PassportStore sobre Drizzle (WI-0005, ADR 0008). O snapshot JSONB valida-se
 // com Zod ao ler: um snapshot inválido conta como "ainda não sincronizado" e o
 // próximo login reescreve-o. O conteúdo inválido não se regista em lado nenhum.
-import { and, desc, eq, lt, notInArray, sql } from 'drizzle-orm';
+import { and, desc, eq, lt, inArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import type { Db } from '../db/store';
 import { lobbyEntries, passports, pondEvents, users } from '../db/schema';
 import { diffEvents } from '../pond/events';
 import { RETENTION_DAYS } from '../pond/feed';
-import { LOBBY_STATUSES, LOBBY_TTL_DAYS } from '../tavern/lobby';
+import { LOBBY_TTL_DAYS } from '../tavern/lobby';
 import type { PassportSnapshot } from './passport';
 import type { PassportStore } from './sync';
 import type { PassportVisibilityStore } from './visibility';
@@ -44,8 +44,8 @@ export function createDrizzlePassportStore(db: Db): PassportStore & PassportVisi
      * UPDATE (dois logins em simultâneo esperam um pelo outro e o segundo já
      * vê o snapshot novo), grava o novo, insere os eventos da diferença e apaga
      * os eventos expirados. Uma falha não deixa eventos sem snapshot.
-     * WI-0017 (ADR 0016): na mesma transação, tira a pessoa dos lobbies de
-     * projetos onde já não está inscrita e apaga as entradas expiradas de
+     * WI-0017/WI-0018 (ADRs 0016 e 0017): na mesma transação, tira a pessoa
+     * dos lobbies dos projetos que validou e apaga as entradas expiradas de
      * toda a gente (a limpeza depende de haver logins).
      */
     async save(userId, snapshot, syncedAt) {
@@ -69,16 +69,15 @@ export function createDrizzlePassportStore(db: Db): PassportStore & PassportVisi
         await tx
           .delete(pondEvents)
           .where(lt(pondEvents.createdAt, sql`now() - make_interval(days => ${RETENTION_DAYS})`));
-        const enrolled = snapshot.projects
-          .filter((p) => LOBBY_STATUSES.includes(p.status))
-          .map((p) => p.slug);
-        await tx
-          .delete(lobbyEntries)
-          .where(
-            enrolled.length === 0
-              ? eq(lobbyEntries.userId, userId)
-              : and(eq(lobbyEntries.userId, userId), notInArray(lobbyEntries.projectSlug, enrolled))
-          );
+        // ADR 0017: só validar o projeto tira a pessoa do lobby.
+        const validated = snapshot.projects.filter((p) => p.validated === true).map((p) => p.slug);
+        if (validated.length > 0) {
+          await tx
+            .delete(lobbyEntries)
+            .where(
+              and(eq(lobbyEntries.userId, userId), inArray(lobbyEntries.projectSlug, validated))
+            );
+        }
         await tx
           .delete(lobbyEntries)
           .where(lt(lobbyEntries.joinedAt, sql`now() - make_interval(days => ${LOBBY_TTL_DAYS})`));

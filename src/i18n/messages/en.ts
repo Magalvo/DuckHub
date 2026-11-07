@@ -173,7 +173,7 @@ export const en = {
         // WI-0017: as colunas de lobby_entries.
         data: 'The Tavern lobbies you join: which group project and when you joined',
         purpose:
-          'To show you to the other members of the same lobby on your campus, and only to them. You leave a lobby when you choose to, after 14 days, when you are no longer registered for the project on the Intra, or when you hide your Passport.',
+          'To show you to the other members of the same lobby on your campus, and only to them; others on your campus see only how many people are in it. You leave a lobby when you choose to, after 14 days, when you validate the project, or when you hide your Passport.',
       },
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
@@ -215,10 +215,12 @@ export const en = {
       projectsLabel: 'Your group projects',
       suggested: 'The Intra says you are looking for a group',
       join: 'Join the lobby',
+      // WI-0018: num lobby vazio, entrar é criá-lo.
+      create: 'Create the lobby',
       leave: 'Leave the lobby',
       open: 'Open the lobby',
       noProjects:
-        'You have no group projects in progress right now. When you register for one on the Intra, its lobby shows up here.',
+        'No group project lobbies are open for you right now. Every group project on your campus that you have not validated yet has a lobby here.',
       noProfile:
         'You have no work profile yet. You can still join a lobby, but nobody will match with you until you answer the questions.',
       editProfile: 'Edit your work profile',
@@ -227,6 +229,9 @@ export const en = {
       membersLabel: 'Other people in this lobby',
       empty: 'Nobody else from your campus is in this lobby yet. Check back later.',
       match: 'match',
+      // WI-0018: antes de entrar vê-se só quantas pessoas estão no lobby.
+      lookingOne: 'person in this lobby',
+      lookingMany: 'people in this lobby',
     },
     // WI-0015: o questionário. As chaves de options são os valores do WI-0014,
     // pela mesma ordem; os rótulos são únicos em cada pergunta.

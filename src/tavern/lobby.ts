@@ -1,14 +1,18 @@
-// Lobby LFG do The Tavern (WI-0017, ADR 0016). Só se entra no lobby de um
-// projeto de grupo (solo: false na project_session) em que a API diz que a
-// pessoa está inscrita. Entrar é o opt-in para revelar esse projeto a quem está
-// no mesmo lobby e campus. O POST /tavern/lobby segue o /pond/ducks: Origin da
+// Lobby LFG do The Tavern (WI-0017, WI-0018, ADRs 0016 e 0017). Há lobby em
+// cada projeto de grupo (solo: false na project_session) do campus que a pessoa
+// ainda não validou, inscrita ou não: a API não expõe os pré-requisitos. Entrar
+// é o opt-in para revelar esse projeto a quem está no mesmo lobby e campus;
+// antes de entrar vê-se só quantas pessoas lá estão. O POST /tavern/lobby segue o /pond/ducks: Origin da
 // app, sessão do cookie, formulário validado. Sair funciona sempre.
 import { z } from 'zod';
 
 import { crossOrigin, getSession, type AuthDeps } from '../auth/handlers';
 import type { PassportSnapshot } from '../passport/passport';
 
-/** Os estados de inscrição em curso na Intra. */
+/**
+ * Os estados de inscrição em curso na Intra. Desde o WI-0018 (ADR 0017) já
+ * não decidem quem tem lobby nem quem sai dele na sincronização.
+ */
 export const LOBBY_STATUSES: readonly string[] = [
   'in_progress',
   'searching_a_group',
@@ -29,21 +33,20 @@ export interface LobbyProject {
 }
 
 /**
- * Os projetos de grupo do catálogo do campus em que a pessoa está inscrita,
- * pela ordem do catálogo. Sem Passaporte sincronizado não há nenhum.
+ * Os projetos de grupo do catálogo do campus que a pessoa ainda não validou
+ * (validated === true fecha o lobby; um falhado continua), pela ordem do
+ * catálogo e com o nome do catálogo. Sem Passaporte sincronizado não há nenhum.
  */
 export function lobbyProjects(
   snapshot: PassportSnapshot | null,
-  catalog: readonly { slug: string; solo: boolean }[]
+  catalog: readonly { slug: string; name: string; solo: boolean }[]
 ): LobbyProject[] {
   if (snapshot === null) return [];
-  const enrolled = new Map(
-    snapshot.projects.filter((p) => LOBBY_STATUSES.includes(p.status)).map((p) => [p.slug, p])
-  );
-  return catalog.flatMap(({ slug, solo }) => {
-    const project = enrolled.get(slug);
-    if (solo || project === undefined) return [];
-    return [{ slug, name: project.name, suggested: SUGGESTED.includes(project.status) }];
+  const status = new Map(snapshot.projects.map((p) => [p.slug, p]));
+  return catalog.flatMap(({ slug, name, solo }) => {
+    const project = status.get(slug);
+    if (solo || project?.validated === true) return [];
+    return [{ slug, name, suggested: project !== undefined && SUGGESTED.includes(project.status) }];
   });
 }
 
@@ -53,7 +56,7 @@ export async function loadLobbyProjects(
   deps: {
     loadSnapshot(userId: string): Promise<PassportSnapshot | null>;
     campusOf(userId: string): Promise<number | null>;
-    catalog(campusId: number): Promise<readonly { slug: string; solo: boolean }[]>;
+    catalog(campusId: number): Promise<readonly { slug: string; name: string; solo: boolean }[]>;
   }
 ): Promise<LobbyProject[]> {
   const [snapshot, campusId] = await Promise.all([
@@ -66,6 +69,10 @@ export async function loadLobbyProjects(
 
 /** "78% match": a pontuação do WI-0014 como se mostra no lobby. */
 export const matchLabel = (score: number, word: string): string => `${String(score)}% ${word}`;
+
+/** "3 people in this lobby": one só para 1, many para os outros (0 incluído). */
+export const lookingLabel = (count: number, one: string, many: string): string =>
+  `${String(count)} ${count === 1 ? one : many}`;
 
 /** Um slug da Intra: minúsculas, dígitos, _ e -, sem nada que pareça um caminho. */
 export const projectSlugSchema = z.string().regex(/^[a-z0-9][a-z0-9_-]*$/);

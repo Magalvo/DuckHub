@@ -1,6 +1,6 @@
 # ADR-0016 — Lobby: o solo na cache de projetos e a limpeza na sincronização
 
-- **Estado:** proposto (aceite quando o humano fizer o commit)
+- **Estado:** aceite; pontos 3 e 4 da decisão substituídos pelo [ADR 0017](0017-lobbies-abertos-a-validacao-tira-do-lobby.md)
 - **Data:** 2026-11-07
 - **Decisor(es):** Magalvo (decisões de 2026-11-07, WI-0017)
 
