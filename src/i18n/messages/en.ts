@@ -15,6 +15,7 @@ export const en = {
       passport: 'Passport',
       community: 'Community', // WI-0010
       pond: 'Duck Pond', // WI-0012
+      tavern: 'Tavern', // WI-0015
       xpCalculator: 'XP Calculator',
     },
   },
@@ -162,6 +163,12 @@ export const en = {
         purpose:
           'To count the Rubber Ducks on each event and to show you which ones you gave. Other members see only how many Ducks an event has, never who gave them. Your Ducks are deleted with the event.',
       },
+      {
+        // WI-0015: as colunas de work_profiles.
+        data: 'Your work profile: when you like to work, when you want to start, your grade goal, your pace, how you like to work together, where you like to work and the role you prefer',
+        purpose:
+          'To suggest teammates in The Tavern. Only you can see your answers; other members see only how well you match and why. You can change or delete your work profile at any time.',
+      },
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
     visibility:
@@ -192,9 +199,80 @@ export const en = {
       'same-start': 'You both want to start at the same time',
       'same-grade-goal': 'You aim for the same grade',
       'same-pace': 'You work at the same pace',
-      'same-style': 'You like to split the work the same way',
+      'same-style': 'You like to work together the same way',
       'same-setting': 'You both prefer the same place to work',
       'complementary-roles': 'One of you likes to lead, the other to follow',
+    },
+    // WI-0015: o questionário. As chaves de options são os valores do WI-0014,
+    // pela mesma ordem; os rótulos são únicos em cada pergunta.
+    profile: {
+      title: 'Your work profile',
+      privacy:
+        'Tell us how you like to work, so The Tavern can suggest teammates. Every question is optional. Only you can see your answers; other members see only how well you match and why.',
+      skip: 'Prefer not to say',
+      save: 'Save my answers',
+      delete: 'Delete my work profile',
+      saved: 'Your answers were saved.',
+      deleted: 'Your work profile was deleted.',
+      questions: {
+        periods: {
+          label: 'When do you like to work? Pick all that apply.',
+          options: {
+            morning: 'Mornings',
+            afternoon: 'Afternoons',
+            evening: 'Evenings',
+            night: 'Late nights',
+          },
+        },
+        start: {
+          label: 'When do you want to start?',
+          options: {
+            'this-week': 'This week',
+            'two-weeks': 'In the next two weeks',
+            'no-rush': 'No rush',
+          },
+        },
+        gradeGoal: {
+          label: 'What grade are you aiming for?',
+          options: {
+            pass: 'Just pass',
+            bonus: 'Get the bonus',
+            max: 'Go for 125',
+          },
+        },
+        pace: {
+          label: 'What pace do you like?',
+          options: {
+            sprint: 'Sprint and finish fast',
+            steady: 'Steady, a bit every day',
+            relaxed: 'Relaxed, no pressure',
+          },
+        },
+        style: {
+          label: 'How do you like to work together?',
+          options: {
+            pair: 'Side by side, pair programming',
+            split: 'Split the work and merge',
+            mixed: 'A bit of both',
+          },
+        },
+        setting: {
+          label: 'Where do you like to work?',
+          options: {
+            'on-site': 'On campus',
+            hybrid: 'On campus and remote',
+            remote: 'Remote',
+          },
+        },
+        role: {
+          label: 'Which role do you prefer?',
+          options: {
+            lead: 'I like to lead',
+            follow: 'I like to follow a plan',
+            either: 'Either is fine',
+          },
+        },
+      },
     },
   },
 } as const;
