@@ -31,6 +31,8 @@ import { createDrizzlePassportStore } from '../passport/store';
 import { createDrizzlePondStore, type PondStore } from '../pond/store';
 import type { PassportVisibilityStore } from '../passport/visibility';
 import { createDrizzleWorkProfileStore, type WorkProfileStore } from '../tavern/store';
+import { createDrizzleLobbyStore, type LobbyStore } from '../tavern/lobby-store';
+import { loadLobbyProjects, type LobbyProject } from '../tavern/lobby';
 
 /** Um pedido à 42 que não responde em 10 s conta como falha de rede. */
 const FETCH_TIMEOUT_MS = 10_000;
@@ -61,6 +63,7 @@ interface App {
   directory: DirectoryStore;
   pond: PondStore;
   workProfiles: WorkProfileStore;
+  lobbies: LobbyStore;
 }
 
 interface Shared {
@@ -117,6 +120,7 @@ async function createApp(): Promise<App> {
     directory: createDrizzleDirectoryStore(db),
     pond: createDrizzlePondStore(db),
     workProfiles: createDrizzleWorkProfileStore(db),
+    lobbies: createDrizzleLobbyStore(db),
     calculator: {
       campusOf: (userId) => projectXp.campusOf(userId),
       cache: createProjectXpCache({
@@ -173,3 +177,19 @@ export const workProfileStore = async (): Promise<WorkProfileStore> => (await ap
 
 /** A cache de XP e o campus do utilizador, para a calculadora (WI-0007). */
 export const calculatorDeps = async (): Promise<CalculatorDeps> => (await app()).calculator;
+
+/** Os lobbies do The Tavern (WI-0017), sobre a mesma BD. */
+export const lobbyStore = async (): Promise<LobbyStore> => (await app()).lobbies;
+
+/**
+ * Os lobbies a que uma pessoa pode ir (WI-0017, ADR 0016): o seu snapshot
+ * contra a cache de projetos do seu campus (a da calculadora, com o solo).
+ */
+export async function lobbyProjectsOf(userId: string): Promise<LobbyProject[]> {
+  const { passports, calculator } = await app();
+  return loadLobbyProjects(userId, {
+    loadSnapshot: async (id) => (await passports.load(id))?.snapshot ?? null,
+    campusOf: (id) => calculator.campusOf(id),
+    catalog: (campusId) => calculator.cache.projectsFor(campusId),
+  });
+}

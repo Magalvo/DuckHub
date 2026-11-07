@@ -90,7 +90,12 @@ test('sem sessão, o questionário leva ao login', async ({ page }) => {
   await expect(page).toHaveURL(/\/login$/);
 });
 
-test('o menu tem a Tavern, que leva ao questionário', async ({ context, page, baseURL }) => {
+test('o menu tem a Tavern, e da Tavern chega-se ao questionário', async ({
+  context,
+  page,
+  baseURL,
+}) => {
+  // WI-0017: o item do menu passou a levar ao lobby, em /tavern.
   await signInAs('ganso', context, baseURL);
   await page.goto('/');
   await page
@@ -98,6 +103,8 @@ test('o menu tem a Tavern, que leva ao questionário', async ({ context, page, b
     .first()
     .getByRole('link', { name: en.shell.items.tavern })
     .click();
+  await expect(page).toHaveURL('/tavern');
+  await page.getByRole('link', { name: en.tavern.lobby.editProfile }).click();
   await expect(page).toHaveURL(PAGE);
   await expect(page.getByRole('heading', { level: 1, name: profile.title })).toBeVisible();
 });

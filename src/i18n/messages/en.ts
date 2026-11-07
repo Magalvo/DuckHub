@@ -169,6 +169,12 @@ export const en = {
         purpose:
           'To suggest teammates in The Tavern. Only you can see your answers; other members see only how well you match and why. You can change or delete your work profile at any time.',
       },
+      {
+        // WI-0017: as colunas de lobby_entries.
+        data: 'The Tavern lobbies you join: which group project and when you joined',
+        purpose:
+          'To show you to the other members of the same lobby on your campus, and only to them. You leave a lobby when you choose to, after 14 days, when you are no longer registered for the project on the Intra, or when you hide your Passport.',
+      },
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
     visibility:
@@ -202,6 +208,25 @@ export const en = {
       'same-style': 'You like to work together the same way',
       'same-setting': 'You both prefer the same place to work',
       'complementary-roles': 'One of you likes to lead, the other to follow',
+    },
+    // WI-0017: o lobby LFG por projeto.
+    lobby: {
+      title: 'The Tavern',
+      projectsLabel: 'Your group projects',
+      suggested: 'The Intra says you are looking for a group',
+      join: 'Join the lobby',
+      leave: 'Leave the lobby',
+      open: 'Open the lobby',
+      noProjects:
+        'You have no group projects in progress right now. When you register for one on the Intra, its lobby shows up here.',
+      noProfile:
+        'You have no work profile yet. You can still join a lobby, but nobody will match with you until you answer the questions.',
+      editProfile: 'Edit your work profile',
+      hiddenPassport:
+        'Your Passport is hidden from the community, so you cannot join a lobby. You can show it again in your account.',
+      membersLabel: 'Other people in this lobby',
+      empty: 'Nobody else from your campus is in this lobby yet. Check back later.',
+      match: 'match',
     },
     // WI-0015: o questionário. As chaves de options são os valores do WI-0014,
     // pela mesma ordem; os rótulos são únicos em cada pergunta.

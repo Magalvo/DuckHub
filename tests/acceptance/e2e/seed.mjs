@@ -50,8 +50,8 @@ for (const user of seed.users) {
 // Cache de XP da calculadora (WI-0007), fresca: a app não chama a 42 real.
 for (const p of seed.projectXp) {
   await client.query(
-    'INSERT INTO project_xp (campus_id, slug, project_id, name, xp, fetched_at) VALUES ($1, $2, $3, $4, $5, now())',
-    [p.campusId, p.slug, p.projectId, p.name, p.xp]
+    'INSERT INTO project_xp (campus_id, slug, project_id, name, xp, solo, fetched_at) VALUES ($1, $2, $3, $4, $5, $6, now())',
+    [p.campusId, p.slug, p.projectId, p.name, p.xp, p.solo]
   );
 }
 
@@ -111,6 +111,33 @@ for (const e of seed.pondEvents) {
 for (let i = 1; i <= fillers.count; i += 1) {
   const login = `${fillers.loginPrefix}-${String(i).padStart(2, '0')}`;
   await pondEvent(userIds.get(login), i, { kind: 'level-up', level: Math.floor(fillers.level) });
+}
+
+// WI-0017: perfis de trabalho (WI-0015) e entradas nos lobbies, com a data de entrada.
+for (const user of seed.users) {
+  const userId = userIds.get(user.key);
+  const w = user.workProfile;
+  if (w !== undefined) {
+    await client.query(
+      'INSERT INTO work_profiles (user_id, periods, start, grade_goal, pace, style, setting, role) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [
+        userId,
+        w.periods ?? [],
+        w.start ?? null,
+        w.gradeGoal ?? null,
+        w.pace ?? null,
+        w.style ?? null,
+        w.setting ?? null,
+        w.role ?? null,
+      ]
+    );
+  }
+  for (const entry of user.lobby ?? []) {
+    await client.query(
+      'INSERT INTO lobby_entries (user_id, project_slug, joined_at) VALUES ($1, $2, now() - make_interval(days => $3))',
+      [userId, entry.project, entry.daysAgo]
+    );
+  }
 }
 
 await client.close();

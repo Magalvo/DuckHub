@@ -10,7 +10,7 @@ type NavItem =
   | {
       readonly kind: 'link';
       readonly key: NavKey;
-      readonly href: '/' | '/community' | '/pond' | '/tavern/profile' | '/calculator';
+      readonly href: '/' | '/community' | '/pond' | '/tavern' | '/calculator';
       readonly icon: string;
     }
   | { readonly kind: 'soon'; readonly key: NavKey; readonly icon: string };
@@ -31,10 +31,10 @@ const navItems: readonly NavItem[] = [
     icon: 'M3 16c2 1.5 4 1.5 6 0s4-1.5 6 0 4 1.5 6 0M7 11.5a3 3 0 1 1 4.5-2.6L14 8.5l-1.6 2.3A5 5 0 0 1 7 11.5z',
   },
   {
-    // WI-0015; no WI-0017 passa para /tavern.
+    // WI-0015; o lobby (WI-0017) é a entrada.
     kind: 'link',
     key: 'tavern',
-    href: '/tavern/profile',
+    href: '/tavern',
     icon: 'M5 7h10v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zM15 10h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2M5 4.5c1.5-1 3-1 4.5 0s3 1 4.5 0M8.5 10v7M11.5 10v7',
   },
   {

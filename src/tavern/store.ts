@@ -28,9 +28,14 @@ const rowSchema = z.object({
   role: z.enum(QUESTION_OPTIONS.role).nullable(),
 });
 
-type Row = z.infer<typeof rowSchema>;
-
-function answersFromRow(row: Row): WorkAnswers {
+/**
+ * As respostas de uma linha de work_profiles, validada com Zod (regra 4); null
+ * se for inválida. Também o usa o lobby (WI-0017).
+ */
+export function answersFromRow(raw: unknown): WorkAnswers | null {
+  const parsed = rowSchema.safeParse(raw);
+  if (!parsed.success) return null;
+  const row = parsed.data;
   const answers: WorkAnswers = {};
   // Pela ordem do dia e sem repetidos, como o formulário os guarda.
   const periods = QUESTION_OPTIONS.periods.filter((p) => row.periods.includes(p));
@@ -63,9 +68,7 @@ export function createDrizzleWorkProfileStore(db: Db): WorkProfileStore {
         })
         .from(workProfiles)
         .where(eq(workProfiles.userId, userId));
-      if (row === undefined) return null;
-      const parsed = rowSchema.safeParse(row);
-      return parsed.success ? answersFromRow(parsed.data) : null;
+      return row === undefined ? null : answersFromRow(row);
     },
 
     async save(userId, answers) {

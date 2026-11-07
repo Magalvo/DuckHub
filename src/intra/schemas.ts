@@ -102,6 +102,8 @@ export const projectSchema = z.object({
       campus_id: id.nullable(),
       cursus_id: id.nullable(),
       difficulty: xp.nullable(),
+      /** WI-0017: projeto a solo; pode faltar ou vir a null (ADR 0016). */
+      solo: z.boolean().nullable().optional(),
     })
   ),
 });
@@ -112,6 +114,8 @@ export interface CursusProject {
   slug: string;
   name: string;
   xp: number;
+  /** Projeto a solo (WI-0017), escolhido por soloFor. */
+  solo: boolean;
 }
 
 export const cursusProjectSchema = projectSchema.extend({
@@ -132,6 +136,22 @@ export function xpFor(
     (s) => s.campus_id === ctx.campusId && s.cursus_id === ctx.cursusId && s.difficulty !== null
   );
   return session?.difficulty ?? project.difficulty;
+}
+
+/**
+ * Projeto a solo (WI-0017, ADR 0016): vale a session do mesmo campus e cursus;
+ * se não houver, a session sem campus (o cub3d só tem essa). Sem session
+ * aplicável ou com solo desconhecido, conta como a solo: na dúvida, não há lobby.
+ */
+export function soloFor(
+  project: z.infer<typeof projectSchema>,
+  ctx: { campusId: number; cursusId: number }
+): boolean {
+  const sessions = project.project_sessions;
+  const session =
+    sessions.find((s) => s.campus_id === ctx.campusId && s.cursus_id === ctx.cursusId) ??
+    sessions.find((s) => s.campus_id === null);
+  return session?.solo ?? true;
 }
 
 /**

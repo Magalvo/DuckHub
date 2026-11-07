@@ -11,6 +11,8 @@ export interface ProjectXp {
   projectId: number;
   name: string;
   xp: number;
+  /** Projeto a solo (WI-0017, ADR 0016): o lobby só existe nos de grupo. */
+  solo: boolean;
 }
 
 /** Um projeto em cache: o valor da API e quando se leu (ms). */
@@ -35,6 +37,7 @@ export function createDrizzleProjectXpStore(db: Db): ProjectXpStore {
           projectId: projectXp.projectId,
           name: projectXp.name,
           xp: projectXp.xp,
+          solo: projectXp.solo,
           fetchedAt: projectXp.fetchedAt,
         })
         .from(projectXp)

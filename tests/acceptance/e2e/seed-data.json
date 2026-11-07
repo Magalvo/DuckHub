@@ -1,12 +1,36 @@
 {
   "projectXp": [
-    { "campusId": 9001, "slug": "42cursus-libft", "projectId": 1314, "name": "Libft", "xp": 462 },
+    {
+      "campusId": 9001,
+      "slug": "42cursus-libft",
+      "projectId": 1314,
+      "name": "Libft",
+      "xp": 462,
+      "solo": true
+    },
     {
       "campusId": 9001,
       "slug": "42cursus-minishell",
       "projectId": 1331,
       "name": "minishell",
-      "xp": 2814
+      "xp": 2814,
+      "solo": false
+    },
+    {
+      "campusId": 9003,
+      "slug": "42cursus-libft",
+      "projectId": 1314,
+      "name": "Libft",
+      "xp": 462,
+      "solo": true
+    },
+    {
+      "campusId": 9003,
+      "slug": "42cursus-minishell",
+      "projectId": 1331,
+      "name": "minishell",
+      "xp": 2814,
+      "solo": false
     }
   ],
   "directoryFillers": {
@@ -227,6 +251,257 @@
           }
         ]
       }
+    },
+    {
+      "key": "pardal",
+      "intraId": 90101,
+      "login": "pardal-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-pardal-Hf4kP9wQ2zLm7Tx3Vb8n",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "pardal-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 1 }],
+      "workProfile": {
+        "periods": ["evening", "night"],
+        "start": "this-week",
+        "gradeGoal": "max",
+        "pace": "steady",
+        "style": "pair",
+        "setting": "on-site",
+        "role": "lead"
+      }
+    },
+    {
+      "key": "melro",
+      "intraId": 90102,
+      "login": "melro-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-melro-Rj6tY1uE5oWq9Ks2Dc4m",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "melro-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "creating_group",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 2 }],
+      "workProfile": {
+        "periods": ["evening", "night"],
+        "start": "this-week",
+        "gradeGoal": "max",
+        "pace": "steady",
+        "style": "pair",
+        "setting": "on-site",
+        "role": "follow"
+      }
+    },
+    {
+      "key": "tordo",
+      "intraId": 90103,
+      "login": "tordo-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-tordo-Nz3xC8vB1mQa6Ls9Fg2h",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "tordo-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 3 }],
+      "workProfile": { "periods": ["evening"], "gradeGoal": "bonus" }
+    },
+    {
+      "key": "gaivota",
+      "intraId": 90104,
+      "login": "gaivota-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-gaivota-Tp7yU2iO4pAs8Dk1Gj5l",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "gaivota-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 15 }],
+      "workProfile": {
+        "periods": ["evening", "night"],
+        "start": "this-week",
+        "gradeGoal": "max",
+        "pace": "steady",
+        "style": "pair",
+        "setting": "on-site",
+        "role": "lead"
+      }
+    },
+    {
+      "key": "pisco",
+      "intraId": 90105,
+      "login": "pisco-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-pisco-Wq5eR8tY1uI3oP6aS9dF",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "pisco-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "searching_a_group",
+            "finalMark": null,
+            "validated": null
+          },
+          {
+            "slug": "42cursus-libft",
+            "name": "Libft",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      }
+    },
+    {
+      "key": "rola",
+      "intraId": 90106,
+      "login": "rola-teste",
+      "campusId": 9001,
+      "sessionToken": "e2e-sessao-rola-Lk2jH5gF8dS1aQ4wE7rT",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "passportHidden": true,
+      "snapshot": {
+        "login": "rola-teste",
+        "campus": "Campus Sintético",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      }
+    },
+    {
+      "key": "corvo",
+      "intraId": 90107,
+      "login": "corvo-teste",
+      "campusId": 9003,
+      "sessionToken": "e2e-sessao-corvo-Mn8bV3cX6zL9kJ2hG5fD",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "corvo-teste",
+        "campus": "Campus Sintético C",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 1 }],
+      "workProfile": {
+        "periods": ["evening", "night"],
+        "start": "this-week",
+        "gradeGoal": "max",
+        "pace": "steady",
+        "style": "pair",
+        "setting": "on-site",
+        "role": "lead"
+      }
+    },
+    {
+      "key": "estorninho",
+      "intraId": 90108,
+      "login": "estorninho-teste",
+      "campusId": 9003,
+      "sessionToken": "e2e-sessao-estorninho-Ys4dF7gH0jK3lZ6xC9vB",
+      "syncedAt": "2026-11-06T10:00:00Z",
+      "snapshot": {
+        "login": "estorninho-teste",
+        "campus": "Campus Sintético C",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 3.2 }],
+        "projects": [
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      },
+      "lobby": [{ "project": "42cursus-minishell", "daysAgo": 1 }]
     }
   ]
 }

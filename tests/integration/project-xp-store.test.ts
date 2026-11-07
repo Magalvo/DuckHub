@@ -11,8 +11,9 @@ import type { SessionStore } from '../../src/auth/handlers.js';
 
 const T1 = Date.UTC(2026, 10, 5, 10, 0);
 const T2 = Date.UTC(2026, 10, 6, 11, 0);
-const A = { slug: 'projeto-a', projectId: 7001, name: 'Projeto A', xp: 500 };
-const B = { slug: 'projeto-b', projectId: 7002, name: 'Projeto B', xp: 900 };
+const A = { slug: 'projeto-a', projectId: 7001, name: 'Projeto A', xp: 500, solo: true };
+// WI-0017: o solo guarda-se e volta igual.
+const B = { slug: 'projeto-b', projectId: 7002, name: 'Projeto B', xp: 900, solo: false };
 
 let client: PGlite;
 let store: ProjectXpStore;

@@ -64,11 +64,45 @@ describe('cursusProjects', () => {
     expect(await env.client.cursusProjects(21, ['x'], { campusId: 9001 })).toEqual({
       ok: true,
       value: [
-        { projectId: 7001, slug: 'projeto-a', name: 'Projeto A', xp: 600 },
-        { projectId: 7002, slug: 'projeto-b', name: 'Projeto B', xp: 500 },
-        { projectId: 7003, slug: 'projeto-c', name: 'Projeto C', xp: 500 },
+        { projectId: 7001, slug: 'projeto-a', name: 'Projeto A', xp: 600, solo: true },
+        { projectId: 7002, slug: 'projeto-b', name: 'Projeto B', xp: 500, solo: true },
+        { projectId: 7003, slug: 'projeto-c', name: 'Projeto C', xp: 500, solo: true },
       ],
     });
+  });
+
+  it('o solo (WI-0017) vem da sessão do campus, senão da sessão sem campus; sem ela, a solo', async () => {
+    const env = setup([
+      json([
+        project({
+          project_sessions: [
+            { campus_id: 9001, cursus_id: 21, difficulty: 600, solo: false },
+            { campus_id: null, cursus_id: null, difficulty: null, solo: true },
+          ],
+        }),
+        project({
+          id: 7002,
+          slug: 'projeto-b',
+          name: 'Projeto B',
+          project_sessions: [
+            { campus_id: 9002, cursus_id: 21, difficulty: null, solo: true },
+            { campus_id: null, cursus_id: null, difficulty: null, solo: false },
+          ],
+        }),
+        project({
+          id: 7003,
+          slug: 'projeto-c',
+          name: 'Projeto C',
+          project_sessions: [{ campus_id: 9001, cursus_id: 21, difficulty: null, solo: null }],
+        }),
+      ]),
+    ]);
+    const result = await env.client.cursusProjects(21, ['x'], { campusId: 9001 });
+    expect(result.ok && result.value.map((p) => [p.slug, p.solo])).toEqual([
+      ['projeto-a', false],
+      ['projeto-b', false],
+      ['projeto-c', true],
+    ]);
   });
 
   it('segue o header Link para a página seguinte', async () => {

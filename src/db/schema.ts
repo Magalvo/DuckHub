@@ -63,6 +63,8 @@ export const projectXp = pgTable(
     projectId: integer('project_id').notNull(),
     name: text('name').notNull(),
     xp: integer('xp').notNull(),
+    /** Projeto a solo (WI-0017, ADR 0016): da project_session; na dúvida, a solo. */
+    solo: boolean('solo').notNull().default(true),
     fetchedAt: timestamp('fetched_at', { withTimezone: true, mode: 'date' }).notNull(),
   },
   (t) => [primaryKey({ columns: [t.campusId, t.slug] })]
@@ -136,3 +138,21 @@ export const workProfiles = pgTable('work_profiles', {
   role: text('role'),
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
 });
+
+/**
+ * Lobbies do The Tavern (WI-0017, ADR 0016): quem entrou em que lobby e quando.
+ * Uma entrada por pessoa por projeto (chave primária). Conta só durante 14
+ * dias; as expiradas apagam-se na sincronização do Passaporte, tal como as de
+ * projetos onde a pessoa já não está inscrita. Esconder o Passaporte apaga-as.
+ */
+export const lobbyEntries = pgTable(
+  'lobby_entries',
+  {
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    projectSlug: text('project_slug').notNull(),
+    joinedAt: timestamp('joined_at', { withTimezone: true, mode: 'date' }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.projectSlug] })]
+);

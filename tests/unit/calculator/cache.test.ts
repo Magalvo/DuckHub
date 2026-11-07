@@ -13,8 +13,15 @@ import type { CachedProjectXp, ProjectXp } from '../../../src/calculator/store.j
 import type { IntraClient } from '../../../src/intra/client.js';
 
 const NOW = 2_000_000_000_000;
-const A: ProjectXp = { slug: 'projeto-a', projectId: 7001, name: 'Projeto A', xp: 500 };
-const B: ProjectXp = { slug: 'projeto-b', projectId: 7002, name: 'Projeto B', xp: 900 };
+const A: ProjectXp = { slug: 'projeto-a', projectId: 7001, name: 'Projeto A', xp: 500, solo: true };
+// WI-0017: o solo passa da API para a cache.
+const B: ProjectXp = {
+  slug: 'projeto-b',
+  projectId: 7002,
+  name: 'Projeto B',
+  xp: 900,
+  solo: false,
+};
 
 function memoryStore(initial: Record<number, CachedProjectXp[]> = {}) {
   const rows = new Map(Object.entries(initial).map(([k, v]) => [Number(k), v]));
@@ -139,7 +146,7 @@ describe('createProjectXpCache', () => {
 });
 
 describe('fetchFromApi', () => {
-  const projects = [{ ...A }];
+  const projects = [{ ...A }, { ...B }];
   const client =
     (seen: unknown[]) =>
     (token: string): Pick<IntraClient, 'cursusProjects'> => ({
@@ -156,7 +163,7 @@ describe('fetchFromApi', () => {
       client: client(seen),
       slugs: ['projeto-a'],
     });
-    expect(await fetch(9001)).toEqual([A]);
+    expect(await fetch(9001)).toEqual([A, B]);
     expect(seen).toEqual([
       {
         token: 'app-sintetico',
