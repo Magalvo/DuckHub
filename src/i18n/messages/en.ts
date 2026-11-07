@@ -13,6 +13,7 @@ export const en = {
     items: {
       home: 'Home',
       passport: 'Passport',
+      community: 'Community', // WI-0010
       xpCalculator: 'XP Calculator',
     },
   },
@@ -41,6 +42,21 @@ export const en = {
     notSynced: "Your Passport hasn't been synced yet. It syncs every time you sign in.",
     hiddenNotice: 'Your Passport is hidden from the community.', // WI-0009
     hiddenLink: 'Change this in your account',
+  },
+  // Diretório da comunidade (WI-0010, ADR 0012).
+  community: {
+    title: 'Community',
+    intro: 'Duck Hub members who share their Passport with the community.',
+    search: 'Search by login',
+    campus: 'Campus',
+    allCampuses: 'All campuses',
+    submit: 'Search',
+    listLabel: 'Members',
+    level: 'Level',
+    empty: 'No members match your search.',
+    pagination: 'Pages',
+    previous: 'Previous page',
+    next: 'Next page',
   },
   // Conquistas (WI-0011). Os nomes e descrições das badges vêm de src/badges/catalog.json.
   badges: {
@@ -117,7 +133,7 @@ export const en = {
     ],
     // Lista o que os outros veem (ADR 0010): muda quando a vista pública mudar.
     visibility:
-      'By default, your Passport is visible to other signed-in Duck Hub members. They see your login, campus, Piscine, coalition, Alumni status, level, badges and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
+      'By default, your Passport is visible to other signed-in Duck Hub members, on your Passport page and in the community directory. They see your login, campus, Piscine, coalition, Alumni status, level, badges and validated projects with their marks, never your failed or in-progress projects or when you last synced. You can hide it at any time in your account.',
     deletion: 'You can delete your account at any time. This removes everything listed above.',
     accountLink: 'Delete your account',
   },

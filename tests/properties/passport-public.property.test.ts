@@ -4,6 +4,7 @@ import fc from 'fast-check';
 import { describe, expect, it } from 'vitest';
 
 import { earnedBadges } from '../../src/badges/badges.js';
+import { directoryItem } from '../../src/community/directory.js';
 import { passportView, projectState, type PassportSnapshot } from '../../src/passport/passport.js';
 import { publicPassportView } from '../../src/passport/public.js';
 
@@ -77,6 +78,24 @@ describe('earnedBadges (WI-0011, AC4)', () => {
         const base = earnedBadges(s);
         expect(earnedBadges({ ...s, projects: kept })).toEqual(base);
         expect(earnedBadges({ ...s, projects: withExtra })).toEqual(base);
+      })
+    );
+  });
+});
+
+describe('directoryItem (WI-0010)', () => {
+  it('é sempre um subconjunto da vista pública, com os mesmos valores', () => {
+    fc.assert(
+      fc.property(snapshot, syncedAt, (s, at) => {
+        const pub = publicPassportView(passportView(s, at));
+        expect(directoryItem(s, at)).toEqual({
+          login: pub.login,
+          initials: pub.initials,
+          avatarText: pub.avatarText,
+          accentColor: pub.accentColor,
+          campus: pub.campus,
+          level: pub.mainCursus?.level ?? null,
+        });
       })
     );
   });

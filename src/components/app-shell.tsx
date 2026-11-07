@@ -10,7 +10,7 @@ type NavItem =
   | {
       readonly kind: 'link';
       readonly key: NavKey;
-      readonly href: '/' | '/calculator';
+      readonly href: '/' | '/community' | '/calculator';
       readonly icon: string;
     }
   | { readonly kind: 'soon'; readonly key: NavKey; readonly icon: string };
@@ -18,6 +18,12 @@ type NavItem =
 const navItems: readonly NavItem[] = [
   { kind: 'link', key: 'home', href: '/', icon: 'M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z' },
   { kind: 'soon', key: 'passport', icon: 'M4 5h16v14H4zM8 9.5h4M8 13h8M8 16h5' },
+  {
+    kind: 'link',
+    key: 'community',
+    href: '/community',
+    icon: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.3a3.5 3.5 0 0 1 0 6.4M18 14.5a6.5 6.5 0 0 1 3.5 5.5',
+  },
   {
     kind: 'link',
     key: 'xpCalculator',

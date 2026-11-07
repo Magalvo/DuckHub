@@ -13,7 +13,8 @@ import type { PassportVisibilityStore } from './visibility';
 /** A cor entra numa variável CSS: só hex, nada que se possa injetar. */
 const hexColor = z.string().regex(/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i);
 
-const snapshotSchema: z.ZodType<PassportSnapshot> = z.object({
+/** Também o usa o diretório (WI-0010). */
+export const snapshotSchema: z.ZodType<PassportSnapshot> = z.object({
   login: z.string().min(1),
   campus: z.string(),
   piscine: z.object({ month: z.string(), year: z.number().int() }),
