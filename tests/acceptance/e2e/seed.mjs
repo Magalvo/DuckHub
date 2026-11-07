@@ -51,4 +51,28 @@ for (const p of seed.projectXp) {
   );
 }
 
+// Membros sintéticos para o diretório (WI-0010): pinguim-01 … pinguim-30,
+// noutro campus, visíveis, com Passaporte e sem sessão.
+const fillers = seed.directoryFillers;
+for (let i = 1; i <= fillers.count; i += 1) {
+  const login = `${fillers.loginPrefix}-${String(i).padStart(2, '0')}`;
+  const { rows } = await client.query(
+    'INSERT INTO users (intra_id, login, campus_id, passport_hidden) VALUES ($1, $2, $3, false) RETURNING id',
+    [fillers.intraIdStart + i, login, fillers.campusId]
+  );
+  const snapshot = {
+    login,
+    campus: fillers.campusName,
+    piscine: { month: 'october', year: 2024 },
+    isAlumni: false,
+    coalition: null,
+    cursus: [{ slug: '42cursus', name: '42cursus', level: fillers.level }],
+    projects: [],
+  };
+  await client.query(
+    "INSERT INTO passports (user_id, snapshot, synced_at) VALUES ($1, $2::jsonb, '2026-11-04T14:30:00Z')",
+    [rows[0].id, JSON.stringify(snapshot)]
+  );
+}
+
 await client.close();

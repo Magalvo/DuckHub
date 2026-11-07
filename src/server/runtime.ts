@@ -16,6 +16,7 @@ import type { AuthDeps } from '../auth/handlers';
 import { createCodeExchange } from '../auth/token-exchange';
 import { createProjectXpCache, fetchFromApi, type ProjectXpCache } from '../calculator/cache';
 import { createDrizzleProjectXpStore } from '../calculator/store';
+import { createDrizzleDirectoryStore, type DirectoryStore } from '../community/store';
 import { createDrizzleStore, type Db } from '../db/store';
 import {
   createIntraClient,
@@ -55,6 +56,7 @@ interface App {
   auth: AuthDeps;
   passports: PassportStore & PassportVisibilityStore;
   calculator: CalculatorDeps;
+  directory: DirectoryStore;
 }
 
 interface Shared {
@@ -108,6 +110,7 @@ async function createApp(): Promise<App> {
   });
   return {
     passports,
+    directory: createDrizzleDirectoryStore(db),
     calculator: {
       campusOf: (userId) => projectXp.campusOf(userId),
       cache: createProjectXpCache({
@@ -152,6 +155,9 @@ export const authDeps = async (): Promise<AuthDeps> => (await app()).auth;
 /** O store dos Passaportes e da sua visibilidade (WI-0009), sobre a mesma BD. */
 export const passportStore = async (): Promise<PassportStore & PassportVisibilityStore> =>
   (await app()).passports;
+
+/** O diretório da comunidade (WI-0010), sobre a mesma BD. */
+export const directoryStore = async (): Promise<DirectoryStore> => (await app()).directory;
 
 /** A cache de XP e o campus do utilizador, para a calculadora (WI-0007). */
 export const calculatorDeps = async (): Promise<CalculatorDeps> => (await app()).calculator;

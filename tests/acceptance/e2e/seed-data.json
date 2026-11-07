@@ -9,6 +9,14 @@
       "xp": 2814
     }
   ],
+  "directoryFillers": {
+    "count": 30,
+    "loginPrefix": "pinguim",
+    "intraIdStart": 91000,
+    "campusId": 9002,
+    "campusName": "Campus Sintético B",
+    "level": 2.5
+  },
   "users": [
     {
       "key": "pato",
