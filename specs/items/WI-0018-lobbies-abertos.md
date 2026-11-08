@@ -9,6 +9,7 @@ acceptance:
   - AC2: antes de entrar, cada lobby mostra só quantas outras pessoas lá estão, nunca os logins; o lobby continua a dar 404 a quem não entrou
   - AC3: num lobby vazio, entrar é criá-lo; o botão diz "criar" em vez de "entrar"
   - AC4: a sincronização tira a pessoa só dos lobbies dos projetos que validou; inscrever-se, falhar ou sair do snapshot não a tiram
+  - AC5: os slugs do mesmo projeto são um só lobby, com o primeiro slug do grupo; validar qualquer deles fecha-o e tira a pessoa do lobby na sincronização
 ---
 
 # WI-0018 — Lobbies abertos
@@ -42,6 +43,12 @@ Substitui o AC1 do WI-0017, que fica como registo histórico.
   catálogo; `suggested` é `searching_a_group` ou `creating_group` no snapshot.
   Sem snapshot, `[]`. O POST `/tavern/lobby` e `/tavern/<slug>` usam-no, por
   isso aceitam projetos sem inscrição.
+- `realWorldSlugGroups` em `src/passport/real-world.ts`: as linhas da tabela
+  com mais de um slug, pela ordem do ficheiro. O terceiro argumento do
+  `lobbyProjects` (`groups = []`) trata os slugs de um grupo como um só
+  projeto, e o `loadLobbyProjects` passa-lhe estes grupos (AC5, ADR 0017).
+  `sameProjectSlugs(slugs, groups)` junta os outros slugs do grupo; a
+  sincronização usa-o para os projetos validados.
 - `lookingLabel(count, one, many)` em `src/tavern/lobby.ts`: `"<count> <one>"`
   para 1, `"<count> <many>"` para os outros números (0 incluído).
 - `LobbyStore.counts(viewerId): Map<slug, number>`: os outros com entrada

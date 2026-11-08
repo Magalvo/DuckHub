@@ -52,3 +52,31 @@ campus do ADR 0016 é uma limitação real.
   não se mostra, porque o projeto já não está nos lobbies de ninguém.
 - `LOBBY_STATUSES` deixa de decidir quem tem lobby ou sai dele; fica exportado
   porque o contrato do WI-0017 o fixa.
+
+## O mesmo projeto com vários slugs (2026-11-08)
+
+Alguns projetos estão no catálogo com dois slugs, por exemplo `42cursus-cub3d`
+e `cub3d`, ou `42cursus-minirt` e `minirt`: são as linhas de
+`src/passport/real-world.json` com mais de um slug. Sem regra, quem validou um
+dos slugs via e podia entrar no lobby do outro, e quem ainda não fez o projeto
+via dois lobbies com o mesmo nome.
+
+Decisão do humano:
+
+1. **Os slugs do mesmo grupo são um só projeto, com um só lobby.** Os grupos
+   são `realWorldSlugGroups`, as linhas da tabela com mais de um slug, pela
+   ordem do ficheiro. Nenhum slug aparece em dois grupos.
+2. **O lobby usa o primeiro slug do grupo**, mesmo que esse slug não esteja no
+   catálogo do campus. A posição é a da primeira entrada do grupo no catálogo.
+   O nome é o da entrada com o primeiro slug; sem ela, o da primeira entrada
+   do grupo.
+3. **Validar qualquer slug do grupo fecha o lobby**, e a sincronização tira a
+   pessoa dos lobbies de todos os slugs do grupo. A sugestão da Intra vale
+   para qualquer dos slugs.
+4. **Basta um slug de grupo.** Se os slugs de um grupo tiverem `solo`
+   diferente (vêm de sessions diferentes), há lobby se algum deles for
+   `solo: false`. É uma exceção ao "na dúvida, não há lobby" do ADR 0016:
+   dentro de um grupo, a API já disse que o projeto é de grupo.
+5. **Sem migração.** As entradas que já existam com um slug secundário
+   (`cub3d`, `minirt`) deixam de se ver e de se contar, porque nenhum lobby usa
+   esse slug, e expiram sozinhas em 14 dias.

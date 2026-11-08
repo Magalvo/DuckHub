@@ -8,7 +8,8 @@ import type { Db } from '../db/store';
 import { lobbyEntries, passports, pondEvents, users } from '../db/schema';
 import { diffEvents } from '../pond/events';
 import { RETENTION_DAYS } from '../pond/feed';
-import { LOBBY_TTL_DAYS } from '../tavern/lobby';
+import { LOBBY_TTL_DAYS, sameProjectSlugs } from '../tavern/lobby';
+import { realWorldSlugGroups } from './real-world';
 import type { PassportSnapshot } from './passport';
 import type { PassportStore } from './sync';
 import type { PassportVisibilityStore } from './visibility';
@@ -70,7 +71,11 @@ export function createDrizzlePassportStore(db: Db): PassportStore & PassportVisi
           .delete(pondEvents)
           .where(lt(pondEvents.createdAt, sql`now() - make_interval(days => ${RETENTION_DAYS})`));
         // ADR 0017: só validar o projeto tira a pessoa do lobby.
-        const validated = snapshot.projects.filter((p) => p.validated === true).map((p) => p.slug);
+        // Validar um slug tira também dos lobbies dos outros slugs do grupo.
+        const validated = sameProjectSlugs(
+          snapshot.projects.filter((p) => p.validated === true).map((p) => p.slug),
+          realWorldSlugGroups
+        );
         if (validated.length > 0) {
           await tx
             .delete(lobbyEntries)

@@ -8,6 +8,7 @@ import {
   lobbyProjects,
   lookingLabel,
   matchLabel,
+  sameProjectSlugs,
   type LobbyProject,
 } from '../../../src/tavern/lobby.js';
 
@@ -221,5 +222,84 @@ describe('lobbyProjects (WI-0018)', () => {
 
   it('um snapshot vazio abre todos os projetos de grupo', () => {
     expect(lobbyProjects(snap([]), catalog).map((p) => p.slug)).toEqual(['a', 'b']);
+  });
+});
+
+describe('lobbyProjects com grupos de slugs (WI-0018)', () => {
+  const snap = (projects: { slug: string; status: string; validated: boolean | null }[]) => ({
+    login: 'pato-teste',
+    campus: 'Campus Sintético',
+    piscine: { month: 'september', year: 2023 },
+    isAlumni: false,
+    coalition: null,
+    cursus: [],
+    projects: projects.map((p) => ({ ...p, name: `snapshot ${p.slug}`, finalMark: null })),
+  });
+  const groups = [['novo', 'antigo']] as const;
+
+  it('a posição é a da primeira entrada do grupo, mesmo que seja o slug secundário', () => {
+    const catalog = [
+      { slug: 'a', name: 'A', solo: false },
+      { slug: 'antigo', name: 'Antigo', solo: false },
+      { slug: 'b', name: 'B', solo: false },
+      { slug: 'novo', name: 'Novo', solo: false },
+    ];
+    expect(lobbyProjects(snap([]), catalog, groups)).toEqual([
+      { slug: 'a', name: 'A', suggested: false },
+      { slug: 'novo', name: 'Novo', suggested: false },
+      { slug: 'b', name: 'B', suggested: false },
+    ]);
+  });
+
+  it('um slug validado fecha o lobby mesmo com o outro falhado', () => {
+    const catalog = [
+      { slug: 'novo', name: 'Novo', solo: false },
+      { slug: 'antigo', name: 'Antigo', solo: false },
+    ];
+    const got = lobbyProjects(
+      snap([
+        { slug: 'novo', status: 'finished', validated: false },
+        { slug: 'antigo', status: 'finished', validated: true },
+      ]),
+      catalog,
+      groups
+    );
+    expect(got).toEqual([]);
+  });
+
+  it('com solo diferente nos slugs, basta um de grupo (exceção ao ADR 0016)', () => {
+    const catalog = [
+      { slug: 'antigo', name: 'Antigo', solo: true },
+      { slug: 'x', name: 'X', solo: false },
+      { slug: 'novo', name: 'Novo', solo: false },
+    ];
+    expect(lobbyProjects(snap([]), catalog, groups)).toEqual([
+      { slug: 'novo', name: 'Novo', suggested: false },
+      { slug: 'x', name: 'X', suggested: false },
+    ]);
+    const allSolo = catalog.map((c) => ({ ...c, solo: true }));
+    expect(lobbyProjects(snap([]), allSolo, groups)).toEqual([]);
+  });
+
+  it('grupos fora do catálogo não mudam nada', () => {
+    const catalog = [{ slug: 'a', name: 'A', solo: false }];
+    expect(lobbyProjects(snap([]), catalog, groups)).toEqual(lobbyProjects(snap([]), catalog));
+  });
+});
+
+describe('sameProjectSlugs (WI-0018)', () => {
+  const groups = [
+    ['novo', 'antigo'],
+    ['x1', 'x2', 'x3'],
+  ] as const;
+
+  it('junta os outros slugs do grupo de cada slug, sem repetir', () => {
+    expect([...sameProjectSlugs(['antigo', 'a', 'x2', 'novo'], groups)].sort()).toEqual(
+      ['a', 'antigo', 'novo', 'x1', 'x2', 'x3'].sort()
+    );
+  });
+
+  it('sem slugs, nenhum', () => {
+    expect(sameProjectSlugs([], groups)).toEqual([]);
   });
 });
