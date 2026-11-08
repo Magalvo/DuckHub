@@ -6,8 +6,17 @@
 // cisne (campus 9001) nunca se inscreveu no minishell, onde estão o pardal, o
 // melro e o tordo (e o pisco, que entra e sai noutro teste); o corvo (campus
 // 9003) tem o webserv no catálogo do campus, com o lobby vazio. Só o corvo
-// cria e sai do lobby do webserv; a cisne só olha.
-import { expect, test, type BrowserContext, type Locator, type Page } from '@playwright/test';
+// cria e sai do lobby do webserv; a cisne só olha. No campus 9003 o cub3d
+// está no catálogo com os dois slugs (42cursus-cub3d e cub3d), e a pega
+// validou o cub3d antigo (2026-11-08: um projeto, um lobby).
+import {
+  expect,
+  test,
+  type APIRequestContext,
+  type BrowserContext,
+  type Locator,
+  type Page,
+} from '@playwright/test';
 
 import { en } from '../../../src/i18n/messages/en.js';
 import seed from './seed-data.json' with { type: 'json' };
@@ -106,4 +115,44 @@ test('AC1: um projeto já validado continua sem lobby', async ({ context, page, 
   await signInAs('pato', context, baseURL);
   await page.goto(TAVERN);
   await expect(page.getByText(lobby.noProjects, { exact: true })).toBeVisible();
+});
+
+function join(request: APIRequestContext, baseURL: string | undefined, project: string) {
+  return request.post('/tavern/lobby', {
+    form: { intent: 'join', project },
+    headers: { origin: baseURL ?? 'http://localhost' },
+    maxRedirects: 0,
+  });
+}
+
+test('AC1: um projeto com dois slugs aparece uma só vez, com o primeiro slug do grupo', async ({
+  context,
+  page,
+  baseURL,
+}) => {
+  await signInAs('corvo', context, baseURL);
+  await page.goto(TAVERN);
+  const items = page
+    .getByRole('list', { name: lobby.projectsLabel })
+    .getByRole('listitem')
+    .filter({ has: page.getByText('cub3d', { exact: true }) });
+  await expect(items).toHaveCount(1);
+  await expect(items.locator('input[name="project"][value="42cursus-cub3d"]')).toHaveCount(1);
+  await expect(items.locator('input[name="project"][value="cub3d"]')).toHaveCount(0);
+});
+
+test('AC1: quem validou um dos slugs não tem o lobby do projeto', async ({
+  context,
+  page,
+  baseURL,
+}) => {
+  await signInAs('pega', context, baseURL);
+  await page.goto(TAVERN);
+  await expect(projectItem(page, 'minishell')).toHaveCount(1);
+  await expect(projectItem(page, 'cub3d')).toHaveCount(0);
+  for (const slug of ['42cursus-cub3d', 'cub3d']) {
+    const res = await join(context.request, baseURL, slug);
+    expect(res.status(), slug).toBe(403);
+  }
+  expect((await page.goto(`${TAVERN}/42cursus-cub3d`))?.status()).toBe(404);
 });
