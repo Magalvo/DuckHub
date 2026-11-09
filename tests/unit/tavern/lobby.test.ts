@@ -18,7 +18,7 @@ const NOW = 1_800_000_000_000;
 const ME = 'user-1';
 const MINISHELL = '42cursus-minishell';
 
-function setup(init: { hidden?: boolean; projects?: LobbyProject[] } = {}) {
+function setup(init: { hidden?: boolean; projects?: LobbyProject[]; joinRefuses?: boolean } = {}) {
   const entries = new Set<string>();
   const calls: string[] = [];
   const auth: AuthDeps = {
@@ -57,9 +57,11 @@ function setup(init: { hidden?: boolean; projects?: LobbyProject[] } = {}) {
       );
     },
     store: {
+      // O join real decide na BD (WI-0022): escondido entretanto, devolve false.
       join: (userId: string, slug: string) => {
+        if (init.joinRefuses === true) return Promise.resolve(false);
         entries.add(`${userId}:${slug}`);
-        return Promise.resolve();
+        return Promise.resolve(true);
       },
       leave: (userId: string, slug: string) => {
         entries.delete(`${userId}:${slug}`);
@@ -113,6 +115,14 @@ describe('handleLobby', () => {
     const env = setup({ hidden: true });
     const res = await handleLobby(post(`intent=join&project=${MINISHELL}`), env.deps);
     expect(res.status).toBe(403);
+    expect(env.entries.size).toBe(0);
+  });
+
+  it('escondido entre a verificação e o join (WI-0022): o join diz que não e dá 403', async () => {
+    const env = setup({ joinRefuses: true });
+    const res = await handleLobby(post(`intent=join&project=${MINISHELL}`), env.deps);
+    expect(res.status).toBe(403);
+    expect(location(res)).toBeNull();
     expect(env.entries.size).toBe(0);
   });
 

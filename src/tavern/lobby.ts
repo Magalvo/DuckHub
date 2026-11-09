@@ -151,7 +151,9 @@ const seeOther = (location: string): Response =>
  * POST /tavern/lobby, por esta ordem: Origin de outro site → 403; sem sessão
  * → 303 /login; intent ou project inválidos, em falta ou repetidos → 400;
  * leave → apaga e 303 /tavern; join com o Passaporte escondido ou fora dos
- * lobbyProjects → 403; join → cria ou renova e 303 /tavern/<slug>.
+ * lobbyProjects → 403; join → cria ou renova e 303 /tavern/<slug>. O isHidden
+ * é só a saída rápida: quem decide é o store.join, na BD (WI-0022). Se o
+ * Passaporte foi escondido entretanto, o join devolve false → 403.
  */
 export async function handleLobby(
   req: Request,
@@ -160,7 +162,7 @@ export async function handleLobby(
     isHidden(userId: string): Promise<boolean>;
     projectsOf(userId: string): Promise<LobbyProject[]>;
     store: {
-      join(userId: string, slug: string): Promise<void>;
+      join(userId: string, slug: string): Promise<boolean>;
       leave(userId: string, slug: string): Promise<void>;
     };
   }
@@ -188,6 +190,6 @@ export async function handleLobby(
   if (await deps.isHidden(userId)) return status(403);
   const projects = await deps.projectsOf(userId);
   if (!projects.some((p) => p.slug === project)) return status(403);
-  await deps.store.join(userId, project);
+  if (!(await deps.store.join(userId, project))) return status(403);
   return seeOther(`/tavern/${project}`);
 }
