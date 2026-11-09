@@ -5,6 +5,7 @@ import { and, desc, eq, lt, inArray, sql } from 'drizzle-orm';
 import { z } from 'zod';
 
 import type { Db } from '../db/store';
+import { skillSchema } from '../intra/schemas';
 import { lobbyEntries, passports, pondEvents, users } from '../db/schema';
 import { diffEvents } from '../pond/events';
 import { RETENTION_DAYS } from '../pond/feed';
@@ -17,15 +18,26 @@ import type { PassportVisibilityStore } from './visibility';
 /** A cor entra numa variável CSS: só hex, nada que se possa injetar. */
 const hexColor = z.string().regex(/^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i);
 
-/** Também o usa o diretório (WI-0010). */
-export const snapshotSchema: z.ZodType<PassportSnapshot> = z.object({
+/**
+ * Também o usa o diretório (WI-0010). O input é unknown: é o JSONB lido da BD,
+ * e a forma do Zod para os campos opcionais (`| undefined`) não é a do tipo.
+ */
+export const snapshotSchema: z.ZodType<PassportSnapshot, z.ZodTypeDef, unknown> = z.object({
   login: z.string().min(1),
   campus: z.string(),
   piscine: z.object({ month: z.string(), year: z.number().int() }),
   isAlumni: z.boolean(),
   coalition: z.object({ name: z.string(), color: hexColor }).nullable(),
+  // WI-0019: snapshots antigos não têm skills; a falta mantém-se (sem chave).
   cursus: z.array(
-    z.object({ slug: z.string(), name: z.string(), level: z.number().nonnegative() })
+    z
+      .object({
+        slug: z.string(),
+        name: z.string(),
+        level: z.number().nonnegative(),
+        skills: z.array(skillSchema).optional(),
+      })
+      .transform(({ skills, ...c }) => (skills === undefined ? c : { ...c, skills }))
   ),
   projects: z.array(
     z.object({

@@ -6,7 +6,8 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { messages } from '../i18n/messages';
-import type { PassportView, ProjectState } from '../passport/passport';
+import type { PassportView, ProjectState, SkillsView } from '../passport/passport';
+import type { RadarPoint } from '../passport/skills';
 import { realWorldFor } from '../passport/real-world';
 
 const { passport, badges } = messages;
@@ -48,6 +49,72 @@ function Detail({ label, children }: { readonly label: string; readonly children
       <dt className="font-mono text-xs tracking-wider text-text-muted uppercase">{label}</dt>
       <dd className="mt-1 flex flex-wrap items-baseline gap-x-2">{children}</dd>
     </div>
+  );
+}
+
+const polygon = (points: readonly RadarPoint[]): string =>
+  points.map((p) => `${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(' ');
+
+/**
+ * Skills (WI-0019). O radar é decoração (aria-hidden) e o único SVG da secção;
+ * a informação está na lista, com nome e nível. A forma usa a cor primária do
+ * tema, nunca a da coalition: não tem de ter contraste, mas fica legível.
+ */
+function SkillsSection({ skills }: { readonly skills: SkillsView }) {
+  const { radar } = skills;
+  return (
+    <section aria-labelledby="skills-title" className="mt-8">
+      <h2 id="skills-title" className="text-xl font-bold">
+        {passport.skills.title}
+      </h2>
+      <p className="mt-1 text-text-muted">{skills.cursus}</p>
+      <div className="mt-4 flex flex-col gap-6 sm:flex-row sm:items-start">
+        {radar !== null && (
+          <svg
+            aria-hidden="true"
+            viewBox={`${String(-radar.radius - 4)} ${String(-radar.radius - 4)} ${String(2 * radar.radius + 8)} ${String(2 * radar.radius + 8)}`}
+            className="size-56 shrink-0 self-center"
+          >
+            {radar.rings.map((ring, i) => (
+              <polygon
+                key={i}
+                points={polygon(ring)}
+                className="fill-none stroke-hairline"
+                strokeWidth={1}
+              />
+            ))}
+            {radar.axes.map((p, i) => (
+              <line
+                key={i}
+                x1={0}
+                y1={0}
+                x2={p.x}
+                y2={p.y}
+                className="stroke-hairline"
+                strokeWidth={1}
+              />
+            ))}
+            <polygon
+              points={polygon(radar.shape)}
+              className="fill-primary/25 stroke-primary"
+              strokeWidth={2}
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+        <ul aria-label={passport.skills.listLabel} className="flex flex-1 flex-col gap-2">
+          {skills.skills.map((s) => (
+            <li
+              key={s.name}
+              className="flex items-baseline justify-between gap-4 rounded-md border border-hairline bg-surface-2 px-4 py-2"
+            >
+              <span>{s.name}</span>
+              <span className="font-mono font-semibold">{s.level}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
   );
 }
 
@@ -151,6 +218,8 @@ export function PassportBody({
           </ul>
         </section>
       )}
+
+      {view.skills !== null && <SkillsSection skills={view.skills} />}
 
       <section aria-labelledby="projects-title" className="mt-8">
         <h2 id="projects-title" className="text-xl font-bold">

@@ -24,7 +24,7 @@ import {
 
 export { createRateLimiter } from './rate-limiter';
 export type { Clock, RateLimiter } from './rate-limiter';
-export type { Coalition, CursusProject, Profile, ProjectUser } from './schemas';
+export type { Coalition, CursusProject, Profile, ProjectUser, Skill } from './schemas';
 
 export type IntraFetch = (
   url: string,
