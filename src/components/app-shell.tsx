@@ -1,7 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
+import posthog from 'posthog-js';
 import { messages } from '../i18n/messages';
 
 type NavKey = keyof typeof messages.shell.items;
@@ -62,10 +63,85 @@ function Icon({ d }: { readonly d: string }) {
 const itemClass =
   'flex flex-1 flex-col items-center gap-1 rounded-md px-2 py-2 text-xs md:flex-none md:justify-center md:py-3 xl:flex-row xl:justify-start xl:gap-3 xl:px-3 xl:text-sm';
 const labelClass = 'md:sr-only xl:not-sr-only';
+const isPostHogConfigured = Boolean(
+  process.env.NEXT_PUBLIC_POSTHOG_KEY && process.env.NEXT_PUBLIC_POSTHOG_HOST,
+);
 
-export function AppShell({ children }: { readonly children: ReactNode }) {
+function capture(event: string, properties?: Record<string, string>) {
+  if (isPostHogConfigured) posthog.capture(event, properties);
+}
+
+export function AppShell({
+  children,
+  userId,
+}: {
+  readonly children: ReactNode;
+  readonly userId: string | undefined;
+}) {
   const pathname = usePathname();
   const { shell, app } = messages;
+
+  // The server passes only the authenticated user's stable UUID. Identifying
+  // here restores that identity after a refresh and covers browser exceptions.
+  useEffect(() => {
+    if (userId !== undefined) posthog.identify(userId);
+  }, [userId]);
+
+  useEffect(() => {
+    const trackFormSubmission = (event: SubmitEvent) => {
+      const form = event.target;
+      if (!(form instanceof HTMLFormElement)) return;
+
+      const path = new URL(form.action).pathname;
+      const data = new FormData(form);
+      switch (path) {
+        case '/auth/logout':
+          capture('auth_logout_requested');
+          posthog.reset();
+          break;
+        case '/account/delete':
+          capture('account_deletion_requested');
+          posthog.reset();
+          break;
+        case '/account/visibility':
+          capture('passport_visibility_changed', {
+            visibility: data.get('hidden') === 'true' ? 'hidden' : 'visible',
+          });
+          break;
+        case '/pond/ducks': {
+          const duckAction = data.get('duck');
+          if (duckAction === 'give' || duckAction === 'take') {
+            capture('duck_reaction_changed', { action: duckAction });
+          }
+          break;
+        }
+        case '/tavern/lobby': {
+          const membershipAction = data.get('intent');
+          if (membershipAction === 'join' || membershipAction === 'leave') {
+            capture('tavern_lobby_membership_changed', { action: membershipAction });
+          }
+          break;
+        }
+        case '/tavern/profile/answers':
+          if (data.get('intent') === 'save') capture('work_profile_saved');
+          if (data.get('intent') === 'delete') capture('work_profile_deleted');
+          break;
+      }
+    };
+
+    const trackLoginStart = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest('a[href="/auth/login"]')) capture('auth_login_started');
+    };
+
+    document.addEventListener('submit', trackFormSubmission);
+    document.addEventListener('click', trackLoginStart);
+    return () => {
+      document.removeEventListener('submit', trackFormSubmission);
+      document.removeEventListener('click', trackLoginStart);
+    };
+  }, []);
 
   return (
     <>

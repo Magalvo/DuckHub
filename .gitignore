@@ -26,3 +26,4 @@ blob-report/
 
 # Estado do loop de auto-correção (local, por sessão)
 .claude/hooks/.state/
+.env.local
