@@ -49,6 +49,9 @@ async function joinedDaysAgo(userId: string, days: number): Promise<void> {
   );
 }
 
+const counts = async (viewerId: string): Promise<Record<string, number>> =>
+  Object.fromEntries(await lobby.counts(viewerId));
+
 const logins = async (viewerId: string): Promise<string[]> =>
   (await lobby.members(viewerId, SLUG)).map((m) => m.login).sort();
 
@@ -111,5 +114,24 @@ describe('createDrizzleLobbyStore', () => {
     await lobby.leave(me, SLUG);
     await lobby.leave(me, SLUG);
     expect((await lobby.activeSlugs(me)).size).toBe(0);
+  });
+
+  it('counts (WI-0018): os outros com entrada válida, por projeto, com os filtros do members', async () => {
+    const me = await user('pato-teste');
+    const same = await user('melro-teste');
+    const same2 = await user('tordo-teste');
+    const otherCampus = await user('corvo-teste', 9003);
+    const hidden = await user('rola-teste', 9001, true);
+    const expired = await user('gaivota-teste');
+    for (const id of [me, same, same2, otherCampus, hidden, expired]) await lobby.join(id, SLUG);
+    await lobby.join(same, 'webserv');
+    await lobby.join(me, '42cursus-cub3d'); // só quem vê: não conta
+    await joinedDaysAgo(expired, 15);
+
+    // Um lobby sem mais ninguém não tem chave.
+    expect(await counts(me)).toEqual({ [SLUG]: 2, webserv: 1 });
+    expect(await counts(otherCampus)).toEqual({});
+    // Quem vê escondido conta os outros na mesma (a página não lho mostra).
+    expect(await counts(hidden)).toEqual({ [SLUG]: 3, webserv: 1, '42cursus-cub3d': 1 });
   });
 });

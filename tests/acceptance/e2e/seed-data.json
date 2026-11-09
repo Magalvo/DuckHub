@@ -31,6 +31,30 @@
       "name": "minishell",
       "xp": 2814,
       "solo": false
+    },
+    {
+      "campusId": 9003,
+      "slug": "webserv",
+      "projectId": 1332,
+      "name": "webserv",
+      "xp": 21630,
+      "solo": false
+    },
+    {
+      "campusId": 9003,
+      "slug": "42cursus-cub3d",
+      "projectId": 2725,
+      "name": "cub3d",
+      "xp": 2109,
+      "solo": false
+    },
+    {
+      "campusId": 9003,
+      "slug": "cub3d",
+      "projectId": 1326,
+      "name": "cub3d",
+      "xp": 2109,
+      "solo": false
     }
   ],
   "directoryFillers": {
@@ -502,6 +526,38 @@
         ]
       },
       "lobby": [{ "project": "42cursus-minishell", "daysAgo": 1 }]
+    },
+    {
+      "key": "pega",
+      "intraId": 90109,
+      "login": "pega-teste",
+      "campusId": 9003,
+      "sessionToken": "e2e-sessao-pega-Qa8sD3fG6hJ9kL2zX5cV",
+      "syncedAt": "2026-11-08T10:00:00Z",
+      "snapshot": {
+        "login": "pega-teste",
+        "campus": "Campus Sintético C",
+        "piscine": { "month": "october", "year": 2024 },
+        "isAlumni": false,
+        "coalition": null,
+        "cursus": [{ "slug": "42cursus", "name": "42cursus", "level": 6.1 }],
+        "projects": [
+          {
+            "slug": "cub3d",
+            "name": "cub3d",
+            "status": "finished",
+            "finalMark": 100,
+            "validated": true
+          },
+          {
+            "slug": "42cursus-minishell",
+            "name": "minishell",
+            "status": "in_progress",
+            "finalMark": null,
+            "validated": null
+          }
+        ]
+      }
     }
   ]
 }

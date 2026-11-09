@@ -43,12 +43,12 @@ export const realWorldTableSchema: z.ZodType<
   }
 });
 
+const table = realWorldTableSchema.parse(rawTable);
+
 const bySlug = new Map<string, RealWorld>(
-  realWorldTableSchema
-    .parse(rawTable)
-    .flatMap(({ slugs, title, description }) =>
-      slugs.map((slug): [string, RealWorld] => [slug, { title, description }])
-    )
+  table.flatMap(({ slugs, title, description }) =>
+    slugs.map((slug): [string, RealWorld] => [slug, { title, description }])
+  )
 );
 
 /** Tradução de um projeto pelo slug da API (nunca pelo nome); null se não houver. */
@@ -58,3 +58,12 @@ export function realWorldFor(slug: string): RealWorld | null {
 
 /** Todos os slugs da tabela, pela ordem do ficheiro: os projetos do Common Core (WI-0007). */
 export const realWorldSlugs: readonly string[] = [...bySlug.keys()];
+
+/**
+ * Os slugs do mesmo projeto: as linhas da tabela com mais de um slug, pela
+ * ordem do ficheiro (por exemplo 42cursus-cub3d e cub3d). Nenhum slug aparece
+ * em dois grupos (o schema garante). O lobby usa o primeiro (WI-0018, ADR 0017).
+ */
+export const realWorldSlugGroups: readonly (readonly string[])[] = table
+  .filter(({ slugs }) => slugs.length > 1)
+  .map(({ slugs }) => slugs);

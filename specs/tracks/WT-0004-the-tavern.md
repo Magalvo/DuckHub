@@ -32,6 +32,15 @@ Decisões do humano (2026-11-07):
 - **Questionário fechado**, no máximo 6 perguntas, sem texto livre (o produto
   não tem conteúdo escrito por utilizadores).
 
+Decisões do humano (2026-11-07, WI-0018, ADR 0017):
+
+- **Lobbies abertos:** há lobby em todos os projetos de grupo que a pessoa
+  ainda não validou, inscrita ou não (substitui a regra da inscrição acima).
+  A API não expõe os pré-requisitos. Só validar o projeto tira a pessoa do
+  lobby na sincronização.
+- **Antes de entrar vê-se só quantas pessoas estão no lobby**, nunca os
+  logins. Num lobby vazio, entrar é criá-lo.
+
 ## Âmbito
 
 **Dentro:**
@@ -54,12 +63,14 @@ Decisões do humano (2026-11-07):
 - WI-0014 — Algoritmo de compatibilidade
 - WI-0015 — Questionário de perfil de trabalho
 - WI-0017 — Lobby LFG por projeto
+- WI-0018 — Lobbies abertos
 
-Ordem: 0014 → 0015 → 0017. As decisões do algoritmo estão no ADR 0015.
+Ordem: 0014 → 0015 → 0017 → 0018. As decisões do algoritmo estão no ADR 0015.
 
 ## Em aberto
 
-- **Grupos entre campus:** não encontrei documentação pública que diga se a
-  Intra permite grupos entre campus. Confirmar com uma conta real ou com o
-  staff da 42 Portugal. Se permitir, o filtro de campus é decisão de produto,
-  não limitação técnica.
+Nada em aberto.
+
+- ~~**Grupos entre campus**~~: fechado a 2026-11-07. A Intra não permite
+  grupos entre campus (confirmado pelo humano), por isso o filtro de campus é
+  uma limitação real e não uma decisão de produto.
