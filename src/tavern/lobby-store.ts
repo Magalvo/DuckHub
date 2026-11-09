@@ -19,8 +19,12 @@ export interface LobbyMember {
 export interface LobbyStore {
   /** Os slugs dos lobbies em que a pessoa está, com entrada ainda válida. */
   activeSlugs(userId: string): Promise<Set<string>>;
-  /** Cria a entrada, ou renova o joined_at se já existia. */
-  join(userId: string, slug: string): Promise<void>;
+  /**
+   * Cria a entrada, ou renova o joined_at se já existia, e devolve true. Com o
+   * Passaporte escondido, ou sem a pessoa, não insere nada e devolve false
+   * (WI-0022): a visibilidade decide-se aqui, na BD, não no handler.
+   */
+  join(userId: string, slug: string): Promise<boolean>;
   /** Apaga a entrada; idempotente. */
   leave(userId: string, slug: string): Promise<void>;
   /** Os outros membros do lobby, no campus de quem vê. */
@@ -60,13 +64,26 @@ export function createDrizzleLobbyStore(db: Db): LobbyStore {
     },
 
     async join(userId, slug) {
-      await db
-        .insert(lobbyEntries)
-        .values({ userId, projectSlug: slug })
-        .onConflictDoUpdate({
-          target: [lobbyEntries.userId, lobbyEntries.projectSlug],
-          set: { joinedAt: sql`now()` },
-        });
+      // WI-0022 (ADR 0016): o FOR UPDATE na linha da pessoa põe o join em série
+      // com o setHidden, que atualiza essa linha na sua transação. Se o join
+      // ganhar, o DELETE do setHidden apaga a entrada nova; se perder, vê o
+      // Passaporte escondido e não insere.
+      return db.transaction(async (tx) => {
+        const [row] = await tx
+          .select({ hidden: users.passportHidden })
+          .from(users)
+          .where(eq(users.id, userId))
+          .for('update');
+        if (row === undefined || row.hidden) return false;
+        await tx
+          .insert(lobbyEntries)
+          .values({ userId, projectSlug: slug })
+          .onConflictDoUpdate({
+            target: [lobbyEntries.userId, lobbyEntries.projectSlug],
+            set: { joinedAt: sql`now()` },
+          });
+        return true;
+      });
     },
 
     async leave(userId, slug) {

@@ -47,3 +47,29 @@ limit); um trabalho agendado para limpar as entradas (infraestrutura nova para u
   página mostra `noProjects`, mesmo a quem tem projetos de grupo.
 - Os segmentos `/tavern/lobby` e `/tavern/profile` têm prioridade sobre `/tavern/[slug]`; nenhum
   projeto da 42 tem esses slugs.
+
+## Correções da auditoria (2026-11-09)
+
+WI-0022. Duas falhas confirmadas numa auditoria; as secções acima ficam como estavam e estas
+regras prevalecem sobre elas onde divergem.
+
+1. **Quem decide se se entra num lobby é o join, na BD.** O handler verificava o Passaporte e só
+   depois inseria: um `setHidden(true)` entre os dois apagava as entradas, o join inseria a seguir
+   e, ao mostrar o Passaporte outra vez, a pessoa voltava ao lobby sem novo opt-in (contra o
+   ponto 5). Agora o `LobbyStore.join` corre numa transação que lê a linha da pessoa em `users`
+   com `FOR UPDATE`; sem linha ou com `passport_hidden`, devolve `false` sem inserir; senão,
+   insere ou renova e devolve `true`. O handler responde 403 a `false` e mantém a verificação
+   prévia só como saída rápida.
+
+   **Porque fica atómico:** o `setHidden` atualiza a mesma linha de `users` na sua transação, e um
+   `UPDATE` também a tranca. As duas operações ficam em série: se o join ganhar, o `DELETE` do
+   `setHidden` corre depois e apaga a entrada nova; se o `setHidden` ganhar, o join espera pelo
+   commit e lê o Passaporte já escondido. **Limite:** os testes correm em PGlite, com uma só
+   ligação, e não conseguem provar a concorrência; o `FOR UPDATE` verifica-se na revisão de código.
+
+2. **O solo nunca vem de outro cursus.** O ponto 1 dizia "a session sem campus", e o código usava
+   a primeira, de qualquer cursus: um projeto do 42cursus com uma session sem campus da Piscine
+   seria classificado pela regra da Piscine. A ordem passa a ser: a session do mesmo campus e
+   cursus; a sem campus do mesmo cursus; a sem campus e sem cursus (o cub3d só tem essa); sem
+   nenhuma, conta como a solo. Uma session de outro cursus é sempre ignorada: na dúvida, continua a
+   não haver lobby.

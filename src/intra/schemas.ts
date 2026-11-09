@@ -150,9 +150,11 @@ export function xpFor(
 }
 
 /**
- * Projeto a solo (WI-0017, ADR 0016): vale a session do mesmo campus e cursus;
- * se não houver, a session sem campus (o cub3d só tem essa). Sem session
- * aplicável ou com solo desconhecido, conta como a solo: na dúvida, não há lobby.
+ * Projeto a solo (WI-0017, WI-0022, ADR 0016), pela primeira session que houver
+ * nesta ordem: a do mesmo campus e cursus; a sem campus do mesmo cursus; a sem
+ * campus e sem cursus (o cub3d só tem essa). Nunca uma de outro cursus. Sem
+ * session aplicável ou com solo desconhecido, conta como a solo: na dúvida,
+ * não há lobby.
  */
 export function soloFor(
   project: z.infer<typeof projectSchema>,
@@ -161,7 +163,8 @@ export function soloFor(
   const sessions = project.project_sessions;
   const session =
     sessions.find((s) => s.campus_id === ctx.campusId && s.cursus_id === ctx.cursusId) ??
-    sessions.find((s) => s.campus_id === null);
+    sessions.find((s) => s.campus_id === null && s.cursus_id === ctx.cursusId) ??
+    sessions.find((s) => s.campus_id === null && s.cursus_id === null);
   return session?.solo ?? true;
 }
 

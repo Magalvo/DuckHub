@@ -64,6 +64,7 @@ Decisões do humano (2026-11-07, WI-0018, ADR 0017):
 - WI-0015 — Questionário de perfil de trabalho
 - WI-0017 — Lobby LFG por projeto
 - WI-0018 — Lobbies abertos
+- WI-0022 — Correções da auditoria (lobby e soloFor)
 
 Ordem: 0014 → 0015 → 0017 → 0018. As decisões do algoritmo estão no ADR 0015.
 

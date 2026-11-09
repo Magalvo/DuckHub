@@ -42,6 +42,11 @@ async function user(login: string, campusId = 9001, hidden = false): Promise<str
   return row.id;
 }
 
+/** Esconde por SQL direto, sem o setHidden (que apagaria as entradas): testa o filtro de leitura. */
+async function hideDirectly(userId: string): Promise<void> {
+  await client.query('UPDATE users SET passport_hidden = true WHERE id = $1', [userId]);
+}
+
 async function joinedDaysAgo(userId: string, days: number): Promise<void> {
   await client.query(
     'UPDATE lobby_entries SET joined_at = now() - make_interval(days => $2) WHERE user_id = $1',
@@ -60,10 +65,11 @@ describe('createDrizzleLobbyStore', () => {
     const me = await user('pato-teste');
     const same = await user('melro-teste');
     const otherCampus = await user('corvo-teste', 9003);
-    const hidden = await user('rola-teste', 9001, true);
+    const hidden = await user('rola-teste');
     const expired = await user('gaivota-teste');
     const otherProject = await user('tordo-teste');
     for (const id of [me, same, otherCampus, hidden, expired]) await lobby.join(id, SLUG);
+    await hideDirectly(hidden);
     await lobby.join(otherProject, 'webserv');
     await joinedDaysAgo(expired, 15);
 
@@ -103,6 +109,14 @@ describe('createDrizzleLobbyStore', () => {
     expect([...(await lobby.activeSlugs(me))]).toEqual([SLUG]);
   });
 
+  it('join (WI-0022): com o Passaporte escondido devolve false e não cria a entrada', async () => {
+    const me = await user('pato-teste', 9001, true);
+    expect(await lobby.join(me, SLUG)).toBe(false);
+    expect((await lobby.activeSlugs(me)).size).toBe(0);
+    const visible = await user('melro-teste');
+    expect(await lobby.join(visible, SLUG)).toBe(true);
+  });
+
   it('join outra vez renova a entrada expirada; leave é idempotente', async () => {
     const me = await user('pato-teste');
     await lobby.join(me, SLUG);
@@ -121,9 +135,10 @@ describe('createDrizzleLobbyStore', () => {
     const same = await user('melro-teste');
     const same2 = await user('tordo-teste');
     const otherCampus = await user('corvo-teste', 9003);
-    const hidden = await user('rola-teste', 9001, true);
+    const hidden = await user('rola-teste');
     const expired = await user('gaivota-teste');
     for (const id of [me, same, same2, otherCampus, hidden, expired]) await lobby.join(id, SLUG);
+    await hideDirectly(hidden);
     await lobby.join(same, 'webserv');
     await lobby.join(me, '42cursus-cub3d'); // só quem vê: não conta
     await joinedDaysAgo(expired, 15);
