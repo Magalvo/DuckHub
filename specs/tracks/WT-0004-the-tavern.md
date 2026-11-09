@@ -1,7 +1,7 @@
 ---
 id: WT-0004
 title: The Tavern — encontrar equipa
-status: draft
+status: done
 owner: Magalvo
 ---
 

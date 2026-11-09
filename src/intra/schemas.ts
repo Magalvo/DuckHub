@@ -9,7 +9,13 @@ export interface Profile {
   primaryCampus: { id: number; name: string };
   piscine: { month: string; year: number }; // month como vem da API ("september")
   isAlumni: boolean;
-  cursus: { id: number; slug: string; name: string; level: number }[];
+  // WI-0019: sem o campo na API, o cursus também não o tem.
+  cursus: { id: number; slug: string; name: string; level: number; skills?: Skill[] }[];
+}
+/** Uma skill de um cursus (WI-0019): o id da API não se guarda. */
+export interface Skill {
+  name: string;
+  level: number;
 }
 export interface Coalition {
   id: number;
@@ -28,6 +34,12 @@ export interface ProjectUser {
 
 const id = z.number().int().positive();
 
+/** WI-0019: `{ id, name, level }` da API; o z.object deixa só o nome e o nível. */
+export const skillSchema: z.ZodType<Skill> = z.object({
+  name: z.string(),
+  level: z.number().nonnegative(),
+});
+
 export const profileSchema = z
   .object({
     id,
@@ -42,6 +54,7 @@ export const profileSchema = z
       z.object({
         level: z.number().nonnegative(),
         cursus: z.object({ id, name: z.string(), slug: z.string() }),
+        skills: z.array(skillSchema).optional(),
       })
     ),
   })
@@ -59,12 +72,10 @@ export const profileSchema = z
       primaryCampus: { id: primary.id, name: primary.name },
       piscine: { month: me.pool_month, year: Number(me.pool_year) },
       isAlumni: me['alumni?'],
-      cursus: me.cursus_users.map((cu) => ({
-        id: cu.cursus.id,
-        slug: cu.cursus.slug,
-        name: cu.cursus.name,
-        level: cu.level,
-      })),
+      cursus: me.cursus_users.map((cu) => {
+        const c = { id: cu.cursus.id, slug: cu.cursus.slug, name: cu.cursus.name, level: cu.level };
+        return cu.skills === undefined ? c : { ...c, skills: cu.skills };
+      }),
     };
   });
 

@@ -44,6 +44,8 @@ export const en = {
     notSynced: "Your Passport hasn't been synced yet. It syncs every time you sign in.",
     hiddenNotice: 'Your Passport is hidden from the community.', // WI-0009
     hiddenLink: 'Change this in your account',
+    // WI-0019: o nome do cursus e das skills vêm da API.
+    skills: { title: 'Skills', listLabel: 'Skill levels' },
   },
   // Diretório da comunidade (WI-0010, ADR 0012).
   community: {
