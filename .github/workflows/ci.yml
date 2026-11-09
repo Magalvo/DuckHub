@@ -20,12 +20,21 @@ on:
   push:
     branches: [main]
 
+# Um run novo no mesmo PR (novo push, label) cancela o anterior: só o último
+# conta. Nos pushes para main nunca se cancela: cada merge é verificado.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   check:
     name: check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Histórico completo: o passo "guardas mudaram?" compara com a base.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -42,11 +51,38 @@ jobs:
       # tests/acceptance/, esta corrida falha com "No test files found".
       - name: Contrato (testes de aceitação)
         run: npx vitest run tests/acceptance
+      # Os testes das guardas (~14 min) só podem mudar de resultado quando muda
+      # uma guarda: um ficheiro "guardrail" de .agent/protected-paths. Num PR,
+      # correm só nesse caso; num push para main, correm sempre (rede de
+      # segurança). A lista e o matcher são os de scripts/protected-paths.mjs.
+      - name: Guardas mudaram?
+        id: guards
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ "$EVENT" != "pull_request" ]; then
+            echo "Push para main: os testes das guardas correm sempre."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --name-only --no-renames "$BASE_SHA"...HEAD > "$RUNNER_TEMP/changed.txt"
+          node --input-type=module -e "
+            import { readFileSync } from 'node:fs';
+            import { loadList, match } from './scripts/protected-paths.mjs';
+            const list = loadList();
+            const files = readFileSync(process.argv[1], 'utf8').split('\n').filter(Boolean);
+            const guards = files.filter((f) => match(f, list)?.tier === 'guardrail');
+            console.log(guards.length ? 'Guardas alteradas:\n  ' + guards.join('\n  ') : 'Nenhuma guarda alterada.');
+            console.log('run=' + (guards.length > 0));
+          " "$RUNNER_TEMP/changed.txt" | tee "$RUNNER_TEMP/guards.txt"
+          grep '^run=' "$RUNNER_TEMP/guards.txt" >> "$GITHUB_OUTPUT"
       # Chromium antes das guardas: o test-guards corre um make check completo,
       # que inclui o contrato com browser (ADR 0005).
       - name: Instalar Chromium (Playwright)
         run: npx playwright install --with-deps chromium
       - name: Testes das próprias guardas
+        if: steps.guards.outputs.run == 'true'
         run: bash scripts/test-guards.sh
       # Contrato com browser (ADR 0005). O webServer da config sobe a app via
       # `make dev`; sem testes em tests/acceptance/e2e/ o Playwright falha.
