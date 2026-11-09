@@ -11,7 +11,7 @@ import { getSession } from '../../auth/handlers';
 import { messages } from '../../i18n/messages';
 import {
   authDeps,
-  lobbyProjectsOf,
+  lobbyStateOf,
   lobbyStore,
   passportStore,
   workProfileStore,
@@ -114,11 +114,20 @@ export default async function TavernPage() {
 
 async function Projects({ userId }: { readonly userId: string }) {
   const store = await lobbyStore();
-  const [projects, active, counts] = await Promise.all([
-    lobbyProjectsOf(userId),
+  const [state, active, counts] = await Promise.all([
+    lobbyStateOf(userId),
     store.activeSlugs(userId),
     store.counts(userId),
   ]);
+  // WI-0023: o catálogo do campus ainda está a ser lido da API.
+  if (state.kind === 'loading') {
+    return (
+      <p role="status" className="mt-8">
+        {t.loading}
+      </p>
+    );
+  }
+  const { projects } = state;
   if (projects.length === 0) return <p className="mt-8">{t.noProjects}</p>;
   return (
     <ul aria-label={t.projectsLabel} className="mt-8 flex flex-col gap-4">

@@ -51,6 +51,30 @@ Por isso a página não o tem quando alguém a abre. A tabela de níveis (`/v2/l
 7. **Só para o 42cursus:** sem Passaporte ou com o Passaporte reduzido (só Piscine), a página
    mostra que a calculadora ainda não está disponível e nem lê a cache.
 
+## Cache a frio e registo das falhas (WI-0023, 2026-11-09)
+
+Medido no browser: com a cache de um campus vazia, o pedido da lista de projetos demorou
+~12,3 s. Com o teto de 10 s da página e o timeout de 10 s de cada pedido HTTP, a página dizia
+`noData` e a atualização em fundo era cortada, sem deixar rasto.
+
+1. **Timeout próprio:** o pedido da lista de projetos tem um `fetch` com 30 s
+   (`XP_FETCH_TIMEOUT_MS`), com o mesmo rate limiter. Os outros pedidos (login,
+   sincronização, token) ficam com 10 s, e o teto da página continua em 10 s.
+2. **Três estados:** `projectsFor` devolve `ready` (com linhas, mesmo antigas), `loading`
+   (sem linhas e uma atualização em curso depois do teto) ou `failed` (sem linhas e nenhuma em
+   curso). A calculadora e o The Tavern mostram uma mensagem própria para `loading`; `failed`
+   continua a ser `noData` / `noProjects`.
+3. **Aquecimento no login:** o callback chama `warm(campus do perfil)` depois da
+   sincronização do Passaporte, sem esperar. Só chama a API se a cache está vazia ou com mais
+   de 24 h, e partilha a atualização em curso. Uma falha do aquecimento nunca falha o login.
+4. **Exceção ao "nunca regista nada":** uma atualização falhada regista **uma só linha**
+   `[xp-cache] refresh failed campus=<id> reason=<tipo>`, com o tipo em `token`,
+   `rate-limited`, `http:<status>`, `network`, `invalid-response`, `empty` ou `store`. Sem a
+   linha, uma falha da 42 era invisível (foi o que aconteceu). A linha leva só o id do campus,
+   que é público, e o tipo: nunca o corpo da resposta, o token, o secret, um login nem os
+   issues do Zod (regra 9). Uma atualização com sucesso não regista nada. Em produção vai para
+   `console.warn`.
+
 ## Consequências
 
 Melhor: o XP é verificável e vem da API, e a página quase nunca chama a 42 (dois pedidos por

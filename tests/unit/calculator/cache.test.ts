@@ -1,4 +1,4 @@
-// Cache de XP (WI-0007). Store, API e relógio falsos; dados inventados.
+// Cache de XP (WI-0007, WI-0023). Store, API e relógio falsos; dados inventados.
 import { describe, expect, it } from 'vitest';
 
 import {
@@ -7,6 +7,7 @@ import {
   fetchFromApi,
   isStale,
   MAIN_CURSUS_ID,
+  type CacheRead,
   type FetchProjects,
 } from '../../../src/calculator/cache.js';
 import type { CachedProjectXp, ProjectXp } from '../../../src/calculator/store.js';
@@ -46,17 +47,29 @@ function setup(opts: {
   deadlineMs?: number;
 }) {
   const store = memoryStore(opts.rows);
+  const lines: string[] = [];
   const cache = createProjectXpCache({
     store,
     fetchProjects: opts.fetchProjects,
     clock: { now: () => NOW },
     slugs: ['projeto-b', 'projeto-a'],
     deadlineMs: opts.deadlineMs ?? 1000,
+    log: (line) => {
+      lines.push(line);
+    },
   });
-  return { cache, store };
+  return { cache, store, lines };
 }
 
 const at = (p: ProjectXp, fetchedAt: number): CachedProjectXp => ({ ...p, fetchedAt });
+const ok = (projects: ProjectXp[]) => Promise.resolve({ ok: true as const, projects });
+const failed = () => Promise.resolve({ ok: false as const, reason: 'network' as const });
+
+/** As linhas de um CacheRead, ou null se não estiver pronto. */
+const ready = async (read: Promise<CacheRead>): Promise<CachedProjectXp[] | null> => {
+  const r = await read;
+  return r.kind === 'ready' ? r.projects : null;
+};
 
 describe('isStale', () => {
   it('sem linhas, ou com a mais antiga com mais de 24 h', () => {
@@ -73,10 +86,10 @@ describe('createProjectXpCache', () => {
       rows: { 9001: [at(A, NOW - 1000), at(B, NOW - 1000)] },
       fetchProjects: () => {
         calls += 1;
-        return Promise.resolve(null);
+        return failed();
       },
     });
-    expect((await env.cache.projectsFor(9001)).map((p) => p.slug)).toEqual([
+    expect((await ready(env.cache.projectsFor(9001)))?.map((p) => p.slug)).toEqual([
       'projeto-b',
       'projeto-a',
     ]);
@@ -89,31 +102,33 @@ describe('createProjectXpCache', () => {
       rows: { 9002: [at(A, NOW)] },
       fetchProjects: (campusId) => {
         campuses.push(campusId);
-        return Promise.resolve([A, B]);
+        return ok([A, B]);
       },
     });
-    expect(await env.cache.projectsFor(9001)).toEqual([at(B, NOW), at(A, NOW)]);
+    expect(await ready(env.cache.projectsFor(9001))).toEqual([at(B, NOW), at(A, NOW)]);
     expect(campuses).toEqual([9001]);
   });
 
   it('linha com mais de 24 h: atualiza a cache toda do campus', async () => {
     const env = setup({
       rows: { 9001: [at(A, NOW), at(B, NOW - CACHE_TTL_MS - 1)] },
-      fetchProjects: () => Promise.resolve([{ ...A, xp: 550 }]),
+      fetchProjects: () => ok([{ ...A, xp: 550 }]),
     });
-    expect(await env.cache.projectsFor(9001)).toEqual([at({ ...A, xp: 550 }, NOW)]);
+    expect(await ready(env.cache.projectsFor(9001))).toEqual([at({ ...A, xp: 550 }, NOW)]);
   });
 
   it.each([
-    ['a API falha', () => Promise.resolve(null)],
-    ['a API devolve uma lista vazia', () => Promise.resolve([])],
+    ['a API falha', failed],
+    ['a API devolve uma lista vazia', () => ok([])],
     ['a leitura lança', () => Promise.reject(new Error('rede'))],
   ] as const)('se %s, fica a cache que houver', async (_, fetchProjects) => {
     const old = [at(A, NOW - CACHE_TTL_MS - 1)];
     const env = setup({ rows: { 9001: old }, fetchProjects });
-    expect(await env.cache.projectsFor(9001)).toEqual(old);
-    expect(await env.cache.projectsFor(9002)).toEqual([]);
+    expect(await env.cache.projectsFor(9001)).toEqual({ kind: 'ready', projects: old });
+    // Sem cache nenhuma e sem atualização em curso: failed (WI-0023).
+    expect(await env.cache.projectsFor(9002)).toEqual({ kind: 'failed' });
     expect(env.store.replaced()).toBe(0);
+    expect(env.lines).toHaveLength(2);
   });
 
   it('pedidos em simultâneo partilham uma só atualização', async () => {
@@ -121,7 +136,7 @@ describe('createProjectXpCache', () => {
     const env = setup({
       fetchProjects: () => {
         calls += 1;
-        return Promise.resolve([A]);
+        return ok([A]);
       },
     });
     await Promise.all([env.cache.projectsFor(9001), env.cache.projectsFor(9001)]);
@@ -129,7 +144,7 @@ describe('createProjectXpCache', () => {
   });
 
   it('passado o teto, responde com a cache que houver e a atualização acaba depois', async () => {
-    let finish: (v: ProjectXp[]) => void = () => undefined;
+    let finish: (v: { ok: true; projects: ProjectXp[] }) => void = () => undefined;
     const env = setup({
       rows: { 9001: [at(A, NOW - CACHE_TTL_MS - 1)] },
       fetchProjects: () =>
@@ -138,10 +153,29 @@ describe('createProjectXpCache', () => {
         }),
       deadlineMs: 5,
     });
-    expect(await env.cache.projectsFor(9001)).toEqual([at(A, NOW - CACHE_TTL_MS - 1)]);
-    finish([B]);
+    expect(await ready(env.cache.projectsFor(9001))).toEqual([at(A, NOW - CACHE_TTL_MS - 1)]);
+    finish({ ok: true, projects: [B] });
     await new Promise((r) => setTimeout(r, 0));
-    expect(await env.cache.projectsFor(9001)).toEqual([at(B, NOW)]);
+    expect(await ready(env.cache.projectsFor(9001))).toEqual([at(B, NOW)]);
+  });
+});
+
+describe('warm (WI-0023)', () => {
+  it('com a cache antiga, atualiza em fundo', async () => {
+    const env = setup({
+      rows: { 9001: [at(A, NOW - CACHE_TTL_MS - 1)] },
+      fetchProjects: () => ok([B]),
+    });
+    env.cache.warm(9001);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(await ready(env.cache.projectsFor(9001))).toEqual([at(B, NOW)]);
+  });
+
+  it('uma falha do aquecimento regista a linha, como no projectsFor', async () => {
+    const env = setup({ fetchProjects: failed });
+    env.cache.warm(9001);
+    await new Promise((r) => setTimeout(r, 0));
+    expect(env.lines).toEqual(['[xp-cache] refresh failed campus=9001 reason=network']);
   });
 });
 
@@ -163,7 +197,7 @@ describe('fetchFromApi', () => {
       client: client(seen),
       slugs: ['projeto-a'],
     });
-    expect(await fetch(9001)).toEqual([A, B]);
+    expect(await fetch(9001)).toEqual({ ok: true, projects: [A, B] });
     expect(seen).toEqual([
       {
         token: 'app-sintetico',
@@ -174,18 +208,18 @@ describe('fetchFromApi', () => {
     ]);
   });
 
-  it('sem token, não chama a API e devolve null', async () => {
+  it('sem token, não chama a API e devolve token', async () => {
     const seen: unknown[] = [];
     const fetch = fetchFromApi({
       appToken: () => Promise.resolve({ ok: false }),
       client: client(seen),
       slugs: ['projeto-a'],
     });
-    expect(await fetch(9001)).toBeNull();
+    expect(await fetch(9001)).toEqual({ ok: false, reason: 'token' });
     expect(seen).toEqual([]);
   });
 
-  it('uma falha da API devolve null', async () => {
+  it('uma falha da API devolve o tipo da falha', async () => {
     const fetch = fetchFromApi({
       appToken: () => Promise.resolve({ ok: true, token: 'app-sintetico' }),
       client: () => ({
@@ -193,6 +227,6 @@ describe('fetchFromApi', () => {
       }),
       slugs: ['projeto-a'],
     });
-    expect(await fetch(9001)).toBeNull();
+    expect(await fetch(9001)).toEqual({ ok: false, reason: 'network' });
   });
 });

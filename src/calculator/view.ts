@@ -11,6 +11,7 @@ import { parseMark, xpGained } from './xp';
 export type CalculatorView =
   | { kind: 'unavailable' } // só Piscine ou sem Passaporte (AC7)
   | { kind: 'no-data' } // sem cache e a atualização falhou
+  | { kind: 'loading' } // sem cache e a atualização ainda em curso (WI-0023)
   | {
       kind: 'form';
       projects: { slug: string; name: string }[];
@@ -62,12 +63,16 @@ export function calculatorView(input: {
   saved: Saved;
   projects: readonly CachedProjectXp[];
   query: CalculatorQuery;
+  /** Sem projetos e com a atualização em curso: { kind: 'loading' }. */
+  loading?: boolean;
 }): CalculatorView {
   const { saved } = input;
   if (saved === null) return { kind: 'unavailable' };
   const passport = passportView(saved.snapshot, saved.syncedAt);
   if (passport.reduced || passport.mainCursus === null) return { kind: 'unavailable' };
-  if (input.projects.length === 0) return { kind: 'no-data' };
+  if (input.projects.length === 0) {
+    return input.loading === true ? { kind: 'loading' } : { kind: 'no-data' };
+  }
 
   const parsedQuery = querySchema.safeParse(input.query);
   const { project, mark } = parsedQuery.success ? parsedQuery.data : {};

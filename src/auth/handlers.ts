@@ -49,6 +49,8 @@ export interface AuthDeps {
   fetchProfile: (accessToken: string) => Promise<Result<Profile>>;
   /** Chamado no callback depois de criar o utilizador; uma falha não impede o login. */
   syncPassport: (input: { accessToken: string; userId: string; profile: Profile }) => Promise<void>;
+  /** WI-0023: começa a ler o XP do campus em fundo; nunca se espera por ele. */
+  warmXpCache?: (campusId: number) => void;
   store: SessionStore;
 }
 
@@ -174,6 +176,11 @@ export async function handleCallback(req: Request, deps: AuthDeps): Promise<Resp
     await deps.syncPassport({ accessToken: token.accessToken, userId, profile: profile.value });
   } catch {
     // O Passaporte fica com o snapshot anterior.
+  }
+  try {
+    deps.warmXpCache?.(primaryCampus.id);
+  } catch {
+    // Um aquecimento falhado nunca falha o login: a página tenta outra vez.
   }
   const session = deps.randomToken();
   await store.createSession({
