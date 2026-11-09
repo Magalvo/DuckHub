@@ -4,6 +4,7 @@
 import { z } from 'zod';
 
 import { formatSyncedAt, passportView, type PassportSnapshot } from '../passport/passport';
+import { realWorldSlugGroups } from '../passport/real-world';
 import type { CachedProjectXp } from './store';
 import { parseMark, xpGained } from './xp';
 
@@ -41,6 +42,22 @@ export function isAvailable(saved: Saved): boolean {
   return saved !== null && !passportView(saved.snapshot, saved.syncedAt).reduced;
 }
 
+/**
+ * Uma linha por projeto (WI-0024): os slugs do mesmo grupo dão uma só, a do
+ * primeiro slug do grupo que está em `projects`. Devolve uma subsequência de
+ * `projects`: as linhas que ficam não mudam nem mudam de lugar.
+ */
+export function distinctProjects(
+  projects: readonly CachedProjectXp[],
+  groups: readonly (readonly string[])[]
+): CachedProjectXp[] {
+  const present = new Set(projects.map((p) => p.slug));
+  return projects.filter((p) => {
+    const group = groups.find((g) => g.includes(p.slug));
+    return group === undefined || group.find((s) => present.has(s)) === p.slug;
+  });
+}
+
 export function calculatorView(input: {
   saved: Saved;
   projects: readonly CachedProjectXp[];
@@ -54,10 +71,14 @@ export function calculatorView(input: {
 
   const parsedQuery = querySchema.safeParse(input.query);
   const { project, mark } = parsedQuery.success ? parsedQuery.data : {};
+  const rows = distinctProjects(input.projects, realWorldSlugGroups);
+  // Qualquer slug do grupo resolve para a linha que ficou (links antigos, AC3).
+  const sameProject = realWorldSlugGroups.find((g) => project !== undefined && g.includes(project));
+  const chosen = rows.find((p) => p.slug === project || sameProject?.includes(p.slug) === true);
   const base = {
     kind: 'form' as const,
-    projects: input.projects.map(({ slug, name }) => ({ slug, name })),
-    selected: project ?? null,
+    projects: rows.map(({ slug, name }) => ({ slug, name })),
+    selected: chosen?.slug ?? project ?? null,
     markInput: mark ?? '',
     currentLevel: passport.mainCursus.level,
   };
@@ -67,7 +88,6 @@ export function calculatorView(input: {
     return { ...base, projectError: null, markError: null, result: null };
   }
 
-  const chosen = input.projects.find((p) => p.slug === project);
   const parsed = parseMark(mark ?? '');
   const projectError = chosen === undefined ? 'unknownProject' : null;
   const markError = parsed.ok ? null : markErrors[parsed.error];
