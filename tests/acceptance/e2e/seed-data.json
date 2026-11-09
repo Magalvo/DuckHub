@@ -122,8 +122,27 @@
         "isAlumni": false,
         "coalition": { "name": "Os Patos", "color": "#0E12B5" },
         "cursus": [
-          { "slug": "c-piscine", "name": "C Piscine", "level": 8.42 },
-          { "slug": "42cursus", "name": "42cursus", "level": 5.179 }
+          {
+            "slug": "c-piscine",
+            "name": "C Piscine",
+            "level": 8.42,
+            "skills": [
+              { "name": "Unix", "level": 8.03 },
+              { "name": "Adaptation & creativity", "level": 4.37 }
+            ]
+          },
+          {
+            "slug": "42cursus",
+            "name": "42cursus",
+            "level": 5.179,
+            "skills": [
+              { "name": "Rigor", "level": 6.42 },
+              { "name": "Unix", "level": 4.5 },
+              { "name": "Algorithms & AI", "level": 4.5 },
+              { "name": "Web", "level": 1.2 },
+              { "name": "Shell", "level": 0 }
+            ]
+          }
         ],
         "projects": [
           {
@@ -170,7 +189,17 @@
         "piscine": { "month": "february", "year": 2026 },
         "isAlumni": false,
         "coalition": null,
-        "cursus": [{ "slug": "c-piscine", "name": "C Piscine", "level": 8.42 }],
+        "cursus": [
+          {
+            "slug": "c-piscine",
+            "name": "C Piscine",
+            "level": 8.42,
+            "skills": [
+              { "name": "Unix", "level": 3.1 },
+              { "name": "Rigor", "level": 2.05 }
+            ]
+          }
+        ],
         "projects": [
           {
             "slug": "piscine-sintetica-00",
