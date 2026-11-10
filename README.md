@@ -1,187 +1,159 @@
-# AI-Driven Development Boilerplate
+# Duck Hub
 
-Ponto de partida para desenvolvimento de software com coding agents (Claude Code,
-Codex, Cursor, Aider), combinando **SDD** (spec-driven development), **TDD** e
-**defesa em profundidade**. A filosofia completa está em
-`docs/adr/0001-defesa-em-profundidade.md`; as regras para o agente em `AGENTS.md`.
+A praça digital da comunidade 42. Uma app web gamificada onde alunos e Alumni
+da 42 mantêm o convívio, encontram equipa e usam ferramentas úteis. O perfil
+constrói-se sozinho a partir da API da 42: entra-se com a conta da Intra e não
+há formulários para dados que a Intra já tem.
 
-A premissa: nenhum sistema previne todos os erros de um modelo probabilístico.
-Este desenha o ambiente onde os erros **não sobrevivem** — baratos de detetar,
-impossíveis de esconder, triviais de reverter.
+**Estado:** em desenvolvimento, ainda sem lançamento público. Começa pela 42
+Portugal: só entram contas com campus principal em Lisboa ou no Porto. O
+lançamento espera pela autorização da 42 / 42 Portugal para o nome, as cores
+das Coalitions e a API.
 
-## Setup
+## O que já faz
 
-```bash
-git init
-npm install        # instala deps + hooks do lefthook (via "prepare")
-make check         # tudo deve ficar verde à primeira
-make onboard-status
-```
+| Área                   | O que é                                                                                                   | Rota                   |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------- |
+| **Login**              | OAuth da 42; os tokens ficam no servidor                                                                  | `/login`               |
+| **Passaporte**         | Identidade da Intra, Coalition, nível, projetos com a tradução "mundo real", conquistas e radar de skills | `/`                    |
+| **Passaporte público** | O que a comunidade vê de cada pessoa, com opção de o esconder                                             | `/u/[login]`           |
+| **Comunidade**         | Diretório de quem partilha o Passaporte, com pesquisa por login e campus                                  | `/community`           |
+| **Duck Pond**          | Feed das conquistas da comunidade e Rubber Ducks (kudos, um por pessoa por conquista)                     | `/pond`                |
+| **The Tavern**         | Encontrar equipa: perfil de trabalho, lobbies por projeto de grupo e compatibilidade entre pessoas        | `/tavern`              |
+| **XP Calculator**      | XP ganho num projeto do Common Core para uma nota, com o nível real ao lado                               | `/calculator`          |
+| **Conta**              | Visibilidade do Passaporte e apagamento da conta                                                          | `/account`, `/privacy` |
 
-Depois, abre o teu agente na pasta do projeto e pede _"faz o onboarding deste
-projeto"_ (no Claude Code: `/onboarding`). O agente segue
-`.claude/skills/onboarding/SKILL.md`: deteta sozinho o que consegue ler no
-repositório e pergunta-te só as decisões que são tuas, um bloco de cada vez:
+O que vem a seguir está em `specs/tracks/` e em
+[`docs/canonical/produto.md`](docs/canonical/produto.md).
 
-| Bloco | O que decides                                                        |
-| ----- | -------------------------------------------------------------------- |
-| A     | Projeto novo ou existente; tipo de projeto                           |
-| B     | Propósito e regras duras do domínio para o `AGENTS.md`               |
-| C     | Quem escreve os testes de aceitação; dono do contrato (`CODEOWNERS`) |
-| D     | Que camadas opcionais ficam (evals, métodos formais)                 |
-| E     | Que agentes usas; permissões reais da ferramenta                     |
-| F     | Proteção da branch e orçamento de diff                               |
-| G     | Primeiro épico e work-item; quando sai o domínio de exemplo          |
+## Princípios
 
-No fim, as decisões ficam em `docs/adr/0003-onboarding.md`. Tudo o que mexe
-no contrato fica preparado pelo agente mas é commitado por ti, com
-`ACCEPT_CONTRACT_CHANGE=1`.
-
-Requisitos: Node 22+, make, git.
-
-## As cinco camadas (e onde vivem)
-
-| #   | Camada                             | Neste repo                                                                                        |
-| --- | ---------------------------------- | ------------------------------------------------------------------------------------------------- |
-| 1   | Estados inválidos irrepresentáveis | `tsconfig.json` estrito · Zod nas fronteiras (regra dura 4 do `AGENTS.md`)                        |
-| 2   | Portão de planeamento              | Workflow obrigatório no `AGENTS.md` (plano + perguntas antes de código)                           |
-| 3   | Loop determinístico                | `make check` · `lefthook.yml` · caminhos protegidos · Stop hook de auto-correção · property tests |
-| 4   | Isolamento e reversibilidade       | Branch por work-item · `.agent/permissions.json` · worktrees                                      |
-| 5   | Assumir falha                      | `.github/workflows/ci.yml` — verificação independente + orçamento de diff                         |
-
-## O fluxo de trabalho
-
-1. `make new-track ID=WT-0002 SLUG=meu-epico` — define a iniciativa
-2. `make new-item ID=WI-0002 SLUG=minha-tarefa TRACK=WT-0002` — tarefa atómica com critérios de aceitação
-3. Humano escreve (ou aprova) os testes de aceitação em `tests/acceptance/`
-4. Agente lê o work-item, **apresenta plano e perguntas**, humano aprova
-5. Agente faz TDD (`make test-unit` no loop) até `make check` verde
-6. PR → CI independente → review humano do diff → merge
-
-Com componentes LLM: passo extra — alterou prompt/modelo/subject? `make eval`
-antes do merge. Com núcleo crítico formalizado: o desenho muda primeiro na spec
-TLA+ (`make formal-check`), só depois no código.
-
-## Decisões estruturais que interessam
-
-- **Contrato e guardrails são intocáveis pelo agente.** A lista está em
-  `.agent/protected-paths`: o contrato (testes de aceitação, datasets e
-  thresholds) e tudo o que define como se verifica (scripts, configs,
-  workflows, hooks, regras). Ver a secção seguinte.
-- **Testes de aceitação vêm de fonte independente do código.** Escritos pelo
-  humano, ou por outro modelo/sessão sem acesso à implementação — testes do
-  mesmo modelo partilham os mesmos pontos cegos.
-- **Orçamento de diff** (15 ficheiros / 800 linhas por defeito): scope creep
-  de agente falha o CI em vez de passar despercebido.
-- **Specs têm lint** (`make validate-specs`): schema, IDs únicos, refs
-  quebradas, tracks órfãos. SDD sem validação não escala.
-- **Makefile como interface única**: o agente nunca adivinha comandos.
-
-## Anti reward hacking e loop de auto-correção
-
-O objetivo: quando um teste falha, o único caminho para verde é corrigir o
-código. Mudar o teste, o threshold, o script que verifica, a config do linter
-ou o workflow de CI não pode funcionar. E o agente não pode dar a tarefa por
-terminada com o check vermelho.
-
-**Fonte única:** `.agent/protected-paths` lista os caminhos protegidos em dois
-níveis, contrato e guardrail. Todas as camadas leem dessa lista ou são geradas
-a partir dela, e `make check` falha se divergirem.
-
-| Tentativa do agente                                          | O que a trava                                                                    |
-| ------------------------------------------------------------ | -------------------------------------------------------------------------------- |
-| Editar um teste de aceitação, dataset ou threshold           | Regra deny do Claude Code (ferramenta Edit)                                      |
-| Fazer o mesmo por Bash (`sed -i`, `>`, `rm`, `node -e`)      | Sandbox (as regras deny entram no sandbox) + guarda de Bash                      |
-| Enfraquecer o script de verificação em vez do teste          | Mesmas regras: `scripts/` é guardrail                                            |
-| Silenciar o linter com `eslint-disable`                      | `noInlineConfig`: comentários de desativação não têm efeito                      |
-| Commit com `--no-verify` ou `ACCEPT_CONTRACT_CHANGE=1`       | Guarda de Bash nega o comando                                                    |
-| PR que muda o contrato **e** o guarda ao mesmo tempo         | `guard.yml` corre a partir da base, não do PR                                    |
-| Qualquer coisa que escape a tudo o resto                     | CODEOWNERS + branch protection: review humana obrigatória                        |
-| Terminar com `make check` vermelho depois de mexer no código | Stop hook: devolve todas as falhas e obriga a continuar                          |
-| Forjar o contador do loop para escapar                       | O estado vive em `.claude/hooks/.state/`, fora do alcance do agente              |
-| Insistir sem progresso                                       | O hook escala ao fim de 4 tentativas ou 3 falhas iguais: o agente pára e reporta |
-
-**O loop não atrapalha o TDD.** Só verifica quando o agente alterou ficheiros
-desde o teu último pedido: com testes de aceitação novos e vermelhos, o agente
-pode parar para te mostrar o plano. A meio do trabalho, se precisar de uma
-decisão tua, termina a mensagem com `[INPUT-HUMANO]` e pode parar.
-
-**Quando um ficheiro protegido precisa mesmo de mudar**, o agente escreve a
-proposta em `.agent/proposals/` e explica porquê. Tu revês e aplicas com
-`make apply-proposals` (exige terminal interativo), e fazes commit com
-`ACCEPT_CONTRACT_CHANGE=1`.
-
-**As guardas têm testes.** `make test-guards` corre 38 cenários numa cópia do
-projeto: tentativas de bypass que têm de falhar e casos legítimos que não
-podem ser bloqueados. Também corre no CI.
-
-**Limites honestos:**
-
-- Tudo o que é local pode ser contornado por um processo determinado na tua
-  máquina. A garantia está no servidor: branch protection com review do code
-  owner, sem exceção para admins (bloco F do onboarding).
-- O sandbox existe em macOS, Linux e WSL2; em Windows nativo, a escrita por
-  Bash fica protegida só pela guarda de Bash (deteção por texto), pelo
-  pre-commit e pelo CI.
-- A guarda de Bash é deteção por padrões de texto. Serve para explicar ao
-  agente porque foi bloqueado; o bloqueio real é o sandbox.
-- O loop de auto-correção automático é do Claude Code (Stop hook). Noutros
-  agentes depende de seguirem o protocolo do `AGENTS.md`; o CI continua a
-  ser a rede.
-- Nenhuma guarda impede código feito à medida dos testes (casos especiais
-  para os inputs). Isso apanha-se com property tests, testes de aceitação
-  escritos por quem não escreveu o código, e review do diff.
-
-## All-in-one: o que ativar no TEU projeto
-
-Este boilerplate traz todas as camadas instaladas, mas nem todas se pagam em
-todos os projetos. Guia de decisão por tipo de projeto:
-
-| Camada                          | Protótipo / PoC | Produto standard | Produto com LLM | Sistema crítico\* |
-| ------------------------------- | --------------- | ---------------- | --------------- | ----------------- |
-| Tipos estritos + Zod (1)        | ✓ (grátis)      | ✓                | ✓               | ✓                 |
-| Portão de planeamento (2)       | —               | ✓                | ✓               | ✓                 |
-| `make check` + hooks (3)        | parcial\*\*     | ✓                | ✓               | ✓                 |
-| Contrato protegido (3)          | —               | ✓                | ✓               | ✓                 |
-| Specs SDD + validador (2/3)     | —               | ✓                | ✓               | ✓                 |
-| Orçamento de diff (5)           | —               | ✓                | ✓               | ✓                 |
-| Property-based tests (3)        | —               | recomendado      | recomendado     | ✓                 |
-| **Evals** (`evals/`)            | —               | —                | **✓**           | se tiver LLM      |
-| **Métodos formais** (`formal/`) | —               | —                | —               | **✓ no núcleo**   |
-
-\* Pagamentos, saúde, infraestrutura, concorrência/distribuição não-trivial.
-\*\* Num protótipo, mantém tipos+lint (custam zero) e dispensa o resto — código
-que vive três dias não justifica cerimónia. O erro simétrico também existe:
-levar hábitos de protótipo para produção.
-
-Como desativar o que não precisas:
-
-- **Evals**: apaga `evals/`, `scripts/run-evals.mjs` e `.github/workflows/evals.yml`.
-- **Métodos formais**: apaga `formal/` (não tem dependências no resto).
-- **Contrato/hooks** (só em protótipos): `npx lefthook uninstall` e ignora `tests/acceptance/`.
-- Cada pasta opcional tem o seu `README.md` com o racional completo de
-  quando ativar — decide com base no custo do erro, não no entusiasmo.
-
-E o inverso — sinais de que está na hora de ativar uma camada que deixaste fora:
-
-- O produto ganhou um LLM (chatbot, classificação, geração) → ativa `evals/`
-- Apareceu concorrência com dinheiro/dados em jogo (webhooks, stock, locks) → ativa `formal/`
-- O protótipo "temporário" vai fazer seis meses e tem utilizadores → ativa tudo o resto
-
-## Adaptar ao teu projeto
-
-1. Substitui o domínio de exemplo pelo teu — mantém os padrões. No Duck Hub
-   já foi removido (o `order` e os exemplos WT/WI-0001).
-2. Reescreve o `AGENTS.md`: propósito, stack, regras duras específicas.
-3. Cria o teu primeiro track e work-item reais.
-4. Configura branch protection no GitHub (instruções no topo do `ci.yml`).
-5. Opcional mas recomendado: mutation testing (Stryker) como job noturno no
-   CI — mede se os testes realmente falham quando o código muda.
+1. **Zero fricção.** Tudo o que a Intra já sabe vem da Intra.
+2. **A API da 42 é a única fonte dos dados académicos.** Só leitura: o Duck
+   Hub nunca escreve na Intra.
+3. **Conquistas verificáveis.** Uma badge ou um número só existe se for
+   derivável de dados da API, com funções puras e determinísticas.
+4. **Privacidade por omissão (RGPD).** Guarda-se o mínimo. Dados da Intra
+   nunca vão para logs nem para fixtures. A presença no campus e a data de
+   Black Hole de outras pessoas nunca aparecem sem opt-in.
+5. **Acessível.** Contraste WCAG AA e navegação por teclado; os testes e2e
+   correm o axe em todas as páginas.
+6. **O Rubber Duck é o tom.** Não se leva a sério na forma, leva-se a sério
+   na utilidade.
 
 ## Stack
 
-TypeScript 5 (`strict` máximo) · Zod · Vitest · fast-check · ESLint
-(typescript-eslint strictTypeChecked) · Prettier · Lefthook · GitHub Actions.
+Next.js (App Router, full-stack) · PostgreSQL com Drizzle · Tailwind com os
+tokens de [`docs/canonical/design.md`](docs/canonical/design.md) · OAuth da
+42 · TypeScript em modo `strict` máximo (Node 22+, ESM) · Zod em todas as
+fronteiras · Vitest e fast-check · Playwright com axe · ESLint
+(typescript-eslint strictTypeChecked) e Prettier · Lefthook · GitHub Actions.
 
-A metodologia é agnóstica de linguagem: para Python, o equivalente é
-mypy `--strict` + Pydantic + pytest + Hypothesis + ruff + pre-commit.
+## Correr localmente
+
+Requisitos: Node 22+, Docker, `make` e `git`. Em Windows, usa o WSL2.
+
+1. **Dependências** (instala também os hooks de git e o Chromium dos testes
+   e2e):
+
+   ```bash
+   make setup
+   ```
+
+2. **Uma aplicação OAuth registada na Intra**, na secção de API das
+   definições do teu perfil, com o _redirect URI_
+   `http://localhost:3000/auth/callback`.
+
+3. **Um ficheiro `.env`** na raiz (está no `.gitignore`):
+
+   | Variável             | Exemplo                                                 |
+   | -------------------- | ------------------------------------------------------- |
+   | `CLIENT_ID`          | o UID da aplicação da Intra                             |
+   | `CLIENT_SECRET`      | o secret da aplicação da Intra                          |
+   | `APP_URL`            | `http://localhost:3000`                                 |
+   | `ALLOWED_CAMPUS_IDS` | `38,58` (Lisboa e Porto)                                |
+   | `DATABASE_URL`       | `postgres://duckhub:duckhub_dev@127.0.0.1:5432/duckhub` |
+   | `POSTGRES_PORT`      | opcional; outra porta se a 5432 estiver ocupada         |
+
+4. **Base de dados e app:**
+
+   ```bash
+   make db-up        # PostgreSQL em Docker, só em 127.0.0.1
+   make db-migrate   # aplica as migrações de drizzle/
+   make dev          # http://localhost:3000
+   ```
+
+As páginas `/login` e `/privacy` funcionam sem `.env`. As outras precisam da
+configuração completa. Depois de fazer pull de um PR com migrações novas,
+corre outra vez `make db-migrate`.
+
+## Comandos
+
+O `Makefile` é a interface única. `make help` lista todos.
+
+| Comando                | O que faz                                                           |
+| ---------------------- | ------------------------------------------------------------------- |
+| `make check`           | Tudo o que o CI verifica, sem alterar ficheiros. Tem de ficar verde |
+| `make format`          | Corrige a formatação (Prettier)                                     |
+| `make test-unit`       | Testes unitários (o loop rápido de TDD)                             |
+| `make test-acceptance` | Só o contrato (`tests/acceptance/`)                                 |
+| `make test-e2e`        | Contrato com browser (Playwright e axe)                             |
+| `make validate-specs`  | Lint das specs (`specs/`)                                           |
+| `make new-item`        | Novo work-item: `make new-item ID=WI-NNNN SLUG=nome TRACK=WT-NNNN`  |
+| `make new-adr`         | Novo ADR: `make new-adr NUM=NNNN SLUG=nome`                         |
+
+## Como se desenvolve
+
+O Duck Hub é feito com coding agents (Claude Code e outros), com specs, TDD e
+defesa em profundidade. As regras para os agentes estão no
+[`AGENTS.md`](AGENTS.md); a filosofia, no
+[ADR 0001](docs/adr/0001-defesa-em-profundidade.md).
+
+1. Cada iniciativa é um **track** (`specs/tracks/WT-NNNN`) e cada tarefa é
+   um **work-item** (`specs/items/WI-NNNN`) com critérios de aceitação.
+2. Os **testes de aceitação** (`tests/acceptance/`) são o contrato. São
+   escritos ou aprovados por uma pessoa, antes do código.
+3. O agente lê o work-item, **apresenta o plano e as perguntas** e espera
+   aprovação.
+4. TDD até `make check` ficar verde, num branch `wi/WI-NNNN-slug`.
+5. PR → CI independente → review humana → merge.
+
+**O que o agente não pode mudar.** O contrato e tudo o que define como se
+verifica (scripts, configs, workflows, hooks, `AGENTS.md`) estão listados em
+[`.agent/protected-paths`](.agent/protected-paths). O sandbox, os hooks e o CI
+bloqueiam essas alterações. Quando um destes ficheiros precisa mesmo de mudar,
+o agente escreve a proposta em `.agent/proposals/` e uma pessoa aplica-a com
+`make apply-proposals`.
+
+**No CI**, um PR precisa de:
+
+- `check` verde: o mesmo que o `make check`. Os testes das próprias guardas só
+  correm quando o PR muda uma guarda;
+- `protected-paths`: um PR que muda o contrato ou uma guarda precisa da label
+  `contract-change-approved`;
+- `diff-budget`: até 15 ficheiros e 800 linhas. Acima disso, só com a label
+  `diff-budget-override` e uma justificação no PR.
+
+## Estrutura
+
+| Pasta                                                    | O que tem                                                 |
+| -------------------------------------------------------- | --------------------------------------------------------- |
+| `src/app/`                                               | Páginas e rotas (Next.js App Router)                      |
+| `src/`                                                   | Domínio, cliente da API da 42, base de dados, componentes |
+| `drizzle/`                                               | Migrações da base de dados                                |
+| `specs/`                                                 | Tracks e work-items                                       |
+| `tests/acceptance/`                                      | O contrato: testes de aceitação e e2e                     |
+| `tests/unit/`, `tests/properties/`, `tests/integration/` | Os outros testes                                          |
+| `docs/adr/`                                              | Decisões de arquitetura e o porquê                        |
+| `docs/canonical/`                                        | Produto, design e convenções                              |
+
+## Documentação
+
+- [Produto](docs/canonical/produto.md): o que é, para quem, pilares e regras
+  de domínio.
+- [Design](docs/canonical/design.md): o tema Cyber Duck e os tokens.
+- [Convenções](docs/canonical/conventions.md).
+- [Decisões de arquitetura](docs/adr/): do onboarding (ADR 0003) ao
+  alojamento (ADR 0018) e ao analytics (ADR 0019).
+- [Endpoints da API da 42](docs/API_42_endpoints.md): o que cada endpoint dá
+  e com que tipo de token.
