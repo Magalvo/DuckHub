@@ -1,6 +1,5 @@
 # Duck Hub
-
-A praça digital da comunidade 42. Uma app web gamificada onde alunos e Alumni
+O Hub digital da comunidade 42. Uma app web gamificada onde alunos e Alumni
 da 42 mantêm o convívio, encontram equipa e usam ferramentas úteis. O perfil
 constrói-se sozinho a partir da API da 42: entra-se com a conta da Intra e não
 há formulários para dados que a Intra já tem.
