@@ -48,13 +48,18 @@ export default async function CalculatorPage({
 
   const saved = await (await passportStore()).load(session.userId);
   let projects: CachedProjectXp[] = [];
+  let loading = false;
   // Só se lê (e talvez atualiza) a cache para quem pode usar a calculadora.
   if (isAvailable(saved)) {
     const deps = await calculatorDeps();
     const campusId = await deps.campusOf(session.userId);
-    if (campusId !== null) projects = await deps.cache.projectsFor(campusId);
+    if (campusId !== null) {
+      const read = await deps.cache.projectsFor(campusId);
+      if (read.kind === 'ready') projects = read.projects;
+      loading = read.kind === 'loading';
+    }
   }
-  const view = calculatorView({ saved, projects, query: await searchParams });
+  const view = calculatorView({ saved, projects, query: await searchParams, loading });
 
   return (
     <div className="mx-auto max-w-[1680px] px-4 py-10 md:px-8">
@@ -64,6 +69,11 @@ export default async function CalculatorPage({
         <p className="mt-4 max-w-prose text-text-muted">{t.unavailable}</p>
       )}
       {view.kind === 'no-data' && <p className="mt-4 max-w-prose text-text-muted">{t.noData}</p>}
+      {view.kind === 'loading' && (
+        <p role="status" className="mt-4 max-w-prose text-text-muted">
+          {t.loading}
+        </p>
+      )}
 
       {view.kind === 'form' && (
         <>

@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import { hashToken, SESSION_COOKIE, type AuthDeps } from '../../../src/auth/handlers.js';
 import {
   handleLobby,
+  loadLobbyState,
   lobbyProjects,
   lookingLabel,
   matchLabel,
@@ -311,5 +312,33 @@ describe('sameProjectSlugs (WI-0018)', () => {
 
   it('sem slugs, nenhum', () => {
     expect(sameProjectSlugs([], groups)).toEqual([]);
+  });
+});
+
+describe('loadLobbyState (WI-0023)', () => {
+  const snapshot = {
+    login: 'pato-teste',
+    campus: 'Campus Sintético',
+    piscine: { month: 'september', year: 2023 },
+    isAlumni: false,
+    coalition: null,
+    cursus: [],
+    projects: [],
+  };
+  const catalog = { kind: 'loading' as const };
+
+  it('sem snapshot ou sem campus, fica pronto e vazio sem ler o catálogo', async () => {
+    let reads = 0;
+    const deps = (hasSnapshot: boolean, campus: number | null) => ({
+      loadSnapshot: () => Promise.resolve(hasSnapshot ? snapshot : null),
+      campusOf: () => Promise.resolve(campus),
+      catalog: () => {
+        reads += 1;
+        return Promise.resolve(catalog);
+      },
+    });
+    expect(await loadLobbyState(ME, deps(false, 9001))).toEqual({ kind: 'ready', projects: [] });
+    expect(await loadLobbyState(ME, deps(true, null))).toEqual({ kind: 'ready', projects: [] });
+    expect(reads).toBe(0);
   });
 });

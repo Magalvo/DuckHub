@@ -164,3 +164,15 @@ describe('calculatorView com slugs do mesmo projeto (WI-0024)', () => {
     expect(view).toMatchObject({ selected: 'minirt', projectError: 'unknownProject' });
   });
 });
+
+describe('calculatorView a carregar (WI-0023)', () => {
+  it('com projetos, o loading não conta: mostra o formulário', () => {
+    expect(calculatorView({ saved: core, projects, query: {}, loading: true }).kind).toBe('form');
+  });
+
+  it('sem 42cursus, indisponível mesmo a carregar', () => {
+    expect(calculatorView({ saved: piscine, projects: [], query: {}, loading: true })).toEqual({
+      kind: 'unavailable',
+    });
+  });
+});

@@ -14,7 +14,12 @@ import { createAppToken } from '../auth/app-token';
 import { readServerConfig, type DatabaseConfig } from '../auth/config';
 import type { AuthDeps } from '../auth/handlers';
 import { createCodeExchange } from '../auth/token-exchange';
-import { createProjectXpCache, fetchFromApi, type ProjectXpCache } from '../calculator/cache';
+import {
+  createProjectXpCache,
+  fetchFromApi,
+  XP_FETCH_TIMEOUT_MS,
+  type ProjectXpCache,
+} from '../calculator/cache';
 import { createDrizzleProjectXpStore } from '../calculator/store';
 import { createDrizzleDirectoryStore, type DirectoryStore } from '../community/store';
 import { createDrizzleStore, type Db } from '../db/store';
@@ -32,7 +37,7 @@ import { createDrizzlePondStore, type PondStore } from '../pond/store';
 import type { PassportVisibilityStore } from '../passport/visibility';
 import { createDrizzleWorkProfileStore, type WorkProfileStore } from '../tavern/store';
 import { createDrizzleLobbyStore, type LobbyStore } from '../tavern/lobby-store';
-import { loadLobbyProjects, type LobbyProject } from '../tavern/lobby';
+import { loadLobbyProjects, loadLobbyState, type LobbyProject } from '../tavern/lobby';
 
 /** Um pedido à 42 que não responde em 10 s conta como falha de rede. */
 const FETCH_TIMEOUT_MS = 10_000;
@@ -49,6 +54,10 @@ const fetchWithTimeout = (url: string, init: RequestInit): Promise<Response> =>
   globalThis.fetch(url, { ...init, signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
 
 const intraFetch: IntraFetch = fetchWithTimeout;
+
+/** O pedido da lista de projetos da calculadora demora ~12 s: tem um timeout próprio (WI-0023). */
+const xpFetch: IntraFetch = (url, init) =>
+  globalThis.fetch(url, { ...init, signal: AbortSignal.timeout(XP_FETCH_TIMEOUT_MS) });
 
 /** O que a calculadora (WI-0007) precisa do servidor. */
 export interface CalculatorDeps {
@@ -106,6 +115,9 @@ async function createApp(): Promise<App> {
   const db = await openDb(config.database);
   const client = (token: string) =>
     createIntraClient({ token, fetch: intraFetch, clock: systemClock, limiter });
+  // O mesmo rate limiter: só o timeout muda (WI-0023).
+  const xpClient = (token: string) =>
+    createIntraClient({ token, fetch: xpFetch, clock: systemClock, limiter });
   const passports = createDrizzlePassportStore(db);
   const projectXp = createDrizzleProjectXpStore(db);
   // Token da aplicação (client credentials): só em memória, dentro desta app.
@@ -115,6 +127,17 @@ async function createApp(): Promise<App> {
     limiter,
     clock: systemClock,
   });
+  const xpCache = createProjectXpCache({
+    store: projectXp,
+    fetchProjects: fetchFromApi({ appToken, client: xpClient, slugs: realWorldSlugs }),
+    clock: systemClock,
+    slugs: realWorldSlugs,
+    deadlineMs: XP_REFRESH_DEADLINE_MS,
+    // Só o campus e o tipo da falha (ADR 0009, regra 9).
+    log: (line) => {
+      console.warn(line);
+    },
+  });
   return {
     passports,
     directory: createDrizzleDirectoryStore(db),
@@ -123,13 +146,7 @@ async function createApp(): Promise<App> {
     lobbies: createDrizzleLobbyStore(db),
     calculator: {
       campusOf: (userId) => projectXp.campusOf(userId),
-      cache: createProjectXpCache({
-        store: projectXp,
-        fetchProjects: fetchFromApi({ appToken, client, slugs: realWorldSlugs }),
-        clock: systemClock,
-        slugs: realWorldSlugs,
-        deadlineMs: XP_REFRESH_DEADLINE_MS,
-      }),
+      cache: xpCache,
     },
     auth: {
       config: config.auth,
@@ -141,6 +158,9 @@ async function createApp(): Promise<App> {
         createPassportSync({ client, store: passports, clock: systemClock }),
         SYNC_DEADLINE_MS
       ),
+      warmXpCache: (campusId) => {
+        xpCache.warm(campusId);
+      },
       store: createDrizzleStore(db),
     },
   };
@@ -188,6 +208,19 @@ export const lobbyStore = async (): Promise<LobbyStore> => (await app()).lobbies
 export async function lobbyProjectsOf(userId: string): Promise<LobbyProject[]> {
   const { passports, calculator } = await app();
   return loadLobbyProjects(userId, {
+    loadSnapshot: async (id) => (await passports.load(id))?.snapshot ?? null,
+    campusOf: (id) => calculator.campusOf(id),
+    catalog: async (campusId) => {
+      const read = await calculator.cache.projectsFor(campusId);
+      return read.kind === 'ready' ? read.projects : [];
+    },
+  });
+}
+
+/** Como lobbyProjectsOf, mas com loading enquanto o catálogo se lê da API (WI-0023). */
+export async function lobbyStateOf(userId: string): ReturnType<typeof loadLobbyState> {
+  const { passports, calculator } = await app();
+  return loadLobbyState(userId, {
     loadSnapshot: async (id) => (await passports.load(id))?.snapshot ?? null,
     campusOf: (id) => calculator.campusOf(id),
     catalog: (campusId) => calculator.cache.projectsFor(campusId),

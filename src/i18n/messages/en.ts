@@ -107,6 +107,8 @@ export const en = {
     currentLevel: 'Your current level',
     unavailable: 'The XP Calculator unlocks when you start the Common Core.',
     noData: "We couldn't load project XP from the 42 API. Please try again later.",
+    // WI-0023: cache vazia e a atualização ainda em curso.
+    loading: 'Loading project XP from the 42 API. Refresh the page in a few seconds.',
     errors: {
       notInteger: 'The mark must be a whole number.',
       outOfRange: 'The mark must be between 0 and 125.',
@@ -221,6 +223,7 @@ export const en = {
       create: 'Create the lobby',
       leave: 'Leave the lobby',
       open: 'Open the lobby',
+      loading: 'Loading group projects from the 42 API. Refresh the page in a few seconds.',
       noProjects:
         'No group project lobbies are open for you right now. Every group project on your campus that you have not validated yet has a lobby here.',
       noProfile:

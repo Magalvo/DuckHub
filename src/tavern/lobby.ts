@@ -7,6 +7,7 @@
 import { z } from 'zod';
 
 import { crossOrigin, getSession, type AuthDeps } from '../auth/handlers';
+import type { CacheRead } from '../calculator/cache';
 import type { PassportSnapshot } from '../passport/passport';
 import { realWorldSlugGroups } from '../passport/real-world';
 
@@ -112,6 +113,29 @@ export async function loadLobbyProjects(
   ]);
   if (snapshot === null || campusId === null) return [];
   return lobbyProjects(snapshot, await deps.catalog(campusId), realWorldSlugGroups);
+}
+
+/**
+ * Os lobbies de uma pessoa, ou loading enquanto o catálogo do campus está a
+ * ser lido da API (WI-0023). Um catálogo falhado dá a lista vazia, como antes.
+ */
+export async function loadLobbyState(
+  userId: string,
+  deps: {
+    loadSnapshot(userId: string): Promise<PassportSnapshot | null>;
+    campusOf(userId: string): Promise<number | null>;
+    catalog(campusId: number): Promise<CacheRead>;
+  }
+): Promise<{ kind: 'loading' } | { kind: 'ready'; projects: LobbyProject[] }> {
+  const [snapshot, campusId] = await Promise.all([
+    deps.loadSnapshot(userId),
+    deps.campusOf(userId),
+  ]);
+  if (snapshot === null || campusId === null) return { kind: 'ready', projects: [] };
+  const read = await deps.catalog(campusId);
+  if (read.kind === 'loading') return read;
+  const catalog = read.kind === 'ready' ? read.projects : [];
+  return { kind: 'ready', projects: lobbyProjects(snapshot, catalog, realWorldSlugGroups) };
 }
 
 /** "78% match": a pontuação do WI-0014 como se mostra no lobby. */
