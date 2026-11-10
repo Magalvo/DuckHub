@@ -38,6 +38,11 @@ export default defineConfig({
       CLIENT_SECRET: 'e2e-client-secret-sintetico',
       APP_URL: BASE_URL,
       ALLOWED_CAMPUS_IDS: '9001',
+      // WI-0025 (ADR 0019): o PostHog liga-se com uma chave sintética ao host
+      // local; os pedidos vão para a própria app e o teste interceta-os. Nada
+      // sai para a rede.
+      NEXT_PUBLIC_POSTHOG_KEY: 'phc_e2e_sintetico',
+      NEXT_PUBLIC_POSTHOG_HOST: `${BASE_URL}/ingest-e2e`,
     },
   },
 });
