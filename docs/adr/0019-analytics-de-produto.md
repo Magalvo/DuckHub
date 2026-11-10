@@ -52,11 +52,17 @@ fechada de eventos**. Erros e logs ficam como no ADR 0018.
 
 ### 1. Configuração do cliente
 
-- Host fixo da UE: `https://eu.i.posthog.com`. Um `NEXT_PUBLIC_POSTHOG_HOST`
-  com outro valor é rejeitado e o PostHog não arranca.
+- Host fixo da UE: `https://eu.i.posthog.com`, também quando
+  `NEXT_PUBLIC_POSTHOG_HOST` não está definido. Em produção, um host com
+  outro valor é rejeitado e o PostHog não arranca.
+- **Fora de produção** aceita-se também um host em `localhost` ou
+  `127.0.0.1` (decisão de 2026-11-10). É assim que o e2e testa o analytics:
+  aponta o PostHog para a própria app e interceta os pedidos no browser, por
+  isso nenhum teste fala com o PostHog real.
 - A chave do projeto vem de `NEXT_PUBLIC_POSTHOG_KEY` (é pública por
   desenho). Sem chave, o PostHog não arranca e **nada falha**: nem
-  `throw`, nem aviso em produção. O dev local, o e2e e o CI correm sem ela.
+  `throw`, nem aviso em produção. O dev local corre sem ela; o e2e usa uma
+  chave sintética com o host local.
 - Opções obrigatórias no `posthog.init`:
   - `persistence: 'memory'`: nada em cookies, localStorage ou
     sessionStorage;
@@ -67,9 +73,16 @@ fechada de eventos**. Erros e logs ficam como no ADR 0018.
   - `person_profiles: 'never'` e nenhuma chamada a `identify`, `alias`,
     `group` ou `register` com dados da pessoa;
   - `respect_dnt: true`;
+  - nada que carregue código ou capture sem ser pedido:
+    `advanced_disable_flags: true`, `disable_external_dependency_loading: true`,
+    `disable_web_experiments: true`, `disable_product_tours: true`,
+    `capture_dead_clicks: false`, `capture_heatmaps: false`,
+    `rageclick: false`, `save_referrer: false`;
   - um `before_send` que tira de todos os eventos `$current_url`,
     `$pathname`, `$referrer`, `$referring_domain`, as propriedades
-    `$initial_*` e qualquer query string.
+    `$initial_*`, `$session_entry_*` e `$prev_pageview_*`, e qualquer query
+    string. O `$session_entry_*` foi encontrado no e2e de 2026-11-10: o
+    `posthog-js` guarda nele o URL de entrada da sessão, com o login.
 - No projeto do PostHog: "Discard client IP data" ligado.
 
 ### 2. Eventos
