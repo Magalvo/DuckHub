@@ -1,28 +1,28 @@
 ---
 id: WI-0025
-title: PostHog anónimo, sem cookies (ajustar o PR #30 ao ADR 0019)
-status: draft
+title: PostHog anónimo, sem cookies
+status: done
 track: WT-0006
 owner: Magalvo
 acceptance:
-  - AC1: sem NEXT_PUBLIC_POSTHOG_KEY, posthogConfig devolve null e a app não lança erro nem faz pedidos ao PostHog
-  - AC2: com um NEXT_PUBLIC_POSTHOG_HOST diferente de https://eu.i.posthog.com, posthogConfig devolve null
-  - AC3: as opções do posthog.init são as do ADR 0019 (persistence memory, autocapture, pageview e pageleave desligados, sem gravação de sessões, performance, surveys nem exceções, person_profiles never, respect_dnt, before_send)
-  - AC4: o before_send tira de qualquer evento $current_url, $pathname, $referrer, $referring_domain e todas as propriedades $initial_*, e nunca deixa uma query string em nenhum valor
-  - AC5: só os 9 eventos da tabela do ADR 0019 são aceites, com as propriedades da tabela; um nome ou uma propriedade fora da lista não é enviado
-  - AC6: routeTemplate devolve o padrão da rota (/u/[login], /tavern/[slug]) e nunca um segmento dinâmico nem a query; uma rota desconhecida dá /other
-  - AC7: no browser, com o PostHog configurado, a navegação de uma pessoa do seed pelo seu Passaporte público e pela pesquisa da comunidade não deixa nenhum pedido ao PostHog com o seu login, nenhum cookie e nada em localStorage ou sessionStorage com o prefixo ph_
-  - AC8: nenhuma chamada a posthog.identify, alias, group ou register, nem exportação de logs do servidor (sem dependências @opentelemetry/* no package.json)
+  - AC1: sem NEXT_PUBLIC_POSTHOG_KEY (ou só com espaços), posthogConfig devolve null e nada arranca nem falha
+  - AC2: em produção, só o host da UE é aceite (também quando o host não está definido); fora de produção aceita-se também um host em localhost ou 127.0.0.1; qualquer outro host dá null
+  - AC3: as opções do posthog.init são as do ADR 0019, com o stripPersonalData como before_send
+  - AC4: o stripPersonalData tira $current_url, $pathname, $referrer, $referring_domain e todas as propriedades $initial_*, $session_entry_* e $prev_pageview_* de properties, $set e $set_once, corta qualquer valor de texto no primeiro ?, e não muda o evento de entrada
+  - AC5: analyticsEvent só aceita os 9 eventos da tabela do ADR 0019, com as propriedades e os valores da tabela; tudo o resto dá null
+  - AC6: routeTemplate devolve o padrão da rota (/u/[login], /tavern/[slug]), sem segmentos dinâmicos, query nem fragmento; uma rota desconhecida dá /other
+  - AC7: no browser, com o PostHog ligado ao host local do e2e, ver o próprio Passaporte público, pesquisar a comunidade pelo próprio login e abrir o Pond envia eventos page_viewed com o padrão da rota, nenhum pedido ao PostHog leva o login, e não fica nenhum cookie nem nada em localStorage ou sessionStorage com o prefixo ph_
+  - AC8: o código não chama identify, alias, group nem register do PostHog e não exporta logs do servidor (nada de @opentelemetry no package.json nem no src/)
 ---
 
 # WI-0025 — PostHog anónimo, sem cookies
 
 ## Problema
 
-O PR #30 integrou o PostHog com o assistente oficial. Na revisão de
-2026-11-09 o CI só falhava na formatação, mas a integração mandava para o
+O PR #30 integrou o PostHog com o assistente oficial, mas mandava para o
 PostHog URLs com logins de outras pessoas, guardava cookies sem
-consentimento, identificava as pessoas e exportava os logs do servidor. O
+consentimento, identificava as pessoas e exportava os logs do servidor. Foi
+fechado sem merge. O
 [ADR 0019](../../docs/adr/0019-analytics-de-produto.md) decidiu como deve
 ser: PostHog na UE, só no browser, sem armazenamento, anónimo, com uma lista
 fechada de eventos.
@@ -31,14 +31,11 @@ fechada de eventos.
 
 - Um módulo `src/analytics/` com funções puras: a configuração a partir do
   ambiente, o `before_send`, a validação dos eventos e o padrão da rota.
-- O `instrumentation-client.ts` só chama `posthog.init` quando
+- `src/instrumentation-client.ts` chama `posthog.init` só quando
   `posthogConfig` devolve uma configuração; sem ela, não faz nada.
-- O `AppShell` envia `page_viewed` com `routeTemplate(pathname)` e os eventos
-  das ações (os do PR #30), sempre através da validação.
-- Sai do PR #30: `instrumentation.ts` (OpenTelemetry),
-  `src/server/posthog-logs.ts` e as chamadas nas rotas, o `identify` e o
-  `reset`, a leitura da sessão no `layout.tsx` e o `captureException` no
-  `global-error.tsx`.
+- O `AppShell` envia `page_viewed` com `routeTemplate(pathname)` em cada
+  navegação, e os eventos das ações (os mesmos do PR #30), sempre através do
+  `analyticsEvent`.
 
 ## Interface
 
@@ -48,33 +45,52 @@ import type { PostHogConfig } from 'posthog-js';
 
 export const POSTHOG_EU_HOST = 'https://eu.i.posthog.com';
 
-/** null sem chave ou com outro host (AC1, AC2). */
+/**
+ * null sem chave (AC1) ou com um host não aceite (AC2). Um host vazio ou
+ * indefinido é o da UE. `production` vem de process.env.NODE_ENV.
+ */
 export function posthogConfig(env: {
   key: string | undefined;
   host: string | undefined;
+  production: boolean;
 }): { key: string; options: Partial<PostHogConfig> } | null;
 
 // src/analytics/privacy.ts
-export const DENIED_PROPERTIES: readonly string[]; // os do AC4, sem os $initial_*
-/** O before_send (AC4). Não muda o evento de entrada. */
-export function stripPersonalData<E extends { properties: Record<string, unknown> }>(event: E): E;
+/** As propriedades que saem sempre (AC4). */
+export const DENIED_PROPERTIES: readonly string[];
+/** As que começam por estes prefixos saem também: $initial_, $session_entry_, $prev_pageview_. */
+export const DENIED_PREFIXES: readonly string[];
+/** O before_send (AC4). Puro: devolve um evento novo. */
+export function stripPersonalData<
+  E extends {
+    properties: Record<string, unknown>;
+    $set?: Record<string, unknown>;
+    $set_once?: Record<string, unknown>;
+  },
+>(event: E): E;
 
 // src/analytics/events.ts
-export const ANALYTICS_EVENTS: readonly string[]; // os 9 do ADR 0019
-/** O evento validado com Zod, ou null se o nome ou as propriedades não são da lista (AC5). */
+/** Os 9 eventos do ADR 0019, por esta ordem. */
+export const ANALYTICS_EVENTS: readonly string[];
+/** O evento validado com Zod, ou null (AC5). */
 export function analyticsEvent(
   name: string,
   properties?: Record<string, unknown>
 ): { name: string; properties: Record<string, string> } | null;
 
 // src/analytics/routes.ts
-/** "/u/pato-teste?x=1" → "/u/[login]"; rota desconhecida → "/other" (AC6). */
+/** As páginas de src/app/, em padrão. Mais /other para o resto. */
+export const ROUTE_TEMPLATES: readonly string[];
+/** "/u/pato-teste?x=1#y" → "/u/[login]"; rota desconhecida → "/other" (AC6). */
 export function routeTemplate(pathname: string): string;
 ```
 
-As rotas conhecidas são as páginas de `src/app/`: `/`, `/account`,
-`/calculator`, `/community`, `/login`, `/pond`, `/privacy`, `/tavern`,
-`/tavern/profile`, `/tavern/[slug]` e `/u/[login]`.
+`ROUTE_TEMPLATES`: `/`, `/account`, `/calculator`, `/community`, `/login`,
+`/pond`, `/privacy`, `/tavern`, `/tavern/profile`, `/tavern/[slug]` e
+`/u/[login]`. O `page_viewed` só aceita estes e `/other`.
+
+Uma barra no fim conta como sem ela (`/community/` → `/community`). Um
+segmento a mais dá `/other` (`/u/a/b` → `/other`).
 
 ## Fora de âmbito
 
@@ -86,21 +102,20 @@ As rotas conhecidas são as páginas de `src/app/`: `/`, `/account`,
 
 ## Notas para o agente
 
-- Lê o ADR 0019 e o ADR 0018. Parte de um branch novo a partir de `main`
-  (`wi/WI-0025-posthog-anonimo`); aproveita o que servir do branch
-  `posthog/wizard-01a1c0d720e6` (PR #30). O PR #30 fecha-se sem merge.
-- O `package.json` é guardrail: a dependência `posthog-js` e a saída das
-  `@opentelemetry/*` entram por proposta em `.agent/proposals/package.json`,
-  com o `package-lock.json`. O mesmo para o `tsconfig.json`, se precisar de
-  incluir o `instrumentation-client.ts`.
-- AC7 (e2e): o `webServer` do `playwright.config.ts` precisa de
-  `NEXT_PUBLIC_POSTHOG_KEY` sintético e do host da UE. O
-  `playwright.config.ts` é guardrail: proposta também. O teste interceta
-  `https://eu.i.posthog.com/**` com `page.route` e responde 200, por isso
-  nada sai para a rede.
-- Os pedidos do `posthog-js` podem ir comprimidos (gzip ou base64): o AC7
-  verifica o corpo depois de o descomprimir no teste. Nunca se muda o código
-  de produção para facilitar o teste.
-- O `stripPersonalData` usa-se como `before_send` (`BeforeSendFn` do
-  `posthog-js`): adapta a assinatura se precisares, mantendo-a pura.
+- Lê o ADR 0019. O branch `posthog/wizard-01a1c0d720e6` (PR #30, fechado)
+  tem os eventos das ações no `AppShell`; aproveita só isso. Nada de
+  `instrumentation.ts` com OpenTelemetry, `posthog-logs`, `identify`,
+  `reset`, leitura da sessão no `layout.tsx` nem `captureException`.
+- Ficheiros protegidos, já preparados pelo humano antes de começares:
+  - `package.json` e `package-lock.json`: só o `posthog-js`;
+  - `playwright.config.ts`: o `webServer` do e2e passa a ter
+    `NEXT_PUBLIC_POSTHOG_KEY` sintético e `NEXT_PUBLIC_POSTHOG_HOST` em
+    `http://localhost:3100/ingest-e2e`.
+- Os outros testes e2e também carregam o PostHog, que manda pedidos para a
+  própria app e recebe 404. Nada sai para a rede, e nenhum teste verifica a
+  consola.
+- O `before_send` recebe um `CaptureResult` (`BeforeSendFn` do
+  `posthog-js`); o `stripPersonalData` é genérico para servir aí.
 - Regra 9: nenhum dado da Intra em eventos, logs ou fixtures.
+- Contrato: `tests/acceptance/wi-0025-posthog-anonimo.acceptance.test.ts` e
+  `tests/acceptance/e2e/wi-0025.e2e.ts`.

@@ -1,7 +1,11 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import type { ReactNode } from 'react';
+import posthog from 'posthog-js';
+import { useEffect, type ReactNode } from 'react';
+import { actionEvent } from '../analytics/actions';
+import { analyticsEvent, type AnalyticsEvent } from '../analytics/events';
+import { routeTemplate } from '../analytics/routes';
 import { messages } from '../i18n/messages';
 
 type NavKey = keyof typeof messages.shell.items;
@@ -63,9 +67,52 @@ const itemClass =
   'flex flex-1 flex-col items-center gap-1 rounded-md px-2 py-2 text-xs md:flex-none md:justify-center md:py-3 xl:flex-row xl:justify-start xl:gap-3 xl:px-3 xl:text-sm';
 const labelClass = 'md:sr-only xl:not-sr-only';
 
+/**
+ * Envia um evento já validado (WI-0025, ADR 0019). Sem PostHog carregado (sem
+ * chave, ou host não aceite) não faz nada.
+ */
+function send(event: AnalyticsEvent | null) {
+  if (event !== null && posthog.__loaded) posthog.capture(event.name, event.properties);
+}
+
+/** Os campos de texto do formulário, com o botão que o submeteu. */
+function formFields(form: HTMLFormElement, submitter: HTMLElement | null): Record<string, string> {
+  const fields: Record<string, string> = {};
+  for (const [name, value] of new FormData(form, submitter)) {
+    if (typeof value === 'string') fields[name] = value;
+  }
+  return fields;
+}
+
+function trackSubmit(event: SubmitEvent) {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement)) return;
+  send(actionEvent(new URL(form.action).pathname, formFields(form, event.submitter)));
+}
+
+function trackClick(event: MouseEvent) {
+  const target = event.target;
+  if (target instanceof Element && target.closest('a[href="/auth/login"]') !== null) {
+    send(analyticsEvent('auth_login_started'));
+  }
+}
+
 export function AppShell({ children }: { readonly children: ReactNode }) {
   const pathname = usePathname();
   const { shell, app } = messages;
+
+  useEffect(() => {
+    send(analyticsEvent('page_viewed', { route: routeTemplate(pathname) }));
+  }, [pathname]);
+
+  useEffect(() => {
+    document.addEventListener('submit', trackSubmit);
+    document.addEventListener('click', trackClick);
+    return () => {
+      document.removeEventListener('submit', trackSubmit);
+      document.removeEventListener('click', trackClick);
+    };
+  }, []);
 
   return (
     <>
